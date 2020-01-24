@@ -12,26 +12,73 @@ import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 class ProductSearch extends Component {
   private grid: GridComponent | null;
   private query: Query;
+  // state: {
+  //   prodCode: "";
+  //   prodDesc: "";
+  //   batchNo: "";
+  // };
+
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      prodCode: "",
+      prodDesc: "",
+      batchNo: ""
+    };
+  }
+
+  componentDidMount() {
+    console.log("componentDidMount");
+    // this.getFormData({
+    // 	url: config.get('contextPath') + '/sysadmin/initCmMessage.do',
+    // });
+    // this.updateFormModel({
+    // 	msgType : this.utils.getUrlParameter("msgTypeSearch") ? this.utils.getUrlParameter("msgTypeSearch") : '',
+    // 	msgCode : this.utils.getUrlParameter("msgCodeSearch") ? this.utils.getUrlParameter("msgCodeSearch") : '',
+    // 	msgDesc : this.utils.getUrlParameter("msgDescSearch") ? this.utils.getUrlParameter("msgDescSearch") : '',
+    // 	id : this.utils.getUrlParameter("id") ? this.utils.getUrlParameter("id") : '',
+    // });
+    // this.loadMessages(true);
+  }
+
+  handlProdCodeChange(e: any) {
+    this.setState({
+      prodCode: e.target.value
+    });
+  }
+
+  handlProdDescChange(e: any) {
+    this.setState({
+      prodDesc: e.target.value
+    });
+  }
+
+  handlBatchNoChange(e: any) {
+    this.setState({
+      batchNo: e.target.value
+    });
+  }
 
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/findAllProducts",
     adaptor: new UrlAdaptor()
   });
 
-  handleSearchBtn() {
-    console.log("handleSearchBtn");
+  loadMessages() {
+    console.log(this.state);
     if (this.grid) {
-      const rec: object = {
-        OrderID: 10247,
-        CustomerID: "ASDFG",
-        ShipCity: "Vins et alcools Chevalier",
-        ShipName: "Reims"
-      };
-      /** Add record */
-      (this.grid.dataSource as object[]).unshift(rec);
-      /** Refresh the Grid */
-      this.grid.refresh();
+      this.grid.dataSource = this.dataManager;
+      this.query = new Query();
+      // .addParams("msgType", this.state.model["msgType"])
+      // .addParams("msgCode", this.state.model["msgCode"])
+      // .addParams("msgDesc", this.state.model["msgDesc"]);
+      // if (includeId) this.query.addParams("id", this.state.model["id"]);
+      this.grid.query = this.query;
     }
+  }
+
+  handleSearchBtn() {
+    this.loadMessages();
   }
 
   handleAddBtn() {
@@ -63,19 +110,19 @@ class ProductSearch extends Component {
         <div className="row">
           <div className="col-sm-3">Product Code: </div>
           <div className="col-sm-4">
-            <input type="text" />
+            <input type="text" onChange={this.handlProdCodeChange.bind(this)} />
           </div>
         </div>
         <div className="row">
           <div className="col-sm-3">Product Description: </div>
           <div className="col-sm-4">
-            <input type="text" />
+            <input type="text" onChange={this.handlProdDescChange.bind(this)} />
           </div>
         </div>
         <div className="row">
           <div className="col-sm-3">Batch No: </div>
           <div className="col-sm-4">
-            <input type="text" />
+            <input type="text" onChange={this.handlBatchNoChange.bind(this)} />
           </div>
         </div>
         <div className="row">
