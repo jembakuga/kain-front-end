@@ -12,11 +12,11 @@ import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 class ProductSearch extends Component {
   private grid: GridComponent | null;
   private query: Query;
-  // state: {
-  //   prodCode: "";
-  //   prodDesc: "";
-  //   batchNo: "";
-  // };
+  state: {
+    prodCode: "";
+    prodDesc: "";
+    batchNo: "";
+  };
 
   constructor(props: any) {
     super(props);
@@ -60,7 +60,7 @@ class ProductSearch extends Component {
   }
 
   private dataManager: DataManager = new DataManager({
-    url: "http://localhost:8080/findAllProducts",
+    url: "http://localhost:8080/findProducts",
     adaptor: new UrlAdaptor()
   });
 
@@ -68,12 +68,13 @@ class ProductSearch extends Component {
     console.log(this.state);
     if (this.grid) {
       this.grid.dataSource = this.dataManager;
-      this.query = new Query();
-      // .addParams("msgType", this.state.model["msgType"])
-      // .addParams("msgCode", this.state.model["msgCode"])
-      // .addParams("msgDesc", this.state.model["msgDesc"]);
-      // if (includeId) this.query.addParams("id", this.state.model["id"]);
+      this.query = new Query()
+        .addParams("productCode", this.state.prodCode)
+        .addParams("productDesc", this.state.prodDesc)
+        .addParams("batchNo", this.state.batchNo);
+      console.log("asdfsda");
       this.grid.query = this.query;
+      this.grid.refresh();
     }
   }
 
