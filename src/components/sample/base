@@ -1,0 +1,664 @@
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import axios from 'axios';
+
+import { Dialog } from '@syncfusion/ej2-react-popups';
+import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
+import { Pager } from '@syncfusion/ej2-react-grids';
+import { DataManager, Query } from '@syncfusion/ej2-data';
+
+import { PavoUtils } from './PavoUtils';
+import * as PavoMessages from './PavoMessages.js';
+import * as PavoImages from './PavoImages.js';
+import * as PavoLabels from './PavoLabels.js';
+
+interface State {
+	data: object;
+	model: object;
+	[prop: string]: any;
+}
+
+function checkAgentInstallation(baseForm) {
+	function generateInnorixUUID() {
+		var t = (new Date).getTime();
+		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(e) {
+			var i = (t + 16 * Math.random()) % 16 | 0;
+			return t = Math.floor(t / 16), ('x' === e ? i : 7 & i | 8).toString(16);
+		});
+	}
+
+	var agentHTTP_URL = 'http://localhost:4033';
+	var agentHTTPS_URL = 'http://localhost:4523';
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', agentHTTP_URL + '/webpage', true);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status != 200) {
+			baseForm.showDialog({
+				header: 'INFO',
+				content: 'CORENET2.0 uses INNORIX Agent to aid file transfers. Do you wish to download installer?',
+				buttons: [{
+					'click': () => {
+						document.location.href = 'http://10.0.2.211/release/agent/install'; //TODO: this should be config based.
+
+						function checkInstallation() {
+							var xhr2 = new XMLHttpRequest();
+							xhr2.open('POST', agentHTTP_URL + '/webpage', true);
+
+							xhr2.onreadystatechange = function() {
+								if (xhr2.readyState == 4 && xhr2.status != 200) {
+									setTimeout(checkInstallation(), 3000);
+								} else if (xhr2.readyState == 4 && xhr2.status == 200) {
+									baseForm.updateFormModel({
+										innorixEnabled: true
+									});
+								}
+							}
+
+							var data = new FormData();
+							var paramObj = {
+								action: 'version',
+								uuid: generateInnorixUUID()
+							};
+							data.append('_action', 'version');
+							data.append('_param', JSON.stringify(paramObj));
+
+							xhr2.send(data);
+						}
+
+						checkInstallation();
+						baseForm.baseDialog.hide();
+					},
+					buttonModel: {
+						cssClass: 'e-flat',
+						content: 'YES'
+					}
+				}, {
+					'click': () => {
+						baseForm.baseDialog.hide();
+					},
+					buttonModel: {
+						cssClass: 'e-flat',
+						content: 'NO'
+					}
+				}],
+				isModal: true
+			})
+		} else if (xhr.readyState == 4 && xhr.status == 200) {
+			baseForm.updateFormModel({
+				innorixEnabled: true
+			});
+		}
+	}
+
+	var data = new FormData();
+	var paramObj = {
+		action: 'version',
+		uuid: generateInnorixUUID()
+	};
+	data.append('_action', 'version');
+	data.append('_param', JSON.stringify(paramObj));
+
+	xhr.send(data);
+
+}
+
+export const Images = PavoImages.IMAGES;
+
+export const Labels = PavoLabels.LABELS;
+
+export const LabelIcon = (props) => {
+	return props.append ? (
+		<span>{props.label}&nbsp;<img src={props.icon} width={props.iconSize ? props.iconSize : 16} /></span>
+	) : (
+			<span><img src={props.icon} width={props.iconSize ? props.iconSize : 16} />&nbsp;{props.label}</span>
+		);
+}
+
+export class BaseForm extends React.Component<any, State> {
+	public baseDialog: Dialog;
+	private baseId: string;
+
+	private savedState: object = {};
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			data: {},
+			model: {}
+		}
+
+		this.baseId = new PavoUtils().generateRandomGUID();
+		window.onhashchange = function() {
+			let tabName = window.location.href.split("#/")[1].split("/")[0];
+			if (tabName !== "") {
+				var current = document.getElementsByClassName("main-active");
+				console.log("current[0]", current[0]);
+				if (current[0] !== undefined) {
+					current[0].className = current[0].className.replace(" main-active", "");
+					console.log("current[0]", current[0]);
+					const btn = document.getElementById(tabName);
+					console.log("btn", btn);
+					btn.className += " main-active";
+					console.log("btn.className", btn.className);
+				}
+			}
+		}
+	}
+
+	appendCompulsoryInd(label: string) {
+		return (
+			<div>{label}<span style={{ color: "red" }}> *</span> :</div>
+		);
+	}
+
+	checkAgentInstallation() {
+		checkAgentInstallation(this);
+	}
+
+	doAjax(props) {
+		let form = this;
+
+		axios(props).then(function(response) {
+			if (response.data.success == 'true') {
+				if (props['onSuccess']) {
+					props['onSuccess'](response, form);
+				}
+			} else {
+				if (props['onFailure']) {
+					props['onFailure'](response, form);
+				}
+			}
+		}).catch(function(response) {
+			form.showSummaryMessage({
+				msgCode: ['error_Unknown_Error'],
+				msgHeader: 'error'
+			});
+		});
+	}
+
+	doFormSubmit(props) {
+		let onSuccess = function(response, form) {
+			var responseObj = response.data;
+			var msgObj = responseObj.msgDetail;
+
+			if (msgObj) {
+				form.showSummaryMessage(msgObj);
+			} else {
+				form.showSummaryMessage({
+					msgCode: ['info_DefaultSuccessMessage'],
+					msgHeader: 'info_Success'
+				});
+			}
+
+
+			form.updateFormState(form.state.model, null, null, true);
+		}
+
+		let onFailure = function(response, form) {
+			var responseObj = response.data;
+			var msgObj = responseObj.msgDetail;
+
+			if (msgObj) {
+				form.showSummaryMessage(msgObj);
+			} else {
+				form.showSummaryMessage({
+					msgCode: ['info_DefaultFailedMessage'],
+					msgHeader: 'error'
+				});
+			}
+		}
+
+		if (!props['onSuccess']) {
+			props['onSuccess'] = onSuccess;
+		}
+
+		if (!props['onFailure']) {
+			props['onFailure'] = onFailure;
+		}
+
+		let data = this.state['model'];
+		if (props['params']) {
+			for (var key in props['params']) {
+				data[key] = props['params'][key];
+			}
+
+			props['params'] = {};
+		}
+
+		props['data'] = data;
+		props['method'] = 'post';
+
+		this.doAjax(props);
+	}
+
+	getFormData(props) {
+		let onSuccess = function(response, form) {
+			let responseObj = response.data;
+			let responseData = responseObj.data;
+			let responseModel = responseObj.model;
+			form.updateFormState(responseModel, responseData, null, true);
+			console.log(responseObj)
+			console.log(responseData)
+		}
+
+		let onFailure = function(response, form) {
+			form.showSummaryMessage({
+				msgCode: ['info_DefaultFailedMessage'],
+				msgHeader: 'error'
+			});
+		}
+
+		if (!props['onSuccess']) {
+			props['onSuccess'] = onSuccess;
+		}
+
+		if (!props['onFailure']) {
+			props['onFailure'] = onFailure;
+		}
+
+		props['method'] = 'get';
+		this.doAjax(props);
+	}
+
+	private initializeFormSavedState() {
+		if (Object.keys(this.savedState).length === 0) {
+			for (var key in this.state.model) {
+				this.savedState[key] = this.state.model[key]
+			}
+		}
+	}
+
+	isDirty() {
+		let isDirty = false;
+		let savedState = this.savedState;
+		let model = this.state.model;
+
+		if (new PavoUtils().isEquals(savedState, model) === false) {
+			isDirty = true;
+		}
+
+		return isDirty;
+	}
+
+	paintUI() {
+		return (
+			<div></div>
+		);
+	}
+
+	render() {
+		this.initializeFormSavedState();
+
+		let baseDialogId = 'msgDialog_' + this.baseId;
+		let baseSpanId = 'inline_' + this.baseId;
+
+		return (
+			//			<div className="container-fluid"> //Remove the paddings to align with Mindlens' css
+			<div>
+				<div id={baseDialogId} />
+				<div>
+					<span id={baseSpanId}></span>
+				</div>
+				{this.paintUI()}
+			</div>
+			//			</div>
+		);
+	}
+
+	resetForm(callback?) {
+		if (typeof (callback) != 'function') {
+			callback = null;
+		}
+
+		this.showDialog({
+			header: PavoMessages.MESSAGES['confirm'],
+			content: PavoMessages.MESSAGES['confirm_resetForm'],
+			buttons: [{
+				'click': () => {
+					this.updateFormState(this.savedState, null, callback, false);
+					this.baseDialog.hide();
+				},
+				buttonModel: {
+					cssClass: 'e-flat',
+					content: 'YES'
+				}
+			}, {
+				'click': () => {
+					this.baseDialog.hide();
+				},
+				buttonModel: {
+					cssClass: 'e-flat',
+					content: 'NO'
+				}
+			}]
+		});
+
+	}
+
+	showDialog(props) {
+		if (!props['buttons']) {
+			props['buttons'] = [{
+				'click': () => {
+					this.baseDialog.hide();
+				},
+				buttonModel: {
+					cssClass: 'e-flat',
+					content: 'OK'
+				}
+			}]
+		}
+
+		if (!props['target']) {
+			props['target'] = document.body // getElementById('dialogContainer');
+		}
+
+		if (!props['width']) {
+			props['width'] = '500px'
+		}
+
+
+		/*Rm 06/01/2020: This condition shows the Success popup modal*/
+
+		if (props['header'] == "Confirm") {
+			if (props['identifier'] == "large") {
+				if (props['content']) {
+					props['content'] =
+						"<table style='width: 550px;'><tr><td><i class='fa fa-check-circle fa-5x e-footer-check pl-2 float-left'></i></td><td style='text-align:center;'><b class='e-message'>" + props['content'] + "</b></td><td></td></tr></table>"
+
+
+					"<div class='col-12 pt-2 '> </div>";
+				}
+			}
+			else {
+				if (props['content']) {
+					props['content'] =
+						"<div class='col-12 pt-2'> <i class='fa fa-question-circle fa-5x e-footer-question pl-2'></i><b class='text-center e-message'>" + props['content'] + "</b></div>";
+				}
+			}
+
+
+		}
+
+
+
+		/*Rm 06/01/2020: This condition shows the Success popup modal*/
+		if (props['header'] == "Success") {
+			if (props['content']) {
+				props['content'] =
+					"<div class='col-12 pt-2 '> <i class='fa fa-check-circle fa-5x e-footer-check pl-2 float-left'></i><b class='text-center e-message'>" + props['content'] + "</b></div>";
+			}
+		}
+		/*Rm 06/01/2020: This condition shows the Info popup modal*/
+		/*		if (props['header'] == "Confirm") {
+					if (props['content']) {
+						props['content'] =
+							"<div class='col-12 pt-2'> <i class='fa fa-question-circle fa-5x e-footer-question pl-2'></i><b class='text-center e-message'>" + props['content'] + "</b></div>";
+					}
+				}*/
+		/*Rm 06/01/2020: This condition shows the Info popup modal*/
+		if (props['header'] == "Info") {
+			if (props['content']) {
+				props['content'] =
+					"<div class='col-12 pt-2'> <i class='fa fa-info-circle fa-5x e-footer-info pl-2'></i><b class='text-center e-message'>" + props['content'] + "</b></div>";
+			}
+		}
+		/*Rm 06/01/2020: This condition shows the Error popup modal*/
+		if (props['header'] == "Error") {
+			if (props['content']) {
+				props['content'] =
+					"<div class='col-12 pt-2'> <i class='fa fa-exclamation-circle fa-5x e-footer-exclamation pl-2'></i><b class='text-center e-message'>" + props['content'] + "</b></div>";
+			}
+		}
+		/*Rm 06/01/2020: This condition shows the Failed popup modal*/
+		if (props['header'] == "Failed") {
+			if (props['content']) {
+				props['content'] =
+					"<div class='col-12 pt-2'> <i class='fa fa-exclamation-circle fa-5x e-footer-exclamation pl-2'></i><b class='text-center e-message'>" + props['content'] + "</b></div>";
+			}
+		}
+
+
+
+
+		props['isModal'] = true;
+
+		if (!this.baseDialog) {
+			this.baseDialog = new Dialog(props);
+			this.baseDialog.appendTo('#msgDialog_' + this.baseId);
+		} else {
+			Object.assign(this.baseDialog, props);
+			this.baseDialog.dataBind();
+		}
+
+		this.baseDialog.show();
+	}
+
+	getSummaryMessage(props) {
+
+		let msgCode = props['msgCode'];
+		let params = props['params'];
+
+		let content = '';
+		for (var i = 0; i < msgCode.length; i++) {
+			let tempContent = PavoMessages.MESSAGES[msgCode[i]];
+			if (params) {
+				for (var j = 0; j < params[i].length; j++) {
+					let paramVal = '';
+					if (params[i][j]) {
+						paramVal = params[i][j].replace(/\$/g, '$$$$');
+					}
+					tempContent = tempContent.replace(new RegExp('\\{' + j + '\\}', 'g'), paramVal);
+				}
+			}
+
+			content = content + ' ' + tempContent;
+		}
+
+		return content;
+	}
+
+	showSummaryMessage(props) {
+
+		let msgCode = props['msgCode'];
+		let params = props['params'];
+
+		let content = '';
+		for (var i = 0; i < msgCode.length; i++) {
+			let tempContent = PavoMessages.MESSAGES[msgCode[i]];
+			if (params) {
+				for (var j = 0; j < params[i].length; j++) {
+					let paramVal = '';
+					if (params[i][j]) {
+						paramVal = params[i][j].replace(/\$/g, '$$$$');
+					}
+					tempContent = tempContent.replace(new RegExp('\\{' + j + '\\}', 'g'), paramVal);
+				}
+			}
+
+			content = content + ' ' + tempContent;
+		}
+
+		if (props['type'] === 'MSG_INLINE') {
+			let inlineSpan = document.getElementById('messageContainer');
+			if (props['success'] === 'false') {
+				inlineSpan.style.color = 'red';
+				inlineSpan.style.marginTop = '5px';
+			} else {
+				inlineSpan.style.color = 'green';
+				inlineSpan.style.marginTop = '5px';
+			}
+
+			inlineSpan.textContent = content;
+		} else {
+			this.showDialog({
+				content: content,
+				header: PavoMessages.MESSAGES[props['msgHeader']]
+			});
+		}
+
+	}
+
+	showSummaryMessageOnId(props, id) {
+
+		let msgCode = props['msgCode'];
+		let params = props['params'];
+
+		let content = '';
+		for (var i = 0; i < msgCode.length; i++) {
+			let tempContent = PavoMessages.MESSAGES[msgCode[i]];
+			if (params) {
+				for (var j = 0; j < params[i].length; j++) {
+					let paramVal = '';
+					if (params[i][j]) {
+						paramVal = params[i][j].replace(/\$/g, '$$$$');
+					}
+					tempContent = tempContent.replace(new RegExp('\\{' + j + '\\}', 'g'), paramVal);
+				}
+			}
+
+			content = content + ' ' + tempContent;
+		}
+
+		if (props['type'] === 'MSG_INLINE') {
+			let inlineSpan = document.getElementById(id);
+			if (props['success'] === 'false') {
+				inlineSpan.style.color = 'red';
+			} else {
+				inlineSpan.style.color = 'green';
+			}
+
+			inlineSpan.textContent = content;
+		} else {
+			this.showDialog({
+				content: content,
+				header: PavoMessages.MESSAGES[props['msgHeader']]
+			});
+		}
+
+	}
+
+	updateFormData(uData, callback?) {
+		this.updateFormState(null, uData, callback, false);
+	}
+
+	updateFormModel(uModel, callback?) {
+		this.updateFormState(uModel, null, callback, false);
+	}
+
+	updateFormState(uModel?, uData?, callback?, saveState?) {
+		let sData = this.state['data'];
+		let sModel = this.state['model'];
+
+		if (uData) {
+			for (var key in uData) {
+				sData[key] = uData[key];
+			}
+		}
+
+		if (uModel) {
+			for (var key in uModel) {
+				sModel[key] = uModel[key];
+
+				if (saveState === true) {
+					this.savedState[key] = uModel[key];
+				}
+			}
+		}
+
+		this.setState({
+			data: sData,
+			model: sModel
+		}, callback)
+	}
+}
+
+export class PaginatedDropDown extends DropDownListComponent {
+	private baseId: string;
+	private isRemoteBound: boolean = false;
+	private pageSize: number = 10;
+	private totalCount: number = 0;
+
+	private pager: Pager;
+
+	constructor(props) {
+		super(props);
+
+		if (props['pageSize']) {
+			this.pageSize = props['pageSize'];
+		}
+
+		if (props['dataSource'] instanceof DataManager) {
+			this.isRemoteBound = true;
+		}
+
+		if (!props['query']) {
+			let query = new Query().skip(0).take(this.pageSize);
+			if (this.isRemoteBound) {
+				query.isCountRequired = true;
+			}
+			this.query = query;
+		}
+
+		this.baseId = new PavoUtils().generateRandomGUID();
+		this.footerTemplate = "<div id='pager_" + this.baseId + "'/>";
+	}
+
+	actionComplete = (args) => {
+		if (this.totalCount == 0) {
+			this.totalCount = args.count;
+		}
+
+		if (this.pager != null) {
+			this.pager.totalRecordsCount = args.count;
+			this.pager.dataBind();
+		}
+	}
+
+	filtering = (args) => {
+		let query = new Query().skip(0).take(this.pageSize);
+
+		if (args.text != '') {
+			query.where(this.fields.text, 'startswith', args.text);
+			if (this.isRemoteBound) {
+				query.isCountRequired = true;
+			}
+		} else {
+			let nDataSource = this.dataSource;
+			this.dataSource = null;
+			this.dataBind();
+
+			this.dataSource = nDataSource;
+			this.dataBind();
+		}
+
+		args.updateData(this.dataSource, query);
+	}
+
+	open = () => {
+		if (this.pager == null) {
+			this.pager = new Pager({
+				pageSize: this.pageSize,
+				totalRecordsCount: this.totalCount,
+				click: (e: object) => {
+					this.pageClick(e);
+				}
+			});
+		} else {
+			this.pager.currentPage = 1;
+			this.pager.totalRecordsCount = this.totalCount;
+			this.dataBind();
+		}
+
+		this.pager.appendTo('#pager_' + this.baseId);
+	}
+
+	pageClick(args) {
+		let query = new Query().skip(this.pageSize * (args.currentPage - 1)).take(this.pageSize);
+		if (this.isRemoteBound) {
+			query.isCountRequired = true;
+		}
+
+		this.query = query;
+	}
+} 
