@@ -1,0 +1,209 @@
+import * as React from 'react';
+import * as Pavo from '../../pavo/PavoBase';
+import * as ReactDOM from 'react-dom';
+import config from 'react-global-configuration';
+import { GridComponent, ColumnsDirective, ColumnDirective, Page, Sort, Inject } from "@syncfusion/ej2-react-grids";
+import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
+import { HashRouter, Link } from 'react-router-dom'
+import { PavoUtils } from '../../pavo/PavoUtils';
+
+export class Cn2CmMessageSearch extends Pavo.BaseForm {
+	
+	private messageGrid: GridComponent;
+	private query: Query;
+	private utils = new PavoUtils();
+	
+	constructor(props){
+		super(props);		
+		this.props.data;
+		this.state = {
+			data : {},
+			model : {
+				id : '',
+				msgType : '',
+				msgCode : '',
+				msgDesc : ''
+			}
+		}
+	}
+	
+	private messageData: DataManager = new DataManager({
+    	url: config.get("contextPath") + "/sysadmin/loadMessages.do",
+    	adaptor: new UrlAdaptor()
+  	});
+
+	loadMessages(includeId: boolean){	
+//		console.log('loadMessages')
+		this.messageGrid.dataSource = this.messageData;
+      	this.query = new Query()
+			.addParams("msgType", this.state.model['msgType'])
+			.addParams("msgCode", this.state.model['msgCode'])
+			.addParams("msgDesc", this.state.model['msgDesc'])
+		if(includeId) this.query.addParams("id", this.state.model['id'])
+      	this.messageGrid.query = this.query;
+//      	this.messageGrid.refresh();
+	}
+	
+	handleMsgTypeChange(e){
+		this.updateFormModel({
+			msgType : e.currentTarget.value
+		});
+	}
+	
+	handleMsgCodeChange(e){
+		this.updateFormModel({
+			msgCode : e.target.value
+		});
+	}
+	
+	handleMsgDescChange(e){
+		this.updateFormModel({
+			msgDesc : e.target.value
+		});
+	}
+	
+	componentDidMount(){
+		console.log('sdfsdfsd', localStorage.getItem('msgDescSearch'));
+		this.getFormData({
+			url: config.get('contextPath') + '/sysadmin/initCmMessage.do',
+		});		
+		this.updateFormModel({
+			msgType : this.utils.getUrlParameter("msgTypeSearch") ? this.utils.getUrlParameter("msgTypeSearch") : '',
+			msgCode : this.utils.getUrlParameter("msgCodeSearch") ? this.utils.getUrlParameter("msgCodeSearch") : '', 
+			msgDesc : this.utils.getUrlParameter("msgDescSearch") ? this.utils.getUrlParameter("msgDescSearch") : '',
+			id : this.utils.getUrlParameter("id") ? this.utils.getUrlParameter("id") : '',
+		});
+		this.loadMessages(true);
+	}
+	
+	handleAddBtn(){
+		this.props.history.push("/sysadmin/Cn2CmMessageAddEdit?isAdd=true");
+	}
+	
+	handleSearchBtn(){
+		this.loadMessages(false);
+	}
+
+
+	handleRenderAppTypeHyperlink(args){
+	    if(args.column.field == "msgCd"){
+	      ReactDOM.render( 
+	        <HashRouter>
+	            <Link to={"/sysadmin/Cn2CmMessageAddEdit?cd=" + (args.data.msgCd) 
+					+ '&desc=' + (args.data.msgDesc) 
+					+ '&type=' + (args.data.msgTypCd) 
+					+ '&id=' + (args.data.id)
+					+ '&msgTypeSearch=' + (this.state.model['msgType'])
+					+ '&msgCodeSearch=' + (this.state.model['msgCode'])
+					+ '&msgDescSearch=' + (this.state.model['msgDesc']) }> {args.data.msgCd}</Link>
+	        </HashRouter>
+	        , args.cell);
+	    }
+	  }
+	
+	
+	
+	paintUI(){
+		let ds = '<option></option>';	
+		if(this.state.data['msgTypeList']){
+			ds = this.state.data['msgTypeList'].map((item) => 
+				<option key={item.key} value={item.key}>{item.value}</option>
+			);			
+		}
+		return (
+			<form>
+			<div>				
+				<div className="espro-form-section-header">
+					<h3>{Pavo.Labels.CH_Message}</h3>
+					<div className="container-fluid">
+						<div className="row">
+							<div className="col-sm-5">
+								<button type="button" className="btn btn-outline-primary btn-sm mr-2" onClick={this.handleAddBtn.bind(this)}>
+									{Pavo.Labels.BL_add}
+								</button>
+								<button type="button" className="btn btn-outline-primary btn-sm mr-2"onClick={this.handleSearchBtn.bind(this) }>
+									{Pavo.Labels.BL_search}
+								</button>
+								<button type="button" className="btn btn-outline-primary btn-sm mr-2" onClick={this.resetForm.bind(this) }>
+									{Pavo.Labels.BL_reset}
+								</button>
+							</div>
+						</div>
+						<div id="messageContainer"/>
+						<br />
+						<div className="row">
+							<div className="col-sm-3">{Pavo.Labels.AP.MessageType}: </div>
+							<div className="col-sm-4">
+								<select 
+								className="form-control" 
+								id="msgTypeSearch"
+								value={this.state.model['msgType']}
+								onChange={this.handleMsgTypeChange.bind(this)}
+								onBlur={this.handleMsgTypeChange.bind(this)}>
+									{ds}								
+								</select>
+							</div>
+						</div>
+						<br />
+						<div className="row">
+							<div className="col-sm-3">{Pavo.Labels.AP.MessageCode}: </div>
+							<div className="col-sm-4">
+								<input
+									id="msgCode"
+									name="msgCode"
+									className="form-control"
+									type="text"
+									value={this.state.model['msgCode']}
+									onChange={this.handleMsgCodeChange.bind(this)}
+								/>
+							</div>
+						</div>		
+						<br />
+						<div className="row">
+							<div className="col-sm-3">{Pavo.Labels.AP.MessageDescription}: </div>
+							<div className="col-sm-4">
+								<textarea
+									id="msgDesc"
+									name="msgDesc"
+									className="form-control email-maint-input"
+									rows={4}
+									cols={50}
+									style={{ resize: "none" }}
+									value={this.state.model['msgDesc']}
+									onChange={this.handleMsgDescChange.bind(this)}
+								/>
+							</div>
+						</div>		
+						<br />
+						<div>
+							<div className="espro-form-section-header">
+								<div>
+									<GridComponent
+							            gridLines={"Both"}
+							            rowHeight={40}
+							            allowPaging={true}
+							            pageSettings={{ pageCount: 5, pageSize: 10 }}
+							            style={{ width: "100%" }}
+							            ref={grid => (this.messageGrid = grid)}
+										allowSorting={true}
+										queryCellInfo = {this.handleRenderAppTypeHyperlink.bind(this)}
+							          >
+							            <ColumnsDirective>
+											<ColumnDirective headerText="Message Code" field="msgCd" />
+							              	<ColumnDirective headerText="Message Type" field="msgTypDesc" />											
+											<ColumnDirective headerText="Message Description" field="msgDesc" />											
+							            </ColumnsDirective>
+							            <Inject services={[Page, Sort]} />
+							          </GridComponent>
+								</div>
+							</div>
+							
+						</div>								
+					</div>
+				</div>
+			</div>
+			</form>
+			
+		)
+	}
+}

@@ -7,6 +7,7 @@ import SiDrSearch from "./components/sales/siDrSearch";
 import CollectionSearch from "./components/collection/collectionSearch";
 import ProductSearch from "./components/product/productSearch";
 import Home from "./components/common/home";
+import ProductCreate from "./components/product/productCreate";
 
 class App extends Component {
   render() {
@@ -19,6 +20,7 @@ class App extends Component {
             <Route path="/siDr" component={SiDrSearch}></Route>
             <Route path="/collection" component={CollectionSearch}></Route>
             <Route path="/product" component={ProductSearch}></Route>
+            <Route path="/productCreate" component={ProductCreate}></Route>
           </Switch>
         </div>
       </Router>

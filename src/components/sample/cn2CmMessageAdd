@@ -1,0 +1,197 @@
+import * as React from 'react';
+import * as Pavo from '../../pavo/PavoBase';
+import config from 'react-global-configuration';
+import { PavoUtils } from '../../pavo/PavoUtils';
+import { FormValidator, FormValidatorModel } from '@syncfusion/ej2-inputs';
+
+export class Cn2CmMessageAddEdit extends Pavo.BaseForm {	
+
+	private utils = new PavoUtils();
+	private formObject: FormValidator;
+	
+	constructor(props){
+		super(props);
+		console.log(props)
+		this.props.data;
+		this.state = {
+			data : {},
+			model : {
+				id : '',
+				msgType : '',
+				msgCode : '',
+				msgDesc : '',
+				msgTypeSearch : '',
+				msgCodeSearch : '',
+				msgDescSearch : '',
+				isAdd : ''
+			}
+		}
+	}	
+	
+	handleMsgTypeChange(e){		
+		this.updateFormModel({
+			msgType : e.currentTarget.value
+		});
+	}
+	
+	handleMsgCodeChange(e){
+		this.updateFormModel({
+			msgCode : e.target.value
+		});
+	}
+	
+	handleMsgDescChange(e){
+		this.updateFormModel({
+			msgDesc : e.target.value
+		});
+	}
+	
+	
+	
+	componentDidMount(){
+		console.log('COMPONENT DID MOUNT ADD/EDIT')
+		this.getFormData({
+			url: config.get('contextPath') + '/sysadmin/initCmMessage.do',
+		});
+
+		this.updateFormModel({
+			msgType : this.utils.getUrlParameter("type"),
+			msgCode : this.utils.getUrlParameter("cd"),
+			msgDesc : this.utils.getUrlParameter("desc"),
+			msgTypeSearch : this.utils.getUrlParameter('msgTypeSearch'),
+			msgCodeSearch : this.utils.getUrlParameter('msgCodeSearch'),
+			msgDescSearch : this.utils.getUrlParameter('msgDescSearch'),
+			id : this.utils.getUrlParameter("id"),
+			isAdd : this.utils.getUrlParameter("isAdd")
+		});
+		
+		let requiredFields: FormValidatorModel = {
+			rules: {
+				msgType: { required: true },
+				msgCode: { required: true },
+				msgDesc: { required: true }
+			}
+		};
+
+		this.formObject = new FormValidator('#form-element', requiredFields);
+		
+	}
+
+	
+	handleUpdateOrAddBtn(){
+		var self = this;
+		if(this.formObject.validate() == true){
+			console.log("VALID");
+			this.doFormSubmit({
+				url: config.get('contextPath') + '/sysadmin/saveOrUpdateMessage',
+				onSuccess: function(response, form) {
+					console.log("response",response);
+					form.showDialog({
+						content: 'Record Added/Updated Successfully',
+						header: Pavo.Labels.MBT_Success,
+						buttons: [{
+							'click': () => {
+								form.baseDialog.hide();
+								self.props.history.push("/sysadmin/Cn2CmMessageSearch?"
+									+ "id=" + response.data.id);
+							},
+							buttonModel: {
+								cssClass: 'e-flat',
+								content: Pavo.Labels.BL_OK
+							}
+						}]
+					});
+				},
+				onFailure: function(response, form){
+					form.showSummaryMessage(response.data.messageDetail)
+				}
+			});
+		}
+	}
+	
+	handleBackBtn(){
+		this.props.history.push("/sysadmin/Cn2CmMessageSearch?"
+			+ "msgTypeSearch=" + this.utils.getUrlParameter("msgTypeSearch")
+			+ "&msgCodeSearch=" + this.utils.getUrlParameter("msgCodeSearch")
+			+ "&msgDescSearch=" + this.utils.getUrlParameter("msgDescSearch"));
+	}
+	
+	paintUI(){		
+		let ds = '<div>/<div>';
+		if(this.state.data['msgTypeList']){
+			ds = this.state.data['msgTypeList'].map((item) => 
+				<option key={item.key} value={item.key}>{item.value}</option>
+			);
+		}
+		return (
+			
+			<div>
+				<div className="espro-form-section-header">
+					<h3>{Pavo.Labels.CH_Message_Edit}</h3>
+					<div className="container-fluid">
+						<form id="form-element">
+							<div className="row">
+								<div className="col-sm-5">
+									<button type="button" className="btn btn-outline-primary btn-sm mr-2" onClick={this.handleUpdateOrAddBtn.bind(this)}>
+										{this.state.model['isAdd'] && this.state.model['isAdd'] === 'true' ? Pavo.Labels.BL_save : Pavo.Labels.BL_update}
+									</button>
+									<button type="button" className="btn btn-outline-primary btn-sm mr-2"onClick={this.handleBackBtn.bind(this) }>
+										{Pavo.Labels.BL_Back}
+									</button>
+								</div>
+							</div>
+							<div id="messageContainer"/>
+							<br />
+							<div className="row">
+								<div className="col-sm-3">{Pavo.Labels.AP.MessageType}: </div>
+								<div className="col-sm-4">
+									<select 
+										value={this.state.model['msgType']} 
+										className="form-control" 
+										id="msgType"
+										name="msgType"
+										onChange={this.handleMsgTypeChange.bind(this)}
+										onBlur={this.handleMsgTypeChange.bind(this)}>{ds}									
+									</select>
+								</div>
+							</div>
+							<br />
+							<div className="row">
+								<div className="col-sm-3">{Pavo.Labels.AP.MessageCode}: </div>
+								<div className="col-sm-4">
+									<input
+										id="msgCode"
+										name="msgCode"
+										className="form-control"
+										type="text"
+										value={this.state.model['msgCode']}
+										onChange={this.handleMsgCodeChange.bind(this)}
+										disabled={this.state.model['isAdd'] && this.state.model['isAdd'] ? false : true } 
+									/>
+								</div>
+							</div>		
+							<br />
+							<div className="row">
+								<div className="col-sm-3">{Pavo.Labels.AP.MessageDescription}: </div>
+								<div className="col-sm-4">
+									<textarea
+										id="msgDesc"
+										name="msgDesc"
+										className="form-control email-maint-input"
+										rows={4}
+										cols={50}
+										style={{ resize: "none" }}
+										value={this.state.model['msgDesc']}
+										onChange={this.handleMsgDescChange.bind(this)}
+									/>
+								</div>
+							</div>	
+						</form>					
+					</div>
+				</div>
+			</div>
+			
+			
+		)
+	}
+}
