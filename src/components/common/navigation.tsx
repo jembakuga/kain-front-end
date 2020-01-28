@@ -22,7 +22,7 @@ class Navigation extends Component {
           },
           {
             text: "Create Product",
-            url: "/productSearch"
+            url: "#/productAdd"
           }
         ],
         text: "Product"
@@ -76,7 +76,7 @@ class Navigation extends Component {
     return (
       <MenuComponent
         items={this.menuItems}
-        beforeItemRender={this.beforeItemRender}
+        // beforeItemRender={this.beforeItemRender}
       />
     );
   }
