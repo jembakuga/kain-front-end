@@ -22,6 +22,7 @@ class ProductSearch extends BaseComponent {
     prodDesc: "";
     batchNo: "";
     prodId: "";
+    retailPrice: null;
     expiryDate: null;
     arrivalDate: null;
   };
@@ -33,6 +34,7 @@ class ProductSearch extends BaseComponent {
       prodDesc: "",
       batchNo: "",
       prodId: "",
+      retailPrice: null,
       expiryDate: null,
       arrivalDate: null
     };
@@ -40,16 +42,6 @@ class ProductSearch extends BaseComponent {
 
   componentDidMount() {
     console.log("componentDidMount");
-    // this.getFormData({
-    // 	url: config.get('contextPath') + '/sysadmin/initCmMessage.do',
-    // });
-    // this.updateFormModel({
-    // 	msgType : this.utils.getUrlParameter("msgTypeSearch") ? this.utils.getUrlParameter("msgTypeSearch") : '',
-    // 	msgCode : this.utils.getUrlParameter("msgCodeSearch") ? this.utils.getUrlParameter("msgCodeSearch") : '',
-    // 	msgDesc : this.utils.getUrlParameter("msgDescSearch") ? this.utils.getUrlParameter("msgDescSearch") : '',
-    // 	id : this.utils.getUrlParameter("id") ? this.utils.getUrlParameter("id") : '',
-    // });
-    // this.loadMessages(true);
   }
 
   handlProdCodeChange(e: any) {
@@ -70,6 +62,25 @@ class ProductSearch extends BaseComponent {
     });
   }
 
+  handlRetailPriceChange(e: any) {
+    console.log(e);
+    this.setState({
+      retailPrice: e.value
+    });
+  }
+
+  handlExpiryDateChange(e: any) {
+    this.setState({
+      expiryDate: e.value
+    });
+  }
+
+  handlArrivalDateChange(e: any) {
+    this.setState({
+      arrivalDate: e.value
+    });
+  }
+
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/findProducts",
     adaptor: new UrlAdaptor()
@@ -82,7 +93,10 @@ class ProductSearch extends BaseComponent {
       this.query = new Query()
         .addParams("productCode", this.state.prodCode)
         .addParams("productDesc", this.state.prodDesc)
-        .addParams("batchNo", this.state.batchNo);
+        .addParams("batchNo", this.state.batchNo)
+        .addParams("expiryDate", this.state.expiryDate)
+        .addParams("arrivalDate", this.state.arrivalDate)
+        .addParams("retailPrice", this.state.retailPrice);
       console.log("asdfsda");
       this.grid.query = this.query;
       this.grid.refresh();
@@ -95,7 +109,7 @@ class ProductSearch extends BaseComponent {
 
   handleAddBtn() {
     console.log("handleAddBtn");
-    this.props.history.push("/productDetails");
+    this.props.history.push("/productAdd");
   }
 
   handleRenderProdCodeHyperlink(args: any) {
@@ -154,21 +168,29 @@ class ProductSearch extends BaseComponent {
           <div className="row">
             <div className="col-sm-3">Retail Price: </div>
             <div className="col-sm-4">
-              <NumericTextBoxComponent max={20} />
+              <NumericTextBoxComponent
+                change={this.handlRetailPriceChange.bind(this)}
+              />
             </div>
           </div>
           <br />
           <div className="row">
             <div className="col-sm-3">Expiry Date: </div>
             <div className="col-sm-4">
-              <DatePickerComponent id="expiryDate" />
+              <DatePickerComponent
+                id="expiryDate"
+                change={this.handlExpiryDateChange.bind(this)}
+              />
             </div>
           </div>
           <br />
           <div className="row">
             <div className="col-sm-3">Arrival Date: </div>
             <div className="col-sm-4">
-              <DatePickerComponent id="arrivalDate" />
+              <DatePickerComponent
+                id="arrivalDate"
+                change={this.handlArrivalDateChange.bind(this)}
+              />
             </div>
           </div>
           <br />
@@ -213,6 +235,16 @@ class ProductSearch extends BaseComponent {
                   field="productDesc"
                 />
                 <ColumnDirective headerText="Batch No" field="batchNo" />
+                <ColumnDirective
+                  headerText="Retail Price"
+                  field="retailPrice"
+                  format="N2"
+                />
+                <ColumnDirective headerText="Expiry Date" field="expiryDate" />
+                <ColumnDirective
+                  headerText="Arrival Date"
+                  field="arrivalDate"
+                />
               </ColumnsDirective>
               <Inject services={[Page, Sort]} />
             </GridComponent>

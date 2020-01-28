@@ -19,11 +19,12 @@ class App extends Component {
             <Route path="/" exact component={Home}></Route>
             <Route path="/siDr" component={SiDrSearch}></Route>
             <Route path="/collection" component={CollectionSearch}></Route>
-            <Route path="/product" component={ProductSearch}></Route>
+            <Route path="/productSearch" component={ProductSearch}></Route>
             <Route
               path="/productDetails/:id"
               component={ProductDetails}
             ></Route>
+            <Route path="/productAdd" component={ProductDetails}></Route>
           </Switch>
         </HashRouter>
       </div>

@@ -16,7 +16,7 @@ class Navigation extends Component {
           <Link to="/collection">
             <li>Collection</li>
           </Link>
-          <Link to="/product">
+          <Link to="/productSearch">
             <li>Product</li>
           </Link>
         </ul>

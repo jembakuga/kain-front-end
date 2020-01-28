@@ -1,13 +1,18 @@
 import React, { Component } from "react";
 import BaseComponent from "../common/baseComponent";
 import axios from "axios";
+import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
+import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 
 class ProductDetails extends BaseComponent {
-  state = {
-    prodCode: "",
-    prodDesc: "",
-    batchNo: "",
-    prodId: ""
+  state: {
+    prodCode: "";
+    prodDesc: "";
+    batchNo: "";
+    prodId: "";
+    retailPrice: 0;
+    expiryDate: Date;
+    arrivalDate: Date;
   };
   constructor(props: any) {
     super(props);
@@ -15,7 +20,10 @@ class ProductDetails extends BaseComponent {
       prodCode: "",
       prodDesc: "",
       batchNo: "",
-      prodId: ""
+      prodId: "",
+      retailPrice: 0,
+      expiryDate: new Date(),
+      arrivalDate: new Date()
     };
   }
 
@@ -36,28 +44,72 @@ class ProductDetails extends BaseComponent {
       batchNo: e.target.value
     });
   }
+  handlRetailPriceChange(e: any) {
+    console.log(e);
+    this.setState({
+      retailPrice: e.value
+    });
+  }
 
-  componentDidMount() {
-    console.log(this.props.match.params);
+  handlExpiryDateChange(e: any) {
+    this.setState({
+      expiryDate: e.value
+    });
+  }
+
+  handlArrivalDateChange(e: any) {
+    this.setState({
+      arrivalDate: e.value
+    });
+  }
+
+  handleBackBtn() {
+    this.props.history.push("/productSearch");
+  }
+
+  handleSaveBtn() {
     axios
-      .post("http://localhost:8080/findProduct", {
-        productId: this.props.match.params.id
+      .post("http://localhost:8080/saveProduct", {
+        productId: this.props.match.params.id,
+        productCode: this.state.prodCode,
+        productDesc: this.state.prodDesc,
+        batchNo: this.state.batchNo,
+        retailPrice: this.state.retailPrice,
+        expiryDate: this.state.expiryDate,
+        arrivalDate: this.state.arrivalDate
       })
       .then(res => {
         console.log(res);
         this.setState({
           prodCode: res.data.productCode,
           prodDesc: res.data.productDesc,
-          batchNo: res.data.batchNo
+          batchNo: res.data.batchNo,
+          retailPrice: res.data.retailPrice,
+          arrivalDate: res.data.arrivalDate,
+          expiryDate: res.data.expiryDate
         });
       });
-    // this.ajaxCall({
-    //   method: "GET",
-    //   url: "http://localhost:8080/findProduct/",
-    //   params: {
-    //     productId: 1
-    //   }
-    // });
+  }
+
+  componentDidMount() {
+    console.log(this.props.match.params);
+    if (this.props.match.params.id) {
+      axios
+        .post("http://localhost:8080/findProduct", {
+          productId: this.props.match.params.id
+        })
+        .then(res => {
+          console.log(res);
+          this.setState({
+            prodCode: res.data.productCode,
+            prodDesc: res.data.productDesc,
+            batchNo: res.data.batchNo,
+            retailPrice: res.data.retailPrice,
+            arrivalDate: res.data.arrivalDate,
+            expiryDate: res.data.expiryDate
+          });
+        });
+    }
   }
 
   ajaxCall(props: any) {
@@ -87,25 +139,6 @@ class ProductDetails extends BaseComponent {
       <div>
         <h1>Product Create ee</h1>
         <div className="container-fluid">
-          <div className="row">
-            <div className="col-sm-5">
-              <button
-                type="button"
-                className="btn btn-outline-primary btn-sm mr-2"
-                // onClick={this.handleAddBtn.bind(this)}
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-primary btn-sm mr-2"
-                // onClick={this.handleSearchBtn.bind(this)}
-              >
-                Back
-              </button>
-            </div>
-          </div>
-          <br />
           <div className="row">
             <div className="col-sm-3">Product Code: </div>
             <div className="col-sm-4">
@@ -145,23 +178,54 @@ class ProductDetails extends BaseComponent {
           <div className="row">
             <div className="col-sm-3">Retail Price: </div>
             <div className="col-sm-4">
-              <input type="text" className="form-control" />
+              <NumericTextBoxComponent
+                value={this.state.retailPrice}
+                change={this.handlRetailPriceChange.bind(this)}
+              />
             </div>
           </div>
           <br />
           <div className="row">
-            <div className="col-sm-3">Product Description: </div>
+            <div className="col-sm-3">Expiry Date: </div>
             <div className="col-sm-4">
-              <input type="text" className="form-control" />
+              <DatePickerComponent
+                id="expiryDate"
+                value={this.state.expiryDate}
+                change={this.handlExpiryDateChange.bind(this)}
+              />
             </div>
           </div>
           <br />
           <div className="row">
-            <div className="col-sm-3">Product Description: </div>
+            <div className="col-sm-3">Arrival Date: </div>
             <div className="col-sm-4">
-              <input type="text" className="form-control" />
+              <DatePickerComponent
+                id="arrivalDate"
+                value={this.state.arrivalDate}
+                change={this.handlArrivalDateChange.bind(this)}
+              />
             </div>
           </div>
+          <br />
+          <div className="row">
+            <div className="col-sm-5">
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mr-2"
+                onClick={this.handleSaveBtn.bind(this)}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mr-2"
+                onClick={this.handleBackBtn.bind(this)}
+              >
+                Back
+              </button>
+            </div>
+          </div>
+          <br />
         </div>
       </div>
     );
