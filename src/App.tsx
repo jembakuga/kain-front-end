@@ -1,29 +1,32 @@
 import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter, Switch, Route } from "react-router-dom";
 import Navigation from "./components/common/navigation";
 import SiDrSearch from "./components/sales/siDrSearch";
 import CollectionSearch from "./components/collection/collectionSearch";
 import ProductSearch from "./components/product/productSearch";
 import Home from "./components/common/home";
-import ProductCreate from "./components/product/productCreate";
+import ProductDetails from "./components/product/productDetails";
 
 class App extends Component {
   render() {
     return (
-      <Router>
-        <div className="App">
+      <div className="App">
+        <HashRouter>
           <Navigation />
           <Switch>
             <Route path="/" exact component={Home}></Route>
             <Route path="/siDr" component={SiDrSearch}></Route>
             <Route path="/collection" component={CollectionSearch}></Route>
             <Route path="/product" component={ProductSearch}></Route>
-            <Route path="/productCreate" component={ProductCreate}></Route>
+            <Route
+              path="/productDetails/:id"
+              component={ProductDetails}
+            ></Route>
           </Switch>
-        </div>
-      </Router>
+        </HashRouter>
+      </div>
     );
   }
 }

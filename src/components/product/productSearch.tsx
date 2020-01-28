@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import * as ReactDOM from "react-dom";
+import { HashRouter, Link } from "react-router-dom";
+import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
+import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import {
   GridComponent,
   ColumnsDirective,
@@ -8,15 +12,18 @@ import {
   Inject
 } from "@syncfusion/ej2-react-grids";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
-import Base from "../common/base";
+import BaseComponent from "../common/baseComponent";
 
-class ProductSearch extends Base {
+class ProductSearch extends BaseComponent {
   private grid: GridComponent | null;
   private query: Query;
   state: {
     prodCode: "";
     prodDesc: "";
     batchNo: "";
+    prodId: "";
+    expiryDate: null;
+    arrivalDate: null;
   };
 
   constructor(props: any) {
@@ -24,7 +31,10 @@ class ProductSearch extends Base {
     this.state = {
       prodCode: "",
       prodDesc: "",
-      batchNo: ""
+      batchNo: "",
+      prodId: "",
+      expiryDate: null,
+      arrivalDate: null
     };
   }
 
@@ -85,7 +95,22 @@ class ProductSearch extends Base {
 
   handleAddBtn() {
     console.log("handleAddBtn");
-    this.props.history.push("/productCreate");
+    this.props.history.push("/productDetails");
+  }
+
+  handleRenderProdCodeHyperlink(args: any) {
+    console.log(args.data);
+    if (args.column.field == "productCode") {
+      ReactDOM.render(
+        <HashRouter>
+          <Link to={"/productDetails/" + args.data.productId}>
+            {" "}
+            {args.data.productCode}
+          </Link>
+        </HashRouter>,
+        args.cell
+      );
+    }
   }
 
   render() {
@@ -129,21 +154,21 @@ class ProductSearch extends Base {
           <div className="row">
             <div className="col-sm-3">Retail Price: </div>
             <div className="col-sm-4">
-              <input type="text" className="form-control" />
+              <NumericTextBoxComponent max={20} />
             </div>
           </div>
           <br />
           <div className="row">
-            <div className="col-sm-3">Product Description: </div>
+            <div className="col-sm-3">Expiry Date: </div>
             <div className="col-sm-4">
-              <input type="text" className="form-control" />
+              <DatePickerComponent id="expiryDate" />
             </div>
           </div>
           <br />
           <div className="row">
-            <div className="col-sm-3">Product Description: </div>
+            <div className="col-sm-3">Arrival Date: </div>
             <div className="col-sm-4">
-              <input type="text" className="form-control" />
+              <DatePickerComponent id="arrivalDate" />
             </div>
           </div>
           <br />
@@ -176,6 +201,7 @@ class ProductSearch extends Base {
               style={{ width: "100%" }}
               allowSorting={true}
               ref={g => (this.grid = g)}
+              queryCellInfo={this.handleRenderProdCodeHyperlink.bind(this)}
             >
               <ColumnsDirective>
                 <ColumnDirective
