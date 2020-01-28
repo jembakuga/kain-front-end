@@ -30,48 +30,32 @@ class Navigation extends Component {
       {
         items: [
           {
-            text: "Headphones",
+            text: "Search Sales Invoice/Delivery Receipt",
             url: "https://www.google.com/search?q=headphones"
           },
           {
-            text: "Memory Cards",
+            text: "Create Sales Invoice/Delivery Receipt",
             url: "https://www.google.com/search?q=memory+cards"
-          },
-          {
-            text: "Power Banks",
-            url: "https://www.google.com/search?q=power+banks"
           }
         ],
-        text: "Mobile"
+        text: "Sales"
       },
       {
         items: [
           {
-            text: "Televisions",
+            text: "Search Collection",
             url: "https://www.google.com/search?q=televisions"
           },
           {
-            text: "Home Theatres",
+            text: "Create Collection",
             url: "https://www.google.com/search?q=home+theatres"
-          },
-          {
-            text: "Gaming Laptops",
-            url: "https://www.google.com/search?q=gaming+laptops"
           }
         ],
-        text: "Entertainment"
-      },
-      { text: "Fashion", url: "https://www.google.com/search?q=fashion" },
-      { text: "Offers", url: "https://www.google.com/search?q=offers" }
+        text: "Collection"
+      }
     ];
   }
-  beforeItemRender(args: any) {
-    if (args.item.url) {
-      args.element
-        .getElementsByTagName("a")[0]
-        .setAttribute("target", "_blank");
-    }
-  }
+
   render() {
     return (
       <MenuComponent
