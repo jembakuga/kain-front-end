@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import * as ReactDOM from "react-dom";
 import { HashRouter, Link } from "react-router-dom";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
@@ -41,7 +41,7 @@ class ProductSearch extends BaseComponent {
   }
 
   componentDidMount() {
-    console.log("componentDidMount");
+    // console.log("componentDidMount");
   }
 
   handlProdCodeChange(e: any) {
@@ -63,7 +63,7 @@ class ProductSearch extends BaseComponent {
   }
 
   handlRetailPriceChange(e: any) {
-    console.log(e);
+    // console.log(e);
     this.setState({
       retailPrice: e.value
     });
@@ -87,7 +87,7 @@ class ProductSearch extends BaseComponent {
   });
 
   loadMessages() {
-    console.log(this.state);
+    // console.log(this.state);
     if (this.grid) {
       this.grid.dataSource = this.dataManager;
       this.query = new Query()
@@ -97,7 +97,7 @@ class ProductSearch extends BaseComponent {
         .addParams("expiryDate", this.state.expiryDate)
         .addParams("arrivalDate", this.state.arrivalDate)
         .addParams("retailPrice", this.state.retailPrice);
-      console.log("asdfsda");
+      // console.log("asdfsda");
       this.grid.query = this.query;
       this.grid.refresh();
     }
@@ -108,13 +108,13 @@ class ProductSearch extends BaseComponent {
   }
 
   handleAddBtn() {
-    console.log("handleAddBtn");
+    // console.log("handleAddBtn");
     this.props.history.push("/productAdd");
   }
 
   handleRenderProdCodeHyperlink(args: any) {
-    console.log(args.data);
-    if (args.column.field == "productCode") {
+    // console.log(args.data);
+    if (args.column.field === "productCode") {
       ReactDOM.render(
         <HashRouter>
           <Link to={"/productDetails/" + args.data.productId}>
@@ -130,7 +130,7 @@ class ProductSearch extends BaseComponent {
   render() {
     return (
       <div>
-        <h1>Product Search</h1>
+        <div className="header">Product Search</div>
         <div className="container-fluid">
           <div className="row">
             <div className="col-sm-3">Product Code: </div>

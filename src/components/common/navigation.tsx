@@ -1,11 +1,18 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { enableRipple } from "@syncfusion/ej2-base";
-import { MenuComponent } from "@syncfusion/ej2-react-navigations";
-import * as ReactDom from "react-dom";
+import {
+  ItemDirective,
+  ItemsDirective,
+  MenuComponent,
+  ToolbarComponent
+} from "@syncfusion/ej2-react-navigations";
+// import * as ReactDom from "react-dom";
 enableRipple(true);
 
 class Navigation extends Component {
+  private tbObj: any;
+  private menuComponent: MenuComponent;
   menuItems: (
     | { items: { text: string; url: string }[]; text: string; url?: undefined }
     | { text: string; url: string; items?: undefined }
@@ -18,7 +25,7 @@ class Navigation extends Component {
         items: [
           {
             text: "Search Product",
-            url: "http://localhost:3000/#/productSearch"
+            url: "#/productSearch"
           },
           {
             text: "Create Product",
@@ -31,11 +38,11 @@ class Navigation extends Component {
         items: [
           {
             text: "Search Sales Invoice/Delivery Receipt",
-            url: "https://www.google.com/search?q=headphones"
+            url: "#/siDrSearch"
           },
           {
             text: "Create Sales Invoice/Delivery Receipt",
-            url: "https://www.google.com/search?q=memory+cards"
+            url: "#/siDrAdd"
           }
         ],
         text: "Sales"
@@ -54,14 +61,45 @@ class Navigation extends Component {
         text: "Collection"
       }
     ];
+    this.menuComponent = new MenuComponent({ items: this.menuItems });
   }
+
+  onCreated() {
+    // this.tbObj.refreshOverflow();
+  }
+
+  // menuTemplate() {
+  //   return (
+  //     // <MenuComponent items={this.menuItems} />
+  //     <MenuComponent
+  //       id="menu"
+  //       // items={this.menuItems}
+  //       items={this.menuItems}
+  //       // animationSettings={this.animation}
+  //     />
+  //   );
+  // }
 
   render() {
     return (
-      <MenuComponent
-        items={this.menuItems}
-        // beforeItemRender={this.beforeItemRender}
-      />
+      // <div className="toolbar-menu-control">
+      //   <ToolbarComponent
+      //     id="toolbar"
+      //     created={this.onCreated}
+      //     ref={scope => {
+      //       this.tbObj = scope;
+      //     }}
+      //   >
+      //     <ItemsDirective>
+      //       <ItemDirective template={this.menuComponent} />
+      //       <ItemDirective
+      //         prefixIcon="em-icons e-shopping-cart"
+      //         align="Right"
+      //       />
+      //     </ItemsDirective>
+      //   </ToolbarComponent>
+      // </div>
+      <MenuComponent items={this.menuItems} />
     );
   }
   // state = {};

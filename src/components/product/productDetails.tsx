@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import BaseComponent from "../common/baseComponent";
 import axios from "axios";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
@@ -116,7 +116,7 @@ class ProductDetails extends BaseComponent {
     let form = this;
     axios(props)
       .then(function(response) {
-        if (response.data.success == "true") {
+        if (response.data.success === "true") {
           if (props["onSuccess"]) {
             props["onSuccess"](response, form);
           }
@@ -137,7 +137,7 @@ class ProductDetails extends BaseComponent {
   render() {
     return (
       <div>
-        <h1>Product Create ee</h1>
+        <div className="header">Product Create</div>
         <div className="container-fluid">
           <div className="row">
             <div className="col-sm-3">Product Code: </div>
