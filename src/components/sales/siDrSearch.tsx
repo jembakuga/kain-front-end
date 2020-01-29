@@ -14,6 +14,7 @@ import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 
 class SiDrSearch extends BaseComponent {
   private grid: GridComponent | null;
+  private query: Query;
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/findSiDrs",
     adaptor: new UrlAdaptor()
@@ -40,8 +41,27 @@ class SiDrSearch extends BaseComponent {
       checkedBy: e.target.value
     });
   }
+
+  loadSiDrs() {
+    // console.log(this.state);
+    if (this.grid) {
+      this.grid.dataSource = this.dataManager;
+      this.query = new Query()
+        .addParams("salesOrderNo", this.state.salesOrderNo)
+        .addParams("poNo", this.state.poNo);
+      // .addParams("poNo", this.state.poNo)
+      // .addParams("batchNo", this.state.batchNo)
+      // .addParams("expiryDate", this.state.expiryDate)
+      // .addParams("arrivalDate", this.state.arrivalDate)
+      // .addParams("retailPrice", this.state.retailPrice);
+      // console.log("asdfsda");
+      this.grid.query = this.query;
+      this.grid.refresh();
+    }
+  }
+
   handleSearchBtn() {
-    // this.loadMessages();
+    this.loadSiDrs();
   }
 
   handleAddBtn() {

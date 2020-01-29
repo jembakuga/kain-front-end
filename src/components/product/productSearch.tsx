@@ -86,7 +86,7 @@ class ProductSearch extends BaseComponent {
     adaptor: new UrlAdaptor()
   });
 
-  loadMessages() {
+  loadProducts() {
     // console.log(this.state);
     if (this.grid) {
       this.grid.dataSource = this.dataManager;
@@ -104,7 +104,7 @@ class ProductSearch extends BaseComponent {
   }
 
   handleSearchBtn() {
-    this.loadMessages();
+    this.loadProducts();
   }
 
   handleAddBtn() {
