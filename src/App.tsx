@@ -9,6 +9,7 @@ import CollectionSearch from "./components/collection/collectionSearch";
 import ProductSearch from "./components/product/productSearch";
 import Home from "./components/common/home";
 import ProductDetails from "./components/product/productDetails";
+import SiDrItemDetails from "./components/sales/siDrItemDetails";
 
 class App extends Component {
   render() {
@@ -28,6 +29,10 @@ class App extends Component {
               component={ProductDetails}
             ></Route>
             <Route path="/productAdd" component={ProductDetails}></Route>
+            <Route
+              path="/siDrItemDetails/:id"
+              component={SiDrItemDetails}
+            ></Route>
           </Switch>
         </HashRouter>
       </div>

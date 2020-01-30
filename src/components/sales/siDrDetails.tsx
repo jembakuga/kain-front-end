@@ -1,10 +1,21 @@
-import React, { Component } from "react";
+import React from "react";
 import BaseComponent from "../common/baseComponent";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
-import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
+// import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import axios from "axios";
+import {
+  GridComponent,
+  ColumnsDirective,
+  ColumnDirective,
+  Page,
+  Sort,
+  Inject
+} from "@syncfusion/ej2-react-grids";
+import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 
 class SiDrDetails extends BaseComponent {
+  private grid: GridComponent | null;
+  private query: Query;
   state: {
     siDrId: "";
     salesOrderNo: "";
@@ -38,6 +49,11 @@ class SiDrDetails extends BaseComponent {
       issueDate: new Date()
     };
   }
+  private dataManager: DataManager = new DataManager({
+    url: "http://localhost:8080/findSiDrItemsBySiDr",
+    adaptor: new UrlAdaptor()
+  });
+  // private dataManager: DataManager;
   handleSalesOrderNoChange(e: any) {
     this.setState({
       salesOrderNo: e.target.value
@@ -102,10 +118,10 @@ class SiDrDetails extends BaseComponent {
   handleBackBtn() {
     this.props.history.push("/siDrSearch");
   }
-
+  handleAddProductButton() {
+    this.props.history.push("/siDrItemDetails/" + this.props.match.params.id);
+  }
   handleSaveBtn() {
-    // console.log("handleSaveBtn");
-    // this.props.history.push("/siDrAdd");
     axios
       .post("http://localhost:8080/saveSiDr", {
         siDrId: this.props.match.params.id,
@@ -153,6 +169,16 @@ class SiDrDetails extends BaseComponent {
             dueDate: res.data.dueDate
           });
         });
+
+      if (this.grid) {
+        this.grid.dataSource = this.dataManager;
+        this.query = new Query().addParams(
+          "siDrId",
+          this.props.match.params.id
+        );
+        // console.log("asdfsda");
+        this.grid.query = this.query;
+      }
     }
   }
 
@@ -313,6 +339,58 @@ class SiDrDetails extends BaseComponent {
               >
                 Back
               </button>
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mr-2"
+                onClick={this.handleAddProductButton.bind(this)}
+              >
+                Add Product
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm mr-2"
+                // onClick={this.handleAddProductButton.bind(this)}
+              >
+                Print
+              </button>
+            </div>
+            <br />
+            <br />
+            <div>
+              <GridComponent
+                // dataSource={this.dataManager}
+                gridLines={"Both"}
+                rowHeight={40}
+                allowPaging={true}
+                pageSettings={{ pageCount: 5, pageSize: 10 }}
+                style={{ width: "100%" }}
+                allowSorting={true}
+                ref={g => (this.grid = g)}
+              >
+                <ColumnsDirective>
+                  <ColumnDirective headerText="Quantity" field="quantity" />
+                  <ColumnDirective headerText="Unit" field="unit" />
+                  <ColumnDirective
+                    headerText="Product Code"
+                    field="productBean.productCode"
+                  />
+                  <ColumnDirective
+                    headerText="Description"
+                    field="description"
+                  />
+                  <ColumnDirective
+                    headerText="Lot/Batch No"
+                    field="lotBatchNo"
+                  />
+                  <ColumnDirective
+                    headerText="Expiry Date"
+                    field="expiryDate"
+                  />
+                  <ColumnDirective headerText="Unit Price" field="unitPrice" />
+                  <ColumnDirective headerText="Amount" field="amount" />
+                </ColumnsDirective>
+                <Inject services={[Page, Sort]} />
+              </GridComponent>
             </div>
           </div>
           <br />
