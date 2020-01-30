@@ -33,6 +33,11 @@ class SiDrItemDetails extends BaseComponent {
     this.setState({
       quantity: e.value
     });
+    if (this.state.quantity && this.state.unitPrice) {
+      this.setState({
+        amount: this.state.quantity * this.state.unitPrice
+      });
+    }
   }
   handleUnitChange(e: any) {
     this.setState({
@@ -58,6 +63,11 @@ class SiDrItemDetails extends BaseComponent {
     this.setState({
       unitPrice: e.value
     });
+    if (this.state.quantity && this.state.unitPrice) {
+      this.setState({
+        amount: this.state.quantity * this.state.unitPrice
+      });
+    }
   }
   handleAmountChange(e: any) {
     this.setState({
@@ -82,7 +92,8 @@ class SiDrItemDetails extends BaseComponent {
         productId: this.state.productId,
         description: this.state.description,
         lotBatchNo: this.state.lotBatchNo,
-        expiryDate: this.state.expiryDate
+        expiryDate: this.state.expiryDate,
+        amount: this.state.amount
       })
       .then(res => {
         console.log(res);
@@ -177,6 +188,7 @@ class SiDrItemDetails extends BaseComponent {
             <div className="col-sm-3">Amount: </div>
             <div className="col-sm-4">
               <NumericTextBoxComponent
+                readOnly
                 value={this.state.amount}
                 change={this.handleAmountChange.bind(this)}
               />
