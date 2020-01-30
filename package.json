@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@syncfusion/ej2-react-calendars": "^17.4.44",
+    "@syncfusion/ej2-react-dropdowns": "^17.4.46",
     "@syncfusion/ej2-react-grids": "^17.4.44",
     "@syncfusion/ej2-react-inputs": "^17.4.43",
     "@syncfusion/ej2-react-navigations": "^17.4.44",
