@@ -69,7 +69,7 @@ class ProductDetails extends BaseComponent {
 
   handleSaveBtn() {
     axios
-      .post("http://localhost:8080/saveProduct", {
+      .post("http://localhost:8080/product/saveProduct", {
         productId: this.props.match.params.id,
         productCode: this.state.prodCode,
         productDesc: this.state.prodDesc,
@@ -95,7 +95,7 @@ class ProductDetails extends BaseComponent {
     console.log(this.props.match.params);
     if (this.props.match.params.id) {
       axios
-        .post("http://localhost:8080/findProduct", {
+        .post("http://localhost:8080/product/findProduct", {
           productId: this.props.match.params.id
         })
         .then(res => {

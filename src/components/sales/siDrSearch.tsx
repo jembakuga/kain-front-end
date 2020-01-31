@@ -16,7 +16,7 @@ class SiDrSearch extends BaseComponent {
   private grid: GridComponent | null;
   private query: Query;
   private dataManager: DataManager = new DataManager({
-    url: "http://localhost:8080/findSiDrs",
+    url: "http://localhost:8080/salesOrder/findSiDrs",
     adaptor: new UrlAdaptor()
   });
 
@@ -49,12 +49,6 @@ class SiDrSearch extends BaseComponent {
       this.query = new Query()
         .addParams("salesOrderNo", this.state.salesOrderNo)
         .addParams("poNo", this.state.poNo);
-      // .addParams("poNo", this.state.poNo)
-      // .addParams("batchNo", this.state.batchNo)
-      // .addParams("expiryDate", this.state.expiryDate)
-      // .addParams("arrivalDate", this.state.arrivalDate)
-      // .addParams("retailPrice", this.state.retailPrice);
-      // console.log("asdfsda");
       this.grid.query = this.query;
       this.grid.refresh();
     }
@@ -70,7 +64,7 @@ class SiDrSearch extends BaseComponent {
   }
 
   handleRenderSalesOrderNoHyperlink(args: any) {
-    // console.log(args.data);
+    console.log(args.data);
     if (args.column.field === "salesOrderNo") {
       ReactDOM.render(
         <HashRouter>

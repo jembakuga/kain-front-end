@@ -12,6 +12,8 @@ import {
   Inject
 } from "@syncfusion/ej2-react-grids";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
+import * as ReactDOM from "react-dom";
+import { HashRouter, Link } from "react-router-dom";
 
 class SiDrDetails extends BaseComponent {
   private grid: GridComponent | null;
@@ -50,7 +52,7 @@ class SiDrDetails extends BaseComponent {
     };
   }
   private dataManager: DataManager = new DataManager({
-    url: "http://localhost:8080/findSiDrItemsBySiDr",
+    url: "http://localhost:8080/salesOrder/findSiDrItemsBySiDr",
     adaptor: new UrlAdaptor()
   });
   // private dataManager: DataManager;
@@ -119,11 +121,13 @@ class SiDrDetails extends BaseComponent {
     this.props.history.push("/siDrSearch");
   }
   handleAddProductButton() {
-    this.props.history.push("/siDrItemDetails/" + this.props.match.params.id);
+    this.props.history.push(
+      "/siDrItemDetails/" + this.props.match.params.id + "/43"
+    );
   }
   handleSaveBtn() {
     axios
-      .post("http://localhost:8080/saveSiDr", {
+      .post("http://localhost:8080/salesOrder/saveSiDr", {
         siDrId: this.props.match.params.id,
         salesOrderNo: this.state.salesOrderNo,
         soldTo: this.state.soldTo,
@@ -149,7 +153,7 @@ class SiDrDetails extends BaseComponent {
     console.log("componentDidMount", this.props.match.params);
     if (this.props.match.params.id) {
       axios
-        .post("http://localhost:8080/findSiDr", {
+        .post("http://localhost:8080/salesOrder/findSiDr", {
           siDrId: this.props.match.params.id
         })
         .then(res => {
@@ -179,6 +183,28 @@ class SiDrDetails extends BaseComponent {
         // console.log("asdfsda");
         this.grid.query = this.query;
       }
+    }
+  }
+
+  handleProductCodeHyperlink(args: any) {
+    console.log(args.data);
+    if (args.column.field === "productBean.productCode") {
+      ReactDOM.render(
+        <HashRouter>
+          <Link
+            to={
+              "/siDrItemDetailsEdit/" +
+              this.props.match.params.id +
+              "/" +
+              args.data.siDrItemId
+            }
+          >
+            {" "}
+            {args.data.productBean.productCode}
+          </Link>
+        </HashRouter>,
+        args.cell
+      );
     }
   }
 
@@ -366,10 +392,9 @@ class SiDrDetails extends BaseComponent {
                 style={{ width: "100%" }}
                 allowSorting={true}
                 ref={g => (this.grid = g)}
+                queryCellInfo={this.handleProductCodeHyperlink.bind(this)}
               >
                 <ColumnsDirective>
-                  <ColumnDirective headerText="Quantity" field="quantity" />
-                  <ColumnDirective headerText="Unit" field="unit" />
                   <ColumnDirective
                     headerText="Product Code"
                     field="productBean.productCode"
@@ -378,6 +403,9 @@ class SiDrDetails extends BaseComponent {
                     headerText="Description"
                     field="description"
                   />
+                  <ColumnDirective headerText="Quantity" field="quantity" />
+                  <ColumnDirective headerText="Unit" field="unit" />
+
                   <ColumnDirective
                     headerText="Lot/Batch No"
                     field="lotBatchNo"

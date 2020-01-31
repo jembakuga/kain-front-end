@@ -2,9 +2,12 @@ import * as React from "react";
 import BaseComponent from "../common/baseComponent";
 import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
+import { ComboBoxComponent } from "@syncfusion/ej2-react-dropdowns";
 import axios from "axios";
 
 class SiDrItemDetails extends BaseComponent {
+  private statusCodeCombo: ComboBoxComponent;
+  public comboFields: object = { text: "value", value: "key" };
   state: {
     quantity: 0;
     unit: "";
@@ -14,6 +17,7 @@ class SiDrItemDetails extends BaseComponent {
     expiryDate: Date;
     unitPrice: 0;
     amount: 0;
+    products: [];
   };
 
   constructor(props: any) {
@@ -26,7 +30,8 @@ class SiDrItemDetails extends BaseComponent {
       lotBatchNo: "",
       expiryDate: new Date(),
       unitPrice: 0,
-      amount: 0
+      amount: 0,
+      products: []
     };
   }
   handleQuantityChange(e: any) {
@@ -79,27 +84,70 @@ class SiDrItemDetails extends BaseComponent {
       productId: e.target.value
     });
   }
+  handleProductChange(e: any) {
+    console.log(e);
+    this.setState({
+      productId: e.target.value
+    });
+  }
   componentDidMount() {
     console.log("componentDidMount", this.props.match.params);
+    axios.post("http://localhost:8080/salesOrder/findAllProducts").then(res => {
+      console.log(res.data);
+      this.setState({
+        products: res.data.prodList
+      });
+    });
+    axios
+      .post("http://localhost:8080/salesOrder/findSiDrItemById", {
+        siDrItemId: this.props.match.params.siDrItemId
+      })
+      .then(res => {
+        console.log(res.data.productBean.productId);
+        this.setState({
+          quantity: res.data.quantity,
+          unit: res.data.unit,
+          productId: res.data.productBean.productId,
+          description: res.data.description,
+          lotBatchNo: res.data.lotBatchNo,
+          expiryDate: res.data.expiryDate,
+          unitPrice: res.data.unitPrice,
+          amount: res.data.amount
+        });
+      });
   }
 
   handleAddButton() {
     axios
-      .post("http://localhost:8080/saveSiDrItem", {
-        siDrId: this.props.match.params.id,
+      .post("http://localhost:8080/salesOrder/saveSiDrItem", {
+        siDrId: this.props.match.params.srDrId,
         quantity: this.state.quantity,
         unit: this.state.unit,
         productId: this.state.productId,
         description: this.state.description,
         lotBatchNo: this.state.lotBatchNo,
         expiryDate: this.state.expiryDate,
-        amount: this.state.amount
+        amount: this.state.amount,
+        siDrItemId: this.props.match.params.siDrItemId
       })
       .then(res => {
         console.log(res);
       });
   }
+  handleBackBtn() {
+    this.props.history.push("/siDrDetails/" + this.props.match.params.srDrId);
+  }
   render() {
+    let ds = null;
+
+    if (this.state.products) {
+      ds = this.state.products.map(item => (
+        // console.log(item)
+        <option key={item["key"]} value={item["key"]}>
+          {item["value"]}
+        </option>
+      ));
+    }
     return (
       <div>
         <div className="header">Input Product</div>
@@ -130,12 +178,24 @@ class SiDrItemDetails extends BaseComponent {
           <div className="row">
             <div className="col-sm-3">Product: </div>
             <div className="col-sm-4">
-              <input
-                type="text"
-                className="form-control"
+              <select
                 value={this.state.productId}
-                onChange={this.handleProductIdChange.bind(this)}
-              />
+                className="form-control"
+                onChange={this.handleProductChange.bind(this)}
+                onBlur={this.handleProductChange.bind(this)}
+              >
+                {ds}
+              </select>
+              {/* <ComboBoxComponent
+                width={"100%"}
+                className="form-control"
+                dataSource={this.state.products}
+                fields={this.comboFields}
+                value={this.state.productId}
+                // blur={this.handleStatusIdChange.bind(this)}
+                change={this.handleProductChange.bind(this)}
+                // ref={combo => (this.statusCodeCombo = combo)}
+              /> */}
             </div>
           </div>
           <br />
@@ -207,7 +267,7 @@ class SiDrItemDetails extends BaseComponent {
               <button
                 type="button"
                 className="btn btn-outline-primary btn-sm mr-2"
-                // onClick={this.handleBackBtn.bind(this)}
+                onClick={this.handleBackBtn.bind(this)}
               >
                 Back
               </button>

@@ -17,8 +17,8 @@ class Navigation extends Component {
     | { items: { text: string; url: string }[]; text: string; url?: undefined }
     | { text: string; url: string; items?: undefined }
   )[];
-  constructor() {
-    super({});
+  constructor(props: any) {
+    super(props);
     // Menu items definition
     this.menuItems = [
       {

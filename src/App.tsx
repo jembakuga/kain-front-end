@@ -30,7 +30,11 @@ class App extends Component {
             ></Route>
             <Route path="/productAdd" component={ProductDetails}></Route>
             <Route
-              path="/siDrItemDetails/:id"
+              path="/siDrItemDetails/:srDrId"
+              component={SiDrItemDetails}
+            ></Route>
+            <Route
+              path="/siDrItemDetailsEdit/:srDrId/:siDrItemId"
               component={SiDrItemDetails}
             ></Route>
           </Switch>

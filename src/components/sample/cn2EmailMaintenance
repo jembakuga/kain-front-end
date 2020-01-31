@@ -1,0 +1,838 @@
+import * as React from 'react';
+import { ColumnDirective, ColumnsDirective, GridComponent } from '@syncfusion/ej2-react-grids';
+import { Inject, Page, Resize } from '@syncfusion/ej2-react-grids'
+import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
+import { EditSettingsModel } from '@syncfusion/ej2-react-grids';
+import { FormValidator, FormValidatorModel } from '@syncfusion/ej2-inputs';
+import { DataManager, Query, UrlAdaptor } from '@syncfusion/ej2-data';
+import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns';
+import '../../../css/app/maintenance/EmailMaintenance.css';
+import config from 'react-global-configuration';
+import * as ReactDOM from "react-dom";
+import * as Pavo from '../../pavo/PavoBase';
+import { Collapsible } from '../collapsible/Collapsible'
+import { CollapsibleHtml } from '../collapsible/CollapsibleHtml'
+import { Cn2EmailMaintenanceEditDetails } from './Cn2EmailMaintenanceEditDetails'
+import { Cn2EmailMaintenanceAddMessage } from './Cn2EmailMaintenanceAddMessage'
+import { HtmlEditor, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import * as PavoMessages from '../../pavo/PavoMessages.js';
+import { Tooltip } from '../common/Tooltip'
+
+
+export class Cn2EmailMaintenance extends Pavo.BaseForm {
+
+	private formObject: FormValidator;
+
+	private messageData: DataManager = new DataManager({
+		url: config.get("contextPath") + "/misc/loadMailDetails.do",
+		adaptor: new UrlAdaptor()
+	});
+
+	private trackEmailData: DataManager = new DataManager({
+		url: config.get("contextPath") + "/misc/viewMessageDetails.do",
+		adaptor: new UrlAdaptor()
+	});
+
+	public gridEmailMessage: GridComponent;
+	public queryEmailMessage: Query;
+
+	public gridTrackEmail: GridComponent;
+	public queryTrackEmail: Query;
+
+	public gridModal: GridComponent;
+	public queryModal: Query;
+
+	public detailsObj: Object;
+	public comboFields: object = { text: 'value', value: 'key' };
+
+	public startDate: DatePickerComponent;
+	public endDate: DatePickerComponent;
+
+	private maxDate: Date = new Date(new Date().getDate());
+	private statusCodeCombo: ComboBoxComponent;
+	
+	public uId = 0;
+
+	/* for grid appear functions
+	public messageChecker: number = 0;
+	public trackChecker: number = 0;*/
+
+	public customAttributes: any = { class: 'customcss' };
+	toolbarSettings: { items: string[]; };
+
+	constructor(props) {
+		super(props);
+		this.toolbarSettings = {
+			items: ['Bold', 'Italic', 'Underline', 'StrikeThrough',
+				'FontName', 'FontSize', 'FontColor', 'BackgroundColor',
+				'LowerCase', 'UpperCase', '|',
+				'Formats', 'Alignments', 'OrderedList', 'UnorderedList',
+				'Outdent', 'Indent', '|',
+				'CreateLink', 'Image', '|', 'ClearFormat', 'Print',
+				'SourceCode', 'FullScreen', '|', 'Undo', 'Redo']
+		};
+
+
+		this.state = {
+			data: {
+				messageNo: '',
+				subject: '',
+				messageText: '',
+				statusId: ''
+			},
+			model: {
+				messageNo: '',
+				subject: '',
+				messageText: '',
+				statusId: '',
+				transNo: '',
+				recepEmail: '',
+				emailNo: '',
+				emailTo: '',
+				emailCc: '',
+				emailBcc: '',
+				trackSubject: '',
+				statusCdId: '',
+				statusDesc: '',
+				createDate: '',
+				trackMessage: '',
+				startDate: '',
+				endDate: '',
+				resendEmail: [],
+				refreshCount: 0,
+			}
+		};
+
+		this.handleResendEmailChange = this.handleResendEmailChange.bind(this);
+	}
+
+	handleResendEmailChange({ value, checked }) {
+		let resendEmail = [...this.state.model['resendEmail']];
+		resendEmail = resendEmail.filter(i => i != value);
+		if (checked) {
+			resendEmail.push(value);
+		}
+		this.setState({
+			model: {
+				...this.state.model,
+				resendEmail,
+			},
+
+		})
+	}
+
+	handleMessageNoChange(e) {
+		this.updateFormModel({
+			messageNo: e.target.value
+		});
+	}
+	handleSubjectChange(e) {
+		this.updateFormModel({
+			subject: e.target.value
+		});
+	}
+
+	handleMessageTextChange(e) {
+		this.updateFormModel({
+			messageText: e.target.value
+		});
+	}
+
+	handleEmailNoChange(e) {
+		this.updateFormModel({
+			transNo: e.target.value
+		});
+	}
+
+	handleEmailToChange(e) {
+		this.updateFormModel({
+			recepEmail: e.target.value
+		});
+	}
+
+	handleStartDateChange(e) {
+		this.updateFormModel({
+			startDate: this.startDate.value
+		});
+	}
+
+	handleEndDateChange(e) {
+		this.updateFormModel({
+			endDate: this.endDate.value
+		});
+	}
+
+	handleStatusIdChange(e) {
+		this.updateFormModel({
+			statusId: this.statusCodeCombo.value
+		})
+	}
+
+
+	handleAddBtn() {
+		document.getElementById("messageContainer").innerHTML = "";
+		(document.getElementById("createEmailForm") as HTMLElement).hidden = true;
+		(document.getElementById("GridEmailMessage") as HTMLElement).hidden = true;
+		(document.getElementById("AddTab") as HTMLElement).hidden = false;
+		(document.getElementById("EmailBtn") as HTMLElement).hidden = true;
+		
+		this.updateFormModel({
+			refreshCount: this.state.model['refreshCount']+1
+		})
+	}
+
+
+	handleEditClick({ value }) {
+		console.log(value);
+		this.updateFormData({
+			messageNo: value.messageNo,
+			subject: value.subject,
+			messageText: value.messageText,
+			statusId: value.statusId,
+			statuses: this.state.data['statuses']
+		});
+		document.getElementById("messageContainer").innerHTML = "";
+		(document.getElementById("createEmailForm") as HTMLElement).hidden = true;
+		//		(document.getElementById("GridEmailMessage") as HTMLElement).hidden=true;
+		(document.getElementById("EditTab") as HTMLElement).hidden = false;
+		(document.getElementById("EmailBtn") as HTMLElement).hidden = true;
+		window.scrollTo(0, 0);
+
+	}
+
+	public editOptions: EditSettingsModel = { allowEditing: true, allowAdding: false, allowDeleting: false, mode: 'Dialog' };
+
+	loadEmailMessageData() {
+		this.gridEmailMessage.dataSource = this.messageData;
+		this.queryEmailMessage = new Query()
+			.addParams("messageNo", this.state.model['messageNo'])
+			.addParams("messageText", this.state.model['messageText'])
+			.addParams("messageSubject", this.state.model['subject'])
+			.addParams("statusId", this.state.model['statusId'])
+		this.gridEmailMessage.query = this.queryEmailMessage;
+	}
+
+	loadTrackEmailData() {
+		this.gridTrackEmail.dataSource = this.trackEmailData;
+		this.queryTrackEmail = new Query()
+			.addParams("emailNo", this.state.model['transNo'])
+			.addParams("emailTo", this.state.model['recepEmail'])
+			.addParams("startDate", this.state.model['startDate'])
+			.addParams("endDate", this.state.model['endDate'])
+		this.gridTrackEmail.query = this.queryTrackEmail;
+	}
+
+	handleResetBtn() {
+
+		this.updateFormModel({
+			messageNo: ''
+		});
+		this.updateFormModel({
+			messageText: ''
+		});
+		this.updateFormModel({
+			subject: ''
+		});
+		this.updateFormModel({
+			statusId: ''
+		})
+
+		document.getElementById("messageContainer").innerHTML = "";
+		this.loadEmailMessageData();
+		this.formObject.element.reset();
+	}
+
+	handleTrackResetButton() {
+		this.updateFormModel({
+			transNo: ''
+		});
+		this.updateFormModel({
+			recepEmail: ''
+		});
+		this.updateFormModel({
+			startDate: ''
+		});
+		this.updateFormModel({
+			endDate: ''
+		});
+
+		this.loadTrackEmailData();
+		document.getElementById("messageContainer").innerHTML = "";
+		this.formObject.element.reset();
+	}
+
+
+
+	handleResendSubmit() {
+		let resendEmail = [...this.state.model['resendEmail']];
+		let selected = this.gridTrackEmail.getSelectedRecords();
+		
+		if(selected.length > 0){
+			for(let i = 0; i < selected.length; i++){
+				resendEmail.push(selected[i]["emailNo"]);
+			}
+			
+			this.updateFormModel({
+				resendEmail: resendEmail
+			});
+	
+			this.doFormSubmit({
+				url: config.get('contextPath') + '/misc/submitEmailStatus.do',
+				params: {
+					resendEmail: this.state.model['resendEmail']
+				},
+				onSuccess: function(response, form) {
+					console.log('SUCCESS!');
+					form.showDialog({
+						content: form.getSummaryMessage(response.data.messageDetail),
+						header: Pavo.Labels.MBT_Success,
+						buttons: [{
+							buttonModel: {
+								cssClass: 'e-flat',
+								content: 'OK'
+							},
+							click: () => {
+								form.baseDialog.hide();
+								
+								form.gridTrackEmail.clearSelection();
+								
+								form.gridTrackEmail.refresh();
+							}
+						}]
+					});
+					//form.showSummaryMessage(response.data.messageDetail);
+				},
+				onFailure: function(response, form) {
+					console.log('FAILED!')
+					form.showDialog({
+						content: form.getSummaryMessage(response.data.messageDetail),
+						header: Pavo.Labels.MBT_Alert_Failed
+					});
+					//form.showSummaryMessage(response.data.messageDetail);
+				}
+			});
+		} else {
+			this.showDialog({
+				content: "No Row(s) are selected. Please select a row",
+				header: Pavo.Labels.MBT_Alert_Failed,
+			});
+		}
+	}
+
+	handleModalClick(value) {
+		let result = value.value;
+		console.log(result);
+		this.updateFormModel({
+			emailNo: result.emailNo,
+			emailTo: result.emailTo,
+			emailCc: result.emailCc,
+			emailBcc: result.emailBcc,
+			trackSubject: result.subject,
+			statusDesc: result.statusDesc,
+			createDate: result.createdDate,
+			trackMessage: result.message
+		});
+	}
+
+	handleEmailTabClick() {
+		(document.getElementById("EmailBtn") as HTMLElement).hidden = false;
+		(document.getElementById("createEmailForm") as HTMLElement).hidden = false;
+		(document.getElementById("AddTab") as HTMLElement).hidden = true;
+		(document.getElementById("EditTab") as HTMLElement).hidden = true;
+		(document.getElementById("TrackBtn") as HTMLElement).hidden = true;
+		this.handleResetBtn();
+	}
+
+	handleTrackBtnClick() {
+		(document.getElementById("TrackBtn") as HTMLElement).hidden = false;
+		(document.getElementById("EmailBtn") as HTMLElement).hidden = true;
+		this.handleTrackResetButton()
+	}
+
+	handleSearchEmailBtn() {
+		let flag = this.checkSearchLength();
+		if (flag) {
+			document.getElementById('messageContainer').hidden = true;
+			this.loadEmailMessageData();
+		} else {
+			document.getElementById('messageContainer').hidden = false;
+		}
+	}
+
+	handleTrackSearchBtn() {
+		let flag = this.checkTrackSearchLength();
+		if (flag) {
+			document.getElementById('messageContainer').hidden = true;
+			this.loadTrackEmailData();
+		} else {
+			document.getElementById('messageContainer').hidden = false;
+		}
+	}
+
+	public checkSearchLength() {
+		document.getElementById('messageContainer').hidden = true;
+		document.getElementById('messageContainer').style.color = 'red';
+		document.getElementById('messageContainer').style.marginTop = '5px';
+		document.getElementById('messageContainer').innerHTML = PavoMessages.MESSAGES['error_AtLeastThreeSearchCharacters']
+
+		if ((this.state.model['messageNo'] != '') || (this.state.model['subject'] != '') || (this.state.model['messageText'] != '')) {
+			if ((this.state.model['messageNo'].length < 3) && (this.state.model['subject'].length < 3) && (this.state.model['messageText'].length < 3)) {
+				console.log('Search needs to be at least 3 characters')
+				return false
+			}
+		}
+		console.log('Default search')
+		return true
+	}
+
+	public checkTrackSearchLength() {
+		document.getElementById('messageContainer').hidden = true;
+		document.getElementById('messageContainer').style.color = 'red';
+		document.getElementById('messageContainer').style.marginTop = '5px';
+		document.getElementById('messageContainer').innerHTML = PavoMessages.MESSAGES['error_AtLeastThreeSearchCharacters']
+
+		if ((this.state.model['transNo'] != '') || (this.state.model['recepEmail'] != '')) {
+			if ((this.state.model['transNo'].length < 3) && (this.state.model['recepEmail'].length < 3)) {
+				console.log('Search needs to be at least 3 characters')
+				return false
+			}
+		}
+		console.log('Default search')
+		return true
+	}
+
+	componentDidMount() {
+		this.getFormData({
+			url: config.get('contextPath') + '/misc/loadSearchForm.do'
+		});
+		this.loadEmailMessageData();
+		this.loadTrackEmailData();
+		(document.getElementById("EditTab") as HTMLElement).hidden = true;
+		(document.getElementById("AddTab") as HTMLElement).hidden = true;
+		(document.getElementById("TrackBtn") as HTMLElement).hidden = true;
+
+		let requiredFields: FormValidatorModel = {
+			rules: {
+				messageNo: { required: false },
+				subject: { required: false },
+				messageText: { required: false },
+				statusId: { required: false }
+			}
+		};
+
+		this.formObject = new FormValidator('#createEmailForm', requiredFields);
+
+	}
+
+	public renderAnchor(args: any): void {
+
+		ReactDOM.render(
+			<div>
+				<div style={{ float: "right" }} />
+				<div>
+					<div><button className="email-message-button" onClick={() => this.handleEditClick({ value: args.data })}>{args.data.messageNo}</button>
+						<div >
+							<div>
+								<b>{Pavo.Labels.MNTNN.EmailSubject}: </b>
+								<span >{args.data.subject} </span>
+							</div>
+
+							<div>
+								<b>{Pavo.Labels.MNTNN.EmailStatus}: </b>
+								<span>{args.data.statusDesc} </span>
+							</div>
+							<div>
+								<b>Email Text: </b>
+								<CollapsibleHtml html={args.data.messageText} collapseLength={200} />
+								{/*<div dangerouslySetInnerHTML={{ __html: args.data.messageText }}></div>*/}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			,
+			args.cell
+
+		);
+	}
+
+	public renderTrackEmail(args: any): void {
+		if (args.column.field === "item") {
+			ReactDOM.render(
+				<div>
+					<table style={{ width: "100%", marginLeft: "-10px", marginTop: "-5px" }}>
+						<tbody>
+							<tr>
+								<td style={{ width: "50%", textAlign: "right" }}>
+									<div><a onClick={() => this.handleModalClick({ value: args.data })} href="#trackEmailModal" data-toggle="modal" data-target="#trackEmailModal" data-id={args.data.id}><b>	{args.data.emailNo}</b></a></div>
+								</td>
+								<td style={{ width: "50%", textAlign: "right" }}>
+									<div><b>{Pavo.Labels.MNTNN.EmailStatus}:</b> {args.data.statusDesc}</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div><b>{Pavo.Labels.MNTNN.EmailTo}</b><Collapsible text={args.data.emailTo} collapseLength={50} /></div>
+					<div><b>{Pavo.Labels.MNTNN.EmailCc}</b><Collapsible text={args.data.emailCc} collapseLength={50} /></div>
+					<div><b>{Pavo.Labels.MNTNN.EmailBcc}</b><Collapsible text={args.data.emailBcc} collapseLength={50} /></div>
+					<div><b>{Pavo.Labels.MNTNN.EmailSubject}:</b>{args.data.subject}</div>
+					<table style={{ width: "100%", marginLeft: "-10px", marginTop: "-5px" }}>
+						<tbody>
+							<tr>
+								<td style={{ width: "50%", textAlign: "right" }}>
+									<div><b>{Pavo.Labels.MNTNN.EmailSendDate}</b>{args.data.createdDate}</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				,
+				args.cell
+			);
+		}
+	}
+	paintUI() {
+		let detailsObj = {
+			messageNo: this.state.data["messageNo"],
+			subject: this.state.data["subject"],
+			messageText: this.state.data["messageText"],
+			statusId: this.state.data["statusId"],
+			statuses: this.state.data["statuses"]
+		}
+		return (
+			<div className="espro-portal-container pb-5">
+				<div className="modal fade cn2-modal" id="trackEmailModal" role="dialog" aria-labelledby="trackEmailModalLabel" aria-hidden="true" data-backdrop="true">
+					<div className="modal-dialog modal-lg" role="document">
+						<div className="cn2-modal-content">
+							<div className="cn2-modal-header">
+								<h5 className="modal-title" id="trackEmailModalLabel{args.data.emailNo}">  {this.state.model["emailNo"]} - {Pavo.Labels.MNTNN.EmailDetails} </h5>
+							</div>
+							<div className="modal-body">
+								<div className="row mb-1">
+									<div className="col-sm-3 cn2-label-form-control email-maint-label modal-label">{Pavo.Labels.MNTNN.EmailMessageNo} :  </div>
+									<div className="col-sm-7">
+										{this.state.model["emailNo"]}
+									</div>
+								</div>
+								<div className="row mb-1">
+									<div className="col-sm-3 cn2-label-form-control email-maint-label modal-label">{Pavo.Labels.MNTNN.EmailCc}  </div>
+									<div className="col-sm-7">
+										{this.state.model["emailCc"]}
+									</div>
+								</div>
+								<div className="row mb-1">
+									<div className="col-sm-3 cn2-label-form-control email-maint-label modal-label">{Pavo.Labels.MNTNN.EmailBcc}   </div>
+									<div className="col-sm-7">
+										{this.state.model["emailBcc"]}
+									</div>
+								</div>
+								<div className="row mb-1">
+									<div className="col-sm-3 cn2-label-form-control email-maint-label modal-label">{Pavo.Labels.MNTNN.EmailTo} </div>
+									<div className="col-sm-7">
+										{this.state.model["emailTo"]}
+									</div>
+								</div>
+								<div className="row mb-1">
+									<div className="col-sm-3 cn2-label-form-control email-maint-label modal-label">{Pavo.Labels.MNTNN.EmailSubject}:   </div>
+									<div className="col-sm-7">
+										{this.state.model["trackSubject"]}
+									</div>
+								</div>
+								<div className="row mb-1">
+									<div className="col-sm-3 cn2-label-form-control email-maint-label modal-label">{Pavo.Labels.MNTNN.EmailStatus}:   </div>
+									<div className="col-sm-7">
+										{this.state.model["statusDesc"]}
+									</div>
+								</div>
+								<div className="row mb-1">
+									<div className="col-sm-3 cn2-label-form-control email-maint-label modal-label">{Pavo.Labels.MNTNN.EmailSendDate}   </div>
+									<div className="col-sm-7">
+										{this.state.model["createDate"]}
+									</div>
+								</div>
+								<div className="row mb-1">
+									<div className="col-sm-3 cn2-label-form-control email-maint-label modal-label">{Pavo.Labels.MNTNN.Content}:  </div>
+									<div className="col-sm-7" dangerouslySetInnerHTML={{ __html: this.state.model["trackMessage"] }}>
+									</div>
+								</div>
+							</div>
+							<div className="modal-footer">
+								<button type="button" className="btn btn-primary" data-dismiss="modal">{Pavo.Labels.MNTNN.Close}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="EmailMain" className="container-fluid">
+					<div className="row">
+						<div className="col-12">
+							<ul className="espro-tabs-sub-cor-page nav nav-tabs mt-4" id="myTab" role="tablist">
+								<li className="nav-item">
+									<a className="nav-link active" onClick={this.handleEmailTabClick.bind(this)} id="systemEmailMessage-tab" data-toggle="tab" href="#systemEmailMessage" role="tab" aria-controls="systemEmailMessage" aria-selected="true">System Email Message</a>
+								</li>
+								<li className="nav-item">
+									<a className="nav-link" onClick={this.handleTrackBtnClick.bind(this)} id="trackEmailStatus-tab" data-toggle="tab" href="#trackEmailStatus" role="tab" aria-controls="trackEmailStatus" aria-selected="false">Track Email Status</a>
+								</li>
+							</ul>
+							<div className="tab-content espro-tabs-sub-cor-page-tab-container" id="myTabContentInside">
+
+
+
+
+								<div id="messageContainer" className="col-md-12" />
+								<div className="tab-pane active" id="systemEmailMessage" role="tabpanel" aria-labelledby="systemEmailMessage-tab">
+									<div className="pt-2 pb-2">
+										<div className="row">
+											<div className="col-12">
+												<div className="espro-form-section">
+													<div className="espro-ml-applications-table espro-portal-project-documents">
+														<div className="col-md-12 col-12">
+															<div className="espro-ml-table-buttons-top d-none d-sm-block mt-2">
+																<div id="AddTab">
+																	<Cn2EmailMaintenanceAddMessage eId={this.state.model['refreshCount']} />
+																</div>
+																<div id="EditTab">
+																	<Cn2EmailMaintenanceEditDetails detailsObj={detailsObj} />
+																</div>
+																<form id="createEmailForm">
+																	<div className="row col-sm-6">
+																	</div>
+																	{/*<div className="row">
+																		<div className="col-sm-8">
+																			<ul>
+																				<li><button type="button" className="btn btn-primary btn-sm" onClick={this.handleAddBtn.bind(this)}> {Pavo.Labels.FL_Add} </button></li>&nbsp;&nbsp;
+																				<li><button type="button" className="btn btn-primary btn-sm" onClick={this.loadEmailMessageData.bind(this)}> {Pavo.Labels.BL_search} </button></li>&nbsp;&nbsp;
+																				<li><button type="button" className="btn btn-primary btn-sm" onClick={this.handleResetBtn.bind(this)}> {Pavo.Labels.BL_reset} </button></li>&nbsp;&nbsp;
+																			</ul>
+																			<div id="messageContainer"/>
+																			<br/>
+																		</div>
+																	</div>*/}
+																	<div className="row">
+																		<div className="col-sm-3 cn2-label-form-control ">{Pavo.Labels.MNTNN.EmailMessageNo}:</div>
+																		<div className="col-sm-4">
+																			<input
+																				id="messageNo"
+																				name="messageNo"
+																				className="form-control email-maint-input"
+																				type="text"
+																				value={this.state.model['messageNo']}
+																				onChange={this.handleMessageNoChange.bind(this)}
+																			/>
+																		</div>
+																	</div>
+																	<br />
+																	<div className="row">
+																		<div className="col-sm-3 cn2-label-form-control">{Pavo.Labels.MNTNN.EmailSubject}:</div>
+																		<div className="col-sm-4">
+																			<input
+																				id="subject"
+																				name="subject"
+																				className="form-control email-maint-input"
+																				type="text"
+																				value={this.state.model['subject']}
+																				onChange={this.handleSubjectChange.bind(this)}
+																			/>
+																		</div>
+																	</div>
+																	<br />
+																	<div className="row">
+																		<div className="col-sm-3 cn2-label-form-control">{Pavo.Labels.MNTNN.EmailMessageText}:</div>
+																		<div className="col-sm-4">
+																			<textarea
+																				id="messageText"
+																				name="messageText"
+																				className="form-control email-maint-input"
+																				rows={4}
+																				cols={50}
+																				style={{ resize: "none" }}
+																				value={this.state.model['messageText']}
+																				onChange={this.handleMessageTextChange.bind(this)}
+																			/>
+																		</div>
+																	</div>
+																	<br />
+																	<div className="row">
+																		<div className="col-sm-3 cn2-label-form-control">{Pavo.Labels.MNTNN.EmailStatus}:</div>
+																		<div className="col-sm-4">
+																			<ComboBoxComponent
+																				id="statusCdStr"
+																				width={'100%'}
+																				className="form-control"
+																				dataSource={this.state.data['statuses']}
+																				fields={this.comboFields}
+																				value={this.state.model['statusId']}
+																				blur={this.handleStatusIdChange.bind(this)}
+																				change={this.handleStatusIdChange.bind(this)}
+																				ref={(combo) => (this.statusCodeCombo = combo)}
+
+																			/>
+																		</div>
+																	</div>
+																	<br />
+																</form>
+																<div className="row" id="EmailBtn">
+																	<div className="col-md-12 espro-ml-table-buttons-bottom d-none d-sm-block mt-2">
+																		<ul className="float-right">
+																			<button type="button" className="btn btn-primary btn-sm" onClick={this.handleAddBtn.bind(this)}> {Pavo.Labels.FL_Add} </button>&nbsp;&nbsp;
+																			<button type="button" className="btn btn-primary btn-sm" onClick={this.handleSearchEmailBtn.bind(this)}> {Pavo.Labels.BL_search} </button>&nbsp;&nbsp;
+																			<button type="button" className="btn btn-primary btn-sm" onClick={this.handleResetBtn.bind(this)}> {Pavo.Labels.BL_reset} </button>&nbsp;&nbsp;
+																		</ul>
+																	</div>
+																</div>
+																<div id="GridEmailMessage" className="row">
+																	<div >
+																		<GridComponent
+																			className="cn2-grid-email"
+																			id="noHeaderGrid" gridLines={"Both"}
+																			allowPaging={true} pageSettings={{ pageCount: 5, pageSize: 10 }}
+																			allowResizing={true}
+																			allowTextWrap={true}
+																			ref={grid => this.gridEmailMessage = grid}
+																			queryCellInfo={this.renderAnchor.bind(this)}>
+																			<ColumnsDirective>
+																				<ColumnDirective />
+																			</ColumnsDirective>
+																			<Inject services={[Page]} />
+																		</GridComponent>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+								<div className="tab-pane fade pt-2" id="trackEmailStatus" role="tabpanel" aria-labelledby="trackEmailStatus-tab">
+									<div className="pt-2 pb-2">
+										<div className="row">
+											<div className="col-12">
+												<div className="espro-form-section">
+													<div className="espro-ml-applications-table espro-portal-project-documents">
+														<div className="col-md-12 col-12">
+															<div className="espro-ml-table-buttons-top d-none d-sm-block">
+																<form id="form-element">
+																	{/*<div className="row">
+																		<div className="col-sm-2">
+																			<ul>
+																				<li><button type="button" className="btn btn-primary btn-sm" onClick={this.loadTrackEmailData.bind(this)} > {Pavo.Labels.BL_search} </button></li>&nbsp;&nbsp;
+																				<li><button type="button" className="btn btn-primary btn-sm" onClick={this.handleTrackResetButton.bind(this)} > {Pavo.Labels.BL_reset} </button></li>&nbsp;&nbsp;
+																				<li><button type="button" className="btn btn-primary btn-sm" onClick={this.handleResendSubmit.bind(this)} > {Pavo.Labels.BL_submit} </button></li>&nbsp;&nbsp;
+																			</ul>
+																		</div>
+																	</div>*/}
+																	<div className="row">
+																		<div className="col-sm-3 cn2-label-form-control">{Pavo.Labels.MNTNN.TransactionNo}:</div>
+																		<div className="col-sm-4">
+																			<input
+																				id="transactionNum"
+																				name="transactionNum"
+																				className="form-control email-maint-input"
+																				value={this.state.model['transNo']}
+																				onChange={this.handleEmailNoChange.bind(this)}
+																				type="text"
+																			/>
+																			<p style={{ color: "maroon" }}>
+																				(ES, CR, CA, CM, CP, WS, WP, OE, Project Ref No, etc)<br />
+																				For CM/ CP/ WP - search using either Project Ref No. (successful case) or CM/ CP/ WP No. (failure case).<br />
+																				For WS - search using either Submission No. (successful case) or WS No. (failure case).<br />
+																			</p>
+																		</div>
+																			<Tooltip tooltip={Pavo.Labels.CMN.TransactionNo}/>
+																	</div>
+																	<div className="row">
+																		<div className="col-sm-3 cn2-label-form-control">{Pavo.Labels.MNTNN.RecipientEmailAddress}:</div>
+																		<div className="col-sm-4">
+																			<input
+																				id="recipientEmailAdd"
+																				name="recipientEmailAdd"
+																				className="form-control email-maint-input"
+																				value={this.state.model['recepEmail']}
+																				onChange={this.handleEmailToChange.bind(this)}
+																				type="text"
+																			/>
+																		</div>
+																		<Tooltip tooltip={Pavo.Labels.CMN.RecipientEmailVerify}/>
+																	</div>
+																	<br />
+																	<div className="row">
+																		<div className="col-sm-3 cn2-label-form-control">{Pavo.Labels.MNTNN.PeriodSent}</div>
+																		<div className="col-sm-2">
+																			<DatePickerComponent
+																				className="cn2-form-control"
+																				placeholder="From"
+																				format='dd/MM/yyyy'
+																				showTodayButton={true}
+																				value={this.state.model['startDate']}
+																				max={this.maxDate}
+																				change={this.handleStartDateChange.bind(this)}
+																				ref={(dpick) => (this.startDate = dpick)} />
+																		</div>
+																		<div className="col-sm-2">
+																			<DatePickerComponent
+																				className="cn2-form-control"
+																				placeholder="To"
+																				format='dd/MM/yyyy'
+																				showTodayButton={true}
+																				value={this.state.model['endDate']}
+																				max={this.maxDate}
+																				change={this.handleEndDateChange.bind(this)}
+																				ref={(dpick) => (this.endDate = dpick)} />
+																		</div>
+																	</div>
+																	<br />
+																	<div className="row" id="TrackBtn">
+																		<div className="col-md-12 espro-ml-table-buttons-bottom d-none d-sm-block mt-2">
+																			<ul className="float-right">
+																				<button type="button" className="btn btn-primary btn-sm" onClick={this.handleTrackSearchBtn.bind(this)} > {Pavo.Labels.BL_search} </button>&nbsp;&nbsp;
+																				<button type="button" className="btn btn-primary btn-sm" onClick={this.handleTrackResetButton.bind(this)} > {Pavo.Labels.BL_reset} </button>&nbsp;&nbsp;
+																				<button type="button" className="btn btn-primary btn-sm" onClick={this.handleResendSubmit.bind(this)} > {Pavo.Labels.BL_submit} </button>&nbsp;&nbsp;
+																		</ul>
+																		</div>
+																	</div>
+																	<br />
+																	<div id="GridTrack" className="row">
+																		<GridComponent
+																			className="cn2-grid-email"
+																			id="noHeaderGrid"
+																			gridLines="None"
+																			allowSelection={true}
+																			selectionSettings={{ type: "Multiple", checkboxOnly: true }}
+																			allowPaging={true}
+																			style={{ width: "100%" }}
+																			pageSettings={{ pageCount: 5, pageSize: 10 }}
+																			allowResizing={true}
+																			allowTextWrap={true}
+																			ref={grid => this.gridTrackEmail = grid}
+																			queryCellInfo={this.renderTrackEmail.bind(this)}>
+																			<ColumnsDirective>
+																				<ColumnDirective type='checkbox' field="checkbox" />
+																				<ColumnDirective field="item" />
+																			</ColumnsDirective>
+																		{/*	<ColumnsDirective>
+																			
+																				<ColumnDirective customAttributes={this.customAttributes} />
+																			</ColumnsDirective>*/}
+																			<Inject services={[Page, Resize]} />
+																		</GridComponent>
+																	</div>
+																</form>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+};

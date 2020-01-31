@@ -82,7 +82,7 @@ class ProductSearch extends BaseComponent {
   }
 
   private dataManager: DataManager = new DataManager({
-    url: "http://localhost:8080/findProducts",
+    url: "http://localhost:8080/product/findProducts",
     adaptor: new UrlAdaptor()
   });
 
