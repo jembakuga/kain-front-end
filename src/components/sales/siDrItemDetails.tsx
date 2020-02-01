@@ -157,12 +157,10 @@ class SiDrItemDetails extends BaseComponent {
     let count = 0;
     if (this.state.products) {
       ds = this.state.products.map(item => (
-        // console.log(item)
         <option key={item["key"]} value={item["key"]}>
           {item["value"]}
         </option>
       ));
-      console.log(ds);
     }
     return (
       <div>

@@ -38,6 +38,8 @@ class SiDrDetails extends BaseComponent {
     businessStyle: "";
     terms: "";
     deliveredBy: "";
+    checkers: [];
+    medReps: [];
   };
   constructor(props: any) {
     super(props);
@@ -54,7 +56,9 @@ class SiDrDetails extends BaseComponent {
       deliveredBy: "",
       dueDate: new Date(),
       date: new Date(),
-      issueDate: new Date()
+      issueDate: new Date(),
+      checkers: [],
+      medReps: []
     };
   }
   private dataManager: DataManager = new DataManager({
@@ -113,6 +117,7 @@ class SiDrDetails extends BaseComponent {
     });
   }
   handleDeliveredByChange(e: any) {
+    console.log(e.target.value);
     this.setState({
       deliveredBy: e.target.value
     });
@@ -135,6 +140,7 @@ class SiDrDetails extends BaseComponent {
     this.props.history.push("/siDrItemDetails/" + this.state.siDrId);
   }
   handleSaveBtn() {
+    console.log(this.state);
     axios
       .post("http://localhost:8080/salesOrder/saveSiDr", {
         siDrId: this.props.match.params.id,
@@ -147,8 +153,8 @@ class SiDrDetails extends BaseComponent {
         terms: this.state.terms,
         dueDate: this.state.dueDate,
         date: this.state.date,
-        checkedBy: this.state.checkedBy,
-        deliveredBy: this.state.deliveredBy
+        checkedBy: parseInt(this.state.checkedBy),
+        deliveredBy: parseInt(this.state.deliveredBy)
       })
       .then(res => {
         console.log(res);
@@ -206,6 +212,15 @@ class SiDrDetails extends BaseComponent {
         this.grid.query = this.query;
       }
     }
+    axios
+      .post("http://localhost:8080/employee/findEmployeeForDropdown")
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          checkers: res.data.checkers,
+          medReps: res.data.medReps
+        });
+      });
   }
 
   handleProductCodeHyperlink(args: any) {
@@ -272,6 +287,26 @@ class SiDrDetails extends BaseComponent {
   }
 
   render() {
+    let medReps = null;
+    let checkers = null;
+    if (this.state.medReps) {
+      medReps = this.state.medReps.map(item => (
+        // console.log(item)
+        <option key={item["employeeId"]} value={item["employeeId"]}>
+          {item["employeeName"]}
+        </option>
+      ));
+      console.log("medReps", medReps);
+    }
+    if (this.state.checkers) {
+      checkers = this.state.checkers.map(item => (
+        // console.log(item)
+        <option key={item["employeeId"]} value={item["employeeId"]}>
+          {item["employeeName"]}
+        </option>
+      ));
+      console.log("checkers", checkers);
+    }
     this.commandClick = this.commandClick.bind(this);
     return (
       <div>
@@ -385,21 +420,31 @@ class SiDrDetails extends BaseComponent {
           <div className="row">
             <div className="col-sm-2">Checked By: </div>
             <div className="col-sm-3">
-              <input
+              {/* <input
                 type="text"
                 value={this.state.checkedBy}
                 className="form-control"
                 onChange={this.handleCheckedByChange.bind(this)}
-              />
+              /> */}
+              <select
+                value={this.state.checkedBy}
+                className="form-control"
+                onChange={this.handleCheckedByChange.bind(this)}
+                onBlur={this.handleCheckedByChange.bind(this)}
+              >
+                {checkers}
+              </select>
             </div>
             <div className="col-sm-2">Delivered By: </div>
             <div className="col-sm-3">
-              <input
-                type="text"
+              <select
                 value={this.state.deliveredBy}
                 className="form-control"
                 onChange={this.handleDeliveredByChange.bind(this)}
-              />
+                onBlur={this.handleDeliveredByChange.bind(this)}
+              >
+                {medReps}
+              </select>
             </div>
           </div>
           <br />
