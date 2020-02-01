@@ -3,6 +3,7 @@ import BaseComponent from "../common/baseComponent";
 import axios from "axios";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
+import { DialogUtility } from "@syncfusion/ej2-popups";
 
 class ProductDetails extends BaseComponent {
   state: {
@@ -67,10 +68,18 @@ class ProductDetails extends BaseComponent {
     this.props.history.push("/productSearch");
   }
 
+  // okClick() {
+  //   this.props.history.push("/productSearch");
+  // }
+
+  private dialogInstance: any;
+
   handleSaveBtn() {
     axios
       .post("http://localhost:8080/product/saveProduct", {
-        productId: this.props.match.params.id,
+        productId: this.props.match.params.id
+          ? this.props.match.params.id
+          : this.state.prodId,
         productCode: this.state.prodCode,
         productDesc: this.state.prodDesc,
         batchNo: this.state.batchNo,
@@ -86,8 +95,23 @@ class ProductDetails extends BaseComponent {
           batchNo: res.data.batchNo,
           retailPrice: res.data.retailPrice,
           arrivalDate: res.data.arrivalDate,
-          expiryDate: res.data.expiryDate
+          expiryDate: res.data.expiryDate,
+          prodId: res.data.productId
         });
+        if (this.state.prodId) {
+          DialogUtility.alert({
+            animationSettings: { effect: "Zoom" },
+            closeOnEscape: true,
+            content: "Product " + this.state.prodCode + " created",
+            // okButton: { text: "OK", click: this.okClick.bind(this) },
+            showCloseIcon: true,
+            title: "Product Created"
+          });
+          this.props.history.push("/productSearch");
+        }
+      })
+      .catch(function(error) {
+        console.log(error);
       });
   }
 
@@ -110,28 +134,6 @@ class ProductDetails extends BaseComponent {
           });
         });
     }
-  }
-
-  ajaxCall(props: any) {
-    let form = this;
-    axios(props)
-      .then(function(response) {
-        if (response.data.success === "true") {
-          if (props["onSuccess"]) {
-            props["onSuccess"](response, form);
-          }
-        } else {
-          if (props["onFailure"]) {
-            props["onFailure"](response, form);
-          }
-        }
-      })
-      .catch(function(response) {
-        // form.showSummaryMessage({
-        //   msgCode: ["error_Unknown_Error"],
-        //   msgHeader: "error"
-        // });
-      });
   }
 
   render() {

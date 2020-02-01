@@ -10,6 +10,7 @@ import ProductSearch from "./components/product/productSearch";
 import Home from "./components/common/home";
 import ProductDetails from "./components/product/productDetails";
 import SiDrItemDetails from "./components/sales/siDrItemDetails";
+import EmployeeSearch from "./components/employee/employeeSearch";
 
 class App extends Component {
   render() {
@@ -19,16 +20,10 @@ class App extends Component {
           <Navigation />
           <Switch>
             <Route path="/" exact component={Home}></Route>
+            {/* Sales Invoice/Delivery Receipt */}
             <Route path="/siDrSearch" component={SiDrSearch}></Route>
             <Route path="/siDrAdd" component={SiDrDetails}></Route>
             <Route path="/siDrDetails/:id" component={SiDrDetails}></Route>
-            <Route path="/collection" component={CollectionSearch}></Route>
-            <Route path="/productSearch" component={ProductSearch}></Route>
-            <Route
-              path="/productDetails/:id"
-              component={ProductDetails}
-            ></Route>
-            <Route path="/productAdd" component={ProductDetails}></Route>
             <Route
               path="/siDrItemDetails/:srDrId"
               component={SiDrItemDetails}
@@ -37,6 +32,20 @@ class App extends Component {
               path="/siDrItemDetailsEdit/:srDrId/:siDrItemId"
               component={SiDrItemDetails}
             ></Route>
+
+            {/* Collection */}
+            <Route path="/collection" component={CollectionSearch}></Route>
+
+            {/* Product */}
+            <Route path="/productSearch" component={ProductSearch}></Route>
+            <Route
+              path="/productDetails/:id"
+              component={ProductDetails}
+            ></Route>
+            <Route path="/productAdd" component={ProductDetails}></Route>
+
+            {/* Employee */}
+            <Route path="/employeeSearch" component={EmployeeSearch}></Route>
           </Switch>
         </HashRouter>
       </div>

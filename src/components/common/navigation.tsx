@@ -59,6 +59,19 @@ class Navigation extends Component {
           }
         ],
         text: "Collection"
+      },
+      {
+        items: [
+          {
+            text: "Search Employee",
+            url: "#/employeeSearch"
+          },
+          {
+            text: "Create Employee",
+            url: "#/employeeAdd"
+          }
+        ],
+        text: "Employee"
       }
     ];
     this.menuComponent = new MenuComponent({ items: this.menuItems });

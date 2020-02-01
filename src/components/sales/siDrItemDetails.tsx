@@ -4,6 +4,7 @@ import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { ComboBoxComponent } from "@syncfusion/ej2-react-dropdowns";
 import axios from "axios";
+import { DialogUtility } from "@syncfusion/ej2-popups";
 
 class SiDrItemDetails extends BaseComponent {
   private statusCodeCombo: ComboBoxComponent;
@@ -135,6 +136,17 @@ class SiDrItemDetails extends BaseComponent {
       })
       .then(res => {
         console.log(res);
+        // if (this.state.productId) {
+        DialogUtility.alert({
+          animationSettings: { effect: "Zoom" },
+          closeOnEscape: true,
+          content: "Product added to sales invoice/delivery receipt",
+          showCloseIcon: true,
+          title: "Product added"
+        });
+        this.props.history.push(
+          "/siDrDetails/" + this.props.match.params.srDrId
+        );
       });
   }
   handleBackBtn() {

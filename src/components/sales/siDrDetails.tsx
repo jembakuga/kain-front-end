@@ -19,6 +19,7 @@ import {
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 import * as ReactDOM from "react-dom";
 import { HashRouter, Link } from "react-router-dom";
+import { DialogUtility } from "@syncfusion/ej2-popups";
 
 class SiDrDetails extends BaseComponent {
   private grid: GridComponent | null;
@@ -131,9 +132,7 @@ class SiDrDetails extends BaseComponent {
     this.props.history.push("/siDrSearch");
   }
   handleAddProductButton() {
-    this.props.history.push(
-      "/siDrItemDetails/" + this.props.match.params.id + "/43"
-    );
+    this.props.history.push("/siDrItemDetails/" + this.state.siDrId);
   }
   handleSaveBtn() {
     axios
@@ -156,6 +155,19 @@ class SiDrDetails extends BaseComponent {
         this.setState({
           siDrId: res.data.siDrId
         });
+        if (this.state.siDrId) {
+          DialogUtility.alert({
+            animationSettings: { effect: "Zoom" },
+            closeOnEscape: true,
+            content:
+              "Sales Invoice/Delivery Receipt " +
+              this.state.salesOrderNo +
+              " created",
+            // okButton: { text: "OK", click: this.okClick.bind(this) },
+            showCloseIcon: true,
+            title: "Sales Invoice/Delivery Receipt Created"
+          });
+        }
       });
   }
 
