@@ -11,6 +11,7 @@ import Home from "./components/common/home";
 import ProductDetails from "./components/product/productDetails";
 import SiDrItemDetails from "./components/sales/siDrItemDetails";
 import EmployeeSearch from "./components/employee/employeeSearch";
+import EmployeeDetails from "./components/employee/employeeDetails";
 
 class App extends Component {
   render() {
@@ -46,6 +47,7 @@ class App extends Component {
 
             {/* Employee */}
             <Route path="/employeeSearch" component={EmployeeSearch}></Route>
+            <Route path="/employeeAdd" component={EmployeeDetails}></Route>
           </Switch>
         </HashRouter>
       </div>
