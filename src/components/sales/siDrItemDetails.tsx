@@ -98,23 +98,26 @@ class SiDrItemDetails extends BaseComponent {
         products: res.data.prodList
       });
     });
-    axios
-      .post("http://localhost:8080/salesOrder/findSiDrItemById", {
-        siDrItemId: this.props.match.params.siDrItemId
-      })
-      .then(res => {
-        console.log(res.data.productBean.productId);
-        this.setState({
-          quantity: res.data.quantity,
-          unit: res.data.unit,
-          productId: res.data.productBean.productId,
-          description: res.data.description,
-          lotBatchNo: res.data.lotBatchNo,
-          expiryDate: res.data.expiryDate,
-          unitPrice: res.data.unitPrice,
-          amount: res.data.amount
+    // this.handleProductChange(this);
+    if (this.props.match.params.siDrItemId) {
+      axios
+        .post("http://localhost:8080/salesOrder/findSiDrItemById", {
+          siDrItemId: this.props.match.params.siDrItemId
+        })
+        .then(res => {
+          console.log(res.data.productBean.productId);
+          this.setState({
+            quantity: res.data.quantity,
+            unit: res.data.unit,
+            productId: res.data.productBean.productId,
+            description: res.data.description,
+            lotBatchNo: res.data.lotBatchNo,
+            expiryDate: res.data.expiryDate,
+            unitPrice: res.data.unitPrice,
+            amount: res.data.amount
+          });
         });
-      });
+    }
   }
 
   handleAddButton() {
@@ -139,7 +142,7 @@ class SiDrItemDetails extends BaseComponent {
   }
   render() {
     let ds = null;
-
+    let count = 0;
     if (this.state.products) {
       ds = this.state.products.map(item => (
         // console.log(item)
@@ -147,6 +150,7 @@ class SiDrItemDetails extends BaseComponent {
           {item["value"]}
         </option>
       ));
+      console.log(ds);
     }
     return (
       <div>

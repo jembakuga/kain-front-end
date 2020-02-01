@@ -9,7 +9,12 @@ import {
   ColumnDirective,
   Page,
   Sort,
-  Inject
+  Inject,
+  CommandModel,
+  Edit,
+  EditSettingsModel,
+  CommandColumn,
+  CommandClickEventArgs
 } from "@syncfusion/ej2-react-grids";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 import * as ReactDOM from "react-dom";
@@ -55,7 +60,12 @@ class SiDrDetails extends BaseComponent {
     url: "http://localhost:8080/salesOrder/findSiDrItemsBySiDr",
     adaptor: new UrlAdaptor()
   });
-  // private dataManager: DataManager;
+
+  public editOptions: EditSettingsModel = {
+    allowEditing: true,
+    allowDeleting: true
+  };
+
   handleSalesOrderNoChange(e: any) {
     this.setState({
       salesOrderNo: e.target.value
@@ -208,7 +218,49 @@ class SiDrDetails extends BaseComponent {
     }
   }
 
+  public commands: CommandModel[] = [
+    {
+      buttonOption: {
+        content: "Remove",
+        cssClass: "e-flat"
+      }
+    }
+  ];
+
+  public commandClick(args: CommandClickEventArgs): void {
+    if (this.grid) {
+      let data = JSON.parse(JSON.stringify(args.rowData));
+      axios
+        .post("http://localhost:8080/salesOrder/deleteSiDrItemById", {
+          siDrItemId: data.siDrItemId
+        })
+        .then(res => {
+          console.log(res.data.salesOrderNo);
+          this.setState({
+            siDrId: res.data.siDrId,
+            salesOrderNo: res.data.salesOrderNo,
+            soldTo: res.data.soldTo,
+            address: res.data.address,
+            tin: res.data.tin,
+            businessStyle: res.data.businessStyle,
+            poNo: res.data.poNo,
+            terms: res.data.terms,
+            deliveredBy: res.data.deliveredBy,
+            issueDate: res.data.issueDate,
+            date: res.data.date,
+            dueDate: res.data.dueDate
+          });
+        });
+      this.grid.dataSource = this.dataManager;
+      this.query = new Query().addParams("siDrId", this.props.match.params.id);
+      // console.log("asdfsda");
+      this.grid.query = this.query;
+      this.grid.refresh();
+    }
+  }
+
   render() {
+    this.commandClick = this.commandClick.bind(this);
     return (
       <div>
         <div className="header">Sales Invoice/Delivery Receipt Create</div>
@@ -384,7 +436,8 @@ class SiDrDetails extends BaseComponent {
             <br />
             <div>
               <GridComponent
-                // dataSource={this.dataManager}
+                editSettings={this.editOptions}
+                commandClick={this.commandClick}
                 gridLines={"Both"}
                 rowHeight={40}
                 allowPaging={true}
@@ -416,8 +469,13 @@ class SiDrDetails extends BaseComponent {
                   />
                   <ColumnDirective headerText="Unit Price" field="unitPrice" />
                   <ColumnDirective headerText="Amount" field="amount" />
+                  <ColumnDirective
+                    headerText="Action"
+                    width="120"
+                    commands={this.commands}
+                  />
                 </ColumnsDirective>
-                <Inject services={[Page, Sort]} />
+                <Inject services={[Edit, CommandColumn]} />
               </GridComponent>
             </div>
           </div>
