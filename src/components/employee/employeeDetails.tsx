@@ -79,8 +79,30 @@ class EmployeeDetails extends BaseComponent {
   }
 
   handleBackBtn() {
-    // this.loadEmployees();
+    this.props.history.push("/employeeSearch/");
   }
+
+  componentDidMount() {
+    // console.log("componentDidMount", this.props.match.params);
+    // this.handleProductChange(this);
+    if (this.props.match.params.employeeId) {
+      axios
+        .post("http://localhost:8080/employee/findEmployeeById", {
+          employeeId: this.props.match.params.employeeId
+        })
+        .then(res => {
+          console.log(res.data);
+          this.setState({
+            employeeId: res.data.employeeId,
+            employeeName: res.data.employeeName,
+            role: res.data.role,
+            employeeType: res.data.employeeType,
+            joinedDate: res.data.joinedDate
+          });
+        });
+    }
+  }
+
   render() {
     return (
       <div>
@@ -91,6 +113,7 @@ class EmployeeDetails extends BaseComponent {
             <div className="col-sm-4">
               <input
                 type="text"
+                value={this.state.employeeName}
                 className="form-control"
                 onChange={this.handlEmployeeNameChange.bind(this)}
               />

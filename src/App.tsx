@@ -48,6 +48,10 @@ class App extends Component {
             {/* Employee */}
             <Route path="/employeeSearch" component={EmployeeSearch}></Route>
             <Route path="/employeeAdd" component={EmployeeDetails}></Route>
+            <Route
+              path="/employeeDetails/:employeeId"
+              component={EmployeeDetails}
+            ></Route>
           </Switch>
         </HashRouter>
       </div>

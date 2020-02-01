@@ -10,6 +10,8 @@ import {
   Inject
 } from "@syncfusion/ej2-react-grids";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
+import * as ReactDOM from "react-dom";
+import { HashRouter, Link } from "react-router-dom";
 
 class EmployeeSearch extends BaseComponent {
   private grid: GridComponent | null;
@@ -73,6 +75,21 @@ class EmployeeSearch extends BaseComponent {
         .addParams("employeeType", this.state.employeeType + "");
       this.grid.query = this.query;
       this.grid.refresh();
+    }
+  }
+
+  handleRenderEmployeeCodeHyperlink(args: any) {
+    // console.log(args.data);
+    if (args.column.field === "employeeName") {
+      ReactDOM.render(
+        <HashRouter>
+          <Link to={"/employeeDetails/" + args.data.employeeId}>
+            {" "}
+            {args.data.employeeName}
+          </Link>
+        </HashRouter>,
+        args.cell
+      );
     }
   }
 
@@ -141,7 +158,7 @@ class EmployeeSearch extends BaseComponent {
             style={{ width: "100%" }}
             allowSorting={true}
             ref={g => (this.grid = g)}
-            // queryCellInfo={this.handleRenderSalesOrderNoHyperlink.bind(this)}
+            queryCellInfo={this.handleRenderEmployeeCodeHyperlink.bind(this)}
           >
             <ColumnsDirective>
               <ColumnDirective
