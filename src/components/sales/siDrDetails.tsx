@@ -28,7 +28,7 @@ class SiDrDetails extends BaseComponent {
     siDrId: "";
     salesOrderNo: "";
     poNo: "";
-    checkedBy: "";
+    checkedBy: 0;
     dueDate: Date;
     date: Date;
     issueDate: Date;
@@ -37,7 +37,7 @@ class SiDrDetails extends BaseComponent {
     tin: "";
     businessStyle: "";
     terms: "";
-    deliveredBy: "";
+    deliveredBy: 0;
     checkers: [];
     medReps: [];
   };
@@ -47,13 +47,13 @@ class SiDrDetails extends BaseComponent {
       siDrId: "",
       salesOrderNo: "",
       poNo: "",
-      checkedBy: "",
+      checkedBy: 0,
       soldTo: "",
       address: "",
       tin: "",
       businessStyle: "",
       terms: "",
-      deliveredBy: "",
+      deliveredBy: 0,
       dueDate: new Date(),
       date: new Date(),
       issueDate: new Date(),
@@ -140,7 +140,8 @@ class SiDrDetails extends BaseComponent {
     this.props.history.push("/siDrItemDetails/" + this.state.siDrId);
   }
   handleSaveBtn() {
-    console.log(this.state);
+    console.log("checked by", this.state.checkedBy);
+    console.log("deliveredBy", this.state.deliveredBy);
     axios
       .post("http://localhost:8080/salesOrder/saveSiDr", {
         siDrId: this.props.match.params.id,
@@ -153,8 +154,8 @@ class SiDrDetails extends BaseComponent {
         terms: this.state.terms,
         dueDate: this.state.dueDate,
         date: this.state.date,
-        checkedBy: parseInt(this.state.checkedBy),
-        deliveredBy: parseInt(this.state.deliveredBy)
+        checkedBy: this.state.checkedBy,
+        deliveredBy: this.state.deliveredBy
       })
       .then(res => {
         console.log(res);
@@ -196,6 +197,7 @@ class SiDrDetails extends BaseComponent {
             poNo: res.data.poNo,
             terms: res.data.terms,
             deliveredBy: res.data.deliveredBy,
+            checkedBy: res.data.checkedBy,
             issueDate: res.data.issueDate,
             date: res.data.date,
             dueDate: res.data.dueDate
