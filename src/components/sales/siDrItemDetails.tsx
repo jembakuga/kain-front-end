@@ -132,6 +132,7 @@ class SiDrItemDetails extends BaseComponent {
         lotBatchNo: this.state.lotBatchNo,
         expiryDate: this.state.expiryDate,
         amount: this.state.amount,
+        unitPrice: this.state.unitPrice,
         siDrItemId: this.props.match.params.siDrItemId
       })
       .then(res => {

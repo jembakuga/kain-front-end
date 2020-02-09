@@ -1,7 +1,7 @@
 import React from "react";
 import BaseComponent from "../common/baseComponent";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
-// import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
+import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import axios from "axios";
 import {
   GridComponent,
@@ -37,6 +37,9 @@ class SiDrDetails extends BaseComponent {
     tin: "";
     businessStyle: "";
     terms: "";
+    totalAmount: 0;
+    totalAmountValIncl: 0;
+    addVat: 0;
     deliveredBy: 0;
     checkers: [];
     medReps: [];
@@ -54,6 +57,9 @@ class SiDrDetails extends BaseComponent {
       businessStyle: "",
       terms: "",
       deliveredBy: 0,
+      totalAmount: 0,
+      totalAmountValIncl: 0,
+      addVat: 0,
       dueDate: new Date(),
       date: new Date(),
       issueDate: new Date(),
@@ -200,7 +206,10 @@ class SiDrDetails extends BaseComponent {
             checkedBy: res.data.checkedBy,
             issueDate: res.data.issueDate,
             date: res.data.date,
-            dueDate: res.data.dueDate
+            dueDate: res.data.dueDate,
+            totalAmount: res.data.totalAmount,
+            totalAmountValIncl: res.data.totalSalesVatIncl,
+            addVat: res.data.addVat
           });
         });
 
@@ -422,12 +431,6 @@ class SiDrDetails extends BaseComponent {
           <div className="row">
             <div className="col-sm-2">Checked By: </div>
             <div className="col-sm-3">
-              {/* <input
-                type="text"
-                value={this.state.checkedBy}
-                className="form-control"
-                onChange={this.handleCheckedByChange.bind(this)}
-              /> */}
               <select
                 value={this.state.checkedBy}
                 className="form-control"
@@ -451,11 +454,41 @@ class SiDrDetails extends BaseComponent {
           </div>
           <br />
           <div className="row">
+            <div className="col-sm-2">Total Sales (VAT Inclusive): </div>
+            <div className="col-sm-3">
+              <NumericTextBoxComponent
+                type="text"
+                value={this.state.totalAmountValIncl}
+                className="form-control"
+                readOnly
+              />
+            </div>
             <div className="col-sm-2">Date: </div>
             <div className="col-sm-3">
               <DatePickerComponent
                 value={this.state.date}
                 change={this.handlDueDateChange.bind(this)}
+              />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-sm-2">Add Vat: </div>
+            <div className="col-sm-3">
+              <NumericTextBoxComponent
+                type="text"
+                value={this.state.addVat}
+                className="form-control"
+                readOnly
+              />
+            </div>
+            <div className="col-sm-2">Total Amount Due: </div>
+            <div className="col-sm-3">
+              <NumericTextBoxComponent
+                type="text"
+                value={this.state.totalAmount}
+                className="form-control"
+                readOnly
               />
             </div>
           </div>
