@@ -9,6 +9,7 @@ import CollectionSearch from "./components/collection/collectionSearch";
 import ProductSearch from "./components/product/productSearch";
 import Home from "./components/common/home";
 import ProductDetails from "./components/product/productDetails";
+import ProductItemDetails from "./components/product/productItemDetails";
 import SiDrItemDetails from "./components/sales/siDrItemDetails";
 import EmployeeSearch from "./components/employee/employeeSearch";
 import EmployeeDetails from "./components/employee/employeeDetails";
@@ -44,6 +45,14 @@ class App extends Component {
               component={ProductDetails}
             ></Route>
             <Route path="/productAdd" component={ProductDetails}></Route>
+            <Route
+              path="/productItemDetails/:productId"
+              component={ProductItemDetails}
+            ></Route>
+            <Route
+              path="/productItemDetailsEdit/:productId/:productItemId"
+              component={ProductItemDetails}
+            ></Route>
 
             {/* Employee */}
             <Route path="/employeeSearch" component={EmployeeSearch}></Route>

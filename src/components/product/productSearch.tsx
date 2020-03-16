@@ -1,8 +1,6 @@
 import React from "react";
 import * as ReactDOM from "react-dom";
 import { HashRouter, Link } from "react-router-dom";
-import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
-import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import {
   GridComponent,
   ColumnsDirective,
@@ -20,11 +18,11 @@ class ProductSearch extends BaseComponent {
   state: {
     prodCode: "";
     prodDesc: "";
-    batchNo: "";
+    // batchNo: "";
     prodId: "";
-    retailPrice: null;
-    expiryDate: null;
-    arrivalDate: null;
+    // retailPrice: null;
+    // expiryDate: null;
+    // arrivalDate: null;
   };
 
   constructor(props: any) {
@@ -32,11 +30,11 @@ class ProductSearch extends BaseComponent {
     this.state = {
       prodCode: "",
       prodDesc: "",
-      batchNo: "",
-      prodId: "",
-      retailPrice: null,
-      expiryDate: null,
-      arrivalDate: null
+      // batchNo: "",
+      prodId: ""
+      // retailPrice: null,
+      // expiryDate: null,
+      // arrivalDate: null
     };
   }
 
@@ -56,30 +54,30 @@ class ProductSearch extends BaseComponent {
     });
   }
 
-  handlBatchNoChange(e: any) {
-    this.setState({
-      batchNo: e.target.value
-    });
-  }
+  // handlBatchNoChange(e: any) {
+  //   this.setState({
+  //     batchNo: e.target.value
+  //   });
+  // }
 
-  handlRetailPriceChange(e: any) {
-    // console.log(e);
-    this.setState({
-      retailPrice: e.value
-    });
-  }
+  // handlRetailPriceChange(e: any) {
+  //   // console.log(e);
+  //   this.setState({
+  //     retailPrice: e.value
+  //   });
+  // }
 
-  handlExpiryDateChange(e: any) {
-    this.setState({
-      expiryDate: e.value
-    });
-  }
+  // handlExpiryDateChange(e: any) {
+  //   this.setState({
+  //     expiryDate: e.value
+  //   });
+  // }
 
-  handlArrivalDateChange(e: any) {
-    this.setState({
-      arrivalDate: e.value
-    });
-  }
+  // handlArrivalDateChange(e: any) {
+  //   this.setState({
+  //     arrivalDate: e.value
+  //   });
+  // }
 
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/product/findProducts",
@@ -92,11 +90,11 @@ class ProductSearch extends BaseComponent {
       this.grid.dataSource = this.dataManager;
       this.query = new Query()
         .addParams("productCode", this.state.prodCode)
-        .addParams("productDesc", this.state.prodDesc)
-        .addParams("batchNo", this.state.batchNo)
-        .addParams("expiryDate", this.state.expiryDate)
-        .addParams("arrivalDate", this.state.arrivalDate)
-        .addParams("retailPrice", this.state.retailPrice);
+        .addParams("productDesc", this.state.prodDesc);
+      // .addParams("batchNo", this.state.batchNo)
+      // .addParams("expiryDate", this.state.expiryDate)
+      // .addParams("arrivalDate", this.state.arrivalDate)
+      // .addParams("retailPrice", this.state.retailPrice);
       // console.log("asdfsda");
       this.grid.query = this.query;
       this.grid.refresh();
@@ -154,7 +152,7 @@ class ProductSearch extends BaseComponent {
             </div>
           </div>
           <br />
-          <div className="row">
+          {/* <div className="row">
             <div className="col-sm-3">Batch No: </div>
             <div className="col-sm-4">
               <input
@@ -193,7 +191,7 @@ class ProductSearch extends BaseComponent {
               />
             </div>
           </div>
-          <br />
+          <br /> */}
           <div className="row">
             <div className="col-sm-5">
               <button
@@ -234,7 +232,7 @@ class ProductSearch extends BaseComponent {
                   headerText="Product Description"
                   field="productDesc"
                 />
-                <ColumnDirective headerText="Batch No" field="batchNo" />
+                {/* <ColumnDirective headerText="Batch No" field="batchNo" />
                 <ColumnDirective
                   headerText="Retail Price"
                   field="retailPrice"
@@ -244,7 +242,7 @@ class ProductSearch extends BaseComponent {
                 <ColumnDirective
                   headerText="Arrival Date"
                   field="arrivalDate"
-                />
+                /> */}
               </ColumnsDirective>
               <Inject services={[Page, Sort]} />
             </GridComponent>
