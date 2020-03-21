@@ -88,7 +88,7 @@ class ProductItemDetails extends BaseComponent {
           title: "Product added"
         });
         this.props.history.push(
-          "/productDetails/" + this.props.match.params.srDrId
+          "/productDetails/" + this.props.match.params.productId
         );
       });
   }

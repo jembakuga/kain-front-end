@@ -6,6 +6,7 @@ import Navigation from "./components/common/navigation";
 import SiDrSearch from "./components/sales/siDrSearch";
 import SiDrDetails from "./components/sales/siDrDetails";
 import CollectionSearch from "./components/collection/collectionSearch";
+import CollectionDetails from "./components/collection/collectionDetails";
 import ProductSearch from "./components/product/productSearch";
 import Home from "./components/common/home";
 import ProductDetails from "./components/product/productDetails";
@@ -13,6 +14,7 @@ import ProductItemDetails from "./components/product/productItemDetails";
 import SiDrItemDetails from "./components/sales/siDrItemDetails";
 import EmployeeSearch from "./components/employee/employeeSearch";
 import EmployeeDetails from "./components/employee/employeeDetails";
+import CollectionItemDetails from "./components/collection/collectionItemDetails";
 
 class App extends Component {
   render() {
@@ -36,7 +38,27 @@ class App extends Component {
             ></Route>
 
             {/* Collection */}
-            <Route path="/collection" component={CollectionSearch}></Route>
+            <Route
+              path="/collectionSearch"
+              component={CollectionSearch}
+            ></Route>
+            <Route
+              path="/collectionSearch/:collectionId"
+              component={CollectionSearch}
+            ></Route>
+            <Route path="/collectionAdd" component={CollectionDetails}></Route>
+            <Route
+              path="/collectionDetails/:collectionId"
+              component={CollectionDetails}
+            ></Route>
+            <Route
+              path="/collectionItemDetails/:collectionId"
+              component={CollectionItemDetails}
+            ></Route>
+            <Route
+              path="/collectionItemDetailsEdit/:collectionId/:collectionItemId"
+              component={CollectionItemDetails}
+            ></Route>
 
             {/* Product */}
             <Route path="/productSearch" component={ProductSearch}></Route>

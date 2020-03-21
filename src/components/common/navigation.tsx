@@ -51,7 +51,7 @@ class Navigation extends Component {
         items: [
           {
             text: "Search Collection",
-            url: "https://www.google.com/search?q=televisions"
+            url: "#/collectionSearch"
           },
           {
             text: "Create Collection",
@@ -72,6 +72,19 @@ class Navigation extends Component {
           }
         ],
         text: "Employee"
+      },
+      {
+        items: [
+          {
+            text: "Report 1",
+            url: "#/employeeSearch"
+          },
+          {
+            text: "Report 2",
+            url: "#/employeeAdd"
+          }
+        ],
+        text: "Report"
       }
     ];
     this.menuComponent = new MenuComponent({ items: this.menuItems });

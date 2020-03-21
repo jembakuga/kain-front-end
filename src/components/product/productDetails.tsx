@@ -16,8 +16,8 @@ import {
   CommandModel,
   Edit,
   EditSettingsModel,
-  CommandColumn
-  // CommandClickEventArgs
+  CommandColumn,
+  CommandClickEventArgs
 } from "@syncfusion/ej2-react-grids";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 
@@ -72,6 +72,7 @@ class ProductDetails extends BaseComponent {
   private dialogInstance: any;
 
   handleSaveBtn() {
+    console.log("asdf");
     axios
       .post("http://localhost:8080/product/saveProduct", {
         productId: this.props.match.params.id
@@ -161,7 +162,44 @@ class ProductDetails extends BaseComponent {
     }
   ];
 
+  public commandClick(args: CommandClickEventArgs): void {
+    if (this.grid) {
+      let data = JSON.parse(JSON.stringify(args.rowData));
+      console.log(data);
+      axios
+        .post("http://localhost:8080/product/deleteProductItemById", {
+          productItemId: data.productItemId
+        })
+        .then(res => {
+          // console.log(res.data.salesOrderNo);
+          this.setState({
+            siDrId: res.data.siDrId,
+            salesOrderNo: res.data.salesOrderNo,
+            soldTo: res.data.soldTo,
+            address: res.data.address,
+            tin: res.data.tin,
+            businessStyle: res.data.businessStyle,
+            poNo: res.data.poNo,
+            terms: res.data.terms,
+            deliveredBy: res.data.deliveredBy,
+            issueDate: res.data.issueDate,
+            date: res.data.date,
+            dueDate: res.data.dueDate
+          });
+        });
+      this.grid.dataSource = this.dataManager;
+      this.query = new Query().addParams(
+        "productId",
+        this.props.match.params.id
+      );
+      // console.log("asdfsda");
+      this.grid.query = this.query;
+      this.grid.refresh();
+    }
+  }
+
   render() {
+    this.commandClick = this.commandClick.bind(this);
     return (
       <div>
         <div className="header">Product Create</div>
@@ -219,7 +257,7 @@ class ProductDetails extends BaseComponent {
           <div>
             <GridComponent
               editSettings={this.editOptions}
-              // commandClick={this.commandClick}
+              commandClick={this.commandClick}
               gridLines={"Both"}
               rowHeight={40}
               allowPaging={true}
