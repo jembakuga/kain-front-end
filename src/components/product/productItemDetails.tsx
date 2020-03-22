@@ -9,30 +9,42 @@ import { DialogUtility } from "@syncfusion/ej2-popups";
 class ProductItemDetails extends BaseComponent {
   state: {
     batchNo: "";
-    retailPrice: 0;
+    basePrice: 0;
     expiryDate: Date;
     arrivalDate: Date;
+    quantity: 0;
+    productId: "";
+    productItemId: "";
   };
 
   constructor(props: any) {
     super(props);
     this.state = {
       batchNo: "",
-      retailPrice: 0,
+      basePrice: 0,
       expiryDate: new Date(),
-      arrivalDate: new Date()
+      arrivalDate: new Date(),
+      quantity: 0,
+      productId: "",
+      productItemId: ""
     };
   }
 
+  handleQuantityChange(e: any) {
+    console.log(e);
+    this.setState({
+      quantity: e.value
+    });
+  }
   handlBatchNoChange(e: any) {
     this.setState({
       batchNo: e.target.value
     });
   }
-  handlRetailPriceChange(e: any) {
+  handleBasePriceChange(e: any) {
     console.log(e);
     this.setState({
-      retailPrice: e.value
+      basePrice: e.value
     });
   }
 
@@ -49,8 +61,11 @@ class ProductItemDetails extends BaseComponent {
   }
 
   componentDidMount() {
-    console.log("parameters: ", this.props.match.params.productItemId);
-
+    console.log("parameters: ", this.props.match.params);
+    this.setState({
+      productId: this.props.match.params.productId,
+      productItemId: this.props.match.params.productItemId
+    });
     if (this.props.match.params.productItemId) {
       axios
         .post("http://localhost:8080/product/findProductItem", {
@@ -59,22 +74,26 @@ class ProductItemDetails extends BaseComponent {
         .then(res => {
           this.setState({
             batchNo: res.data.batchNo,
-            retailPrice: res.data.retailPrice,
+            basePrice: res.data.basePrice,
             expiryDate: res.data.expiryDate,
-            arrivalDate: res.data.arrivalDate
+            arrivalDate: res.data.arrivalDate,
+            quantity: res.data.quantity
           });
         });
     }
   }
 
   handleAddButton() {
+    console.log(this.state);
     axios
       .post("http://localhost:8080/product/saveProductItem", {
         productId: this.props.match.params.productId,
         batchNo: this.state.batchNo,
-        retailPrice: this.state.retailPrice,
+        basePrice: this.state.basePrice,
         expiryDate: this.state.expiryDate,
-        arrivalDate: this.state.arrivalDate
+        arrivalDate: this.state.arrivalDate,
+        quantity: this.state.quantity,
+        productItemId: this.state.productItemId
         // siDrItemId: this.props.match.params.siDrItemId
       })
       .then(res => {
@@ -118,11 +137,22 @@ class ProductItemDetails extends BaseComponent {
           </div>
           <br />
           <div className="row">
-            <div className="col-sm-3">Retail Price: </div>
+            <div className="col-sm-3">Base Price: </div>
             <div className="col-sm-4">
               <NumericTextBoxComponent
-                value={this.state.retailPrice}
-                change={this.handlRetailPriceChange.bind(this)}
+                value={this.state.basePrice}
+                change={this.handleBasePriceChange.bind(this)}
+              />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-sm-3">Quantity: </div>
+            <div className="col-sm-4">
+              <NumericTextBoxComponent
+                format="n"
+                value={this.state.quantity}
+                change={this.handleQuantityChange.bind(this)}
               />
             </div>
           </div>

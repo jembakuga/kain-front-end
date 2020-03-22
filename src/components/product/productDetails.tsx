@@ -269,10 +269,8 @@ class ProductDetails extends BaseComponent {
             >
               <ColumnsDirective>
                 <ColumnDirective headerText="Batch No" field="batchNo" />
-                <ColumnDirective
-                  headerText="Retail Price"
-                  field="retailPrice"
-                />
+                <ColumnDirective headerText="Base Price" field="basePrice" />
+                <ColumnDirective headerText="Quantity" field="quantity" />
                 <ColumnDirective headerText="Expiry Date" field="expiryDate" />
                 <ColumnDirective
                   headerText="Arrival Date"

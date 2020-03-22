@@ -172,6 +172,7 @@ class SiDrItemDetails extends BaseComponent {
             <div className="col-sm-3">Quantity: </div>
             <div className="col-sm-4">
               <NumericTextBoxComponent
+                format="n"
                 value={this.state.quantity}
                 change={this.handleQuantityChange.bind(this)}
               />
