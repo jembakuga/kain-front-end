@@ -19,6 +19,7 @@ class SiDrItemDetails extends BaseComponent {
     unitPrice: 0;
     amount: 0;
     products: [];
+    availProdCount: 0;
   };
 
   constructor(props: any) {
@@ -32,7 +33,8 @@ class SiDrItemDetails extends BaseComponent {
       expiryDate: new Date(),
       unitPrice: 0,
       amount: 0,
-      products: []
+      products: [],
+      availProdCount: 0
     };
   }
   handleQuantityChange(e: any) {
@@ -85,11 +87,27 @@ class SiDrItemDetails extends BaseComponent {
       productId: e.target.value
     });
   }
+  handleAvailProdCountChange(e: any) {
+    this.setState({
+      availProdCount: e.target.value
+    });
+  }
   handleProductChange(e: any) {
-    console.log(e);
+    // console.log(e.target.value);
     this.setState({
       productId: e.target.value
     });
+    // console.log(this.state.productId);
+    axios
+      .post("http://localhost:8080/product/findAvailableProductCount", {
+        productId: e.target.value
+      })
+      .then(res => {
+        console.log(res);
+        this.setState({
+          availProdCount: res.data
+        });
+      });
   }
   componentDidMount() {
     console.log("componentDidMount", this.props.match.params);
@@ -136,18 +154,28 @@ class SiDrItemDetails extends BaseComponent {
         siDrItemId: this.props.match.params.siDrItemId
       })
       .then(res => {
-        console.log(res);
-        // if (this.state.productId) {
-        DialogUtility.alert({
-          animationSettings: { effect: "Zoom" },
-          closeOnEscape: true,
-          content: "Product added to sales invoice/delivery receipt",
-          showCloseIcon: true,
-          title: "Product added"
-        });
-        this.props.history.push(
-          "/siDrDetails/" + this.props.match.params.srDrId
-        );
+        console.log(res.data.msg);
+        if (res.data.msg) {
+          DialogUtility.alert({
+            animationSettings: { effect: "Zoom" },
+            closeOnEscape: true,
+            content: res.data.msg,
+            showCloseIcon: true,
+            title: "Error"
+          });
+        } else {
+          // if (this.state.productId) {
+          DialogUtility.alert({
+            animationSettings: { effect: "Zoom" },
+            closeOnEscape: true,
+            content: "Product added to sales invoice/delivery receipt",
+            showCloseIcon: true,
+            title: "Product added"
+          });
+          this.props.history.push(
+            "/siDrDetails/" + this.props.match.params.srDrId
+          );
+        }
       });
   }
   handleBackBtn() {
@@ -198,20 +226,23 @@ class SiDrItemDetails extends BaseComponent {
                 value={this.state.productId}
                 className="form-control"
                 onChange={this.handleProductChange.bind(this)}
-                onBlur={this.handleProductChange.bind(this)}
+                // onBlur={this.handleProductChange.bind(this)}
               >
                 {ds}
               </select>
-              {/* <ComboBoxComponent
-                width={"100%"}
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-sm-3">Available Product Count: </div>
+            <div className="col-sm-4">
+              <input
+                type="text"
                 className="form-control"
-                dataSource={this.state.products}
-                fields={this.comboFields}
-                value={this.state.productId}
-                // blur={this.handleStatusIdChange.bind(this)}
-                change={this.handleProductChange.bind(this)}
-                // ref={combo => (this.statusCodeCombo = combo)}
-              /> */}
+                readOnly
+                value={this.state.availProdCount}
+                onChange={this.handleAvailProdCountChange.bind(this)}
+              />
             </div>
           </div>
           <br />

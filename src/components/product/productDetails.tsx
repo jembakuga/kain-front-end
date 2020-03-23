@@ -28,13 +28,15 @@ class ProductDetails extends BaseComponent {
     prodCode: "";
     prodDesc: "";
     prodId: "";
+    availProdCount: 0;
   };
   constructor(props: any) {
     super(props);
     this.state = {
       prodCode: "",
       prodDesc: "",
-      prodId: ""
+      prodId: "",
+      availProdCount: 0
     };
   }
 
@@ -57,6 +59,12 @@ class ProductDetails extends BaseComponent {
   handlProdDescChange(e: any) {
     this.setState({
       prodDesc: e.target.value
+    });
+  }
+
+  handlAvailProdCountChange(e: any) {
+    this.setState({
+      availProdCount: e.target.value
     });
   }
 
@@ -116,7 +124,8 @@ class ProductDetails extends BaseComponent {
           this.setState({
             prodCode: res.data.productCode,
             prodDesc: res.data.productDesc,
-            prodId: res.data.productId
+            prodId: res.data.productId,
+            availProdCount: res.data.availProdCount
           });
         });
 
@@ -227,6 +236,20 @@ class ProductDetails extends BaseComponent {
               />
             </div>
           </div>
+          <br />
+          <div className="row">
+            <div className="col-sm-3">Available Product Count: </div>
+            <div className="col-sm-4">
+              <input
+                type="text"
+                readOnly
+                className="form-control"
+                value={this.state.availProdCount}
+                onChange={this.handlAvailProdCountChange.bind(this)}
+              />
+            </div>
+          </div>
+          <br />
           <div className="row">
             <div className="col-sm-5">
               <button

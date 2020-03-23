@@ -110,3 +110,7 @@ body {
   font-size: large;
   font-weight: bold;
 }
+
+.isLossColor {
+  background-color: orangered;
+}

@@ -23,7 +23,8 @@ class SiDrSearch extends BaseComponent {
   state = {
     salesOrderNo: "",
     poNo: "",
-    checkedBy: ""
+    checkedBy: "",
+    type: ""
   };
 
   handleSalesOrderNoChange(e: any) {
@@ -39,6 +40,12 @@ class SiDrSearch extends BaseComponent {
   handleCheckedByChange(e: any) {
     this.setState({
       checkedBy: e.target.value
+    });
+  }
+
+  handleTypeChange(e: any) {
+    this.setState({
+      type: e.target.value
     });
   }
 
@@ -114,6 +121,26 @@ class SiDrSearch extends BaseComponent {
                 className="form-control"
                 onChange={this.handleCheckedByChange.bind(this)}
               />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-sm-3">Type: </div>
+            <div className="col-sm-4">
+              <select
+                value={this.state.type}
+                className="form-control"
+                onChange={this.handleTypeChange.bind(this)}
+                onBlur={this.handleTypeChange.bind(this)}
+              >
+                <option key="" value=""></option>
+                <option key="1" value="1">
+                  Sales Invoice
+                </option>
+                <option key="2" value="2">
+                  Delivery Receipt
+                </option>
+              </select>
             </div>
           </div>
           <br />

@@ -232,6 +232,10 @@ class ProductSearch extends BaseComponent {
                   headerText="Product Description"
                   field="productDesc"
                 />
+                <ColumnDirective
+                  headerText="Available Stocks"
+                  field="availProdCount"
+                />
                 {/* <ColumnDirective headerText="Batch No" field="batchNo" />
                 <ColumnDirective
                   headerText="Retail Price"
