@@ -160,7 +160,7 @@ class CollectionDetails extends BaseComponent {
   }
 
   handleRenderHyperlink(args: any) {
-    console.log(args.data.collectionReportItemId);
+    console.log(args.data);
     if (args.column.field === "checkNo") {
       ReactDOM.render(
         <HashRouter>

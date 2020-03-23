@@ -175,7 +175,8 @@ class SiDrDetails extends BaseComponent {
           dueDate: this.state.dueDate,
           date: this.state.date,
           checkedBy: this.state.checkedBy,
-          deliveredBy: this.state.deliveredBy
+          deliveredBy: this.state.deliveredBy,
+          type: this.state.type
         })
         .then(res => {
           console.log(res);
@@ -224,7 +225,8 @@ class SiDrDetails extends BaseComponent {
             dueDate: res.data.dueDate,
             totalAmount: res.data.totalAmount,
             totalAmountValIncl: res.data.totalSalesVatIncl,
-            addVat: res.data.addVat
+            addVat: res.data.addVat,
+            type: res.data.type
           });
         });
 

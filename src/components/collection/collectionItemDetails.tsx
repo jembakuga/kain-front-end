@@ -4,6 +4,7 @@ import BaseComponent from "../common/baseComponent";
 import axios from "axios";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { DialogUtility } from "@syncfusion/ej2-popups";
+import { NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 
 class CollectionItemDetails extends BaseComponent {
   state: {
@@ -11,11 +12,12 @@ class CollectionItemDetails extends BaseComponent {
     mdHospDrugstore: "";
     nameOfBank: "";
     checkNo: "";
-    siDrNo: "";
+    siDrId: "";
     orPrNo: "";
-    amount: "";
+    amount: 0;
     collectionId: "";
     collectionItemId: "";
+    siDrColl: [];
   };
 
   constructor(props: any) {
@@ -25,19 +27,20 @@ class CollectionItemDetails extends BaseComponent {
       mdHospDrugstore: "",
       nameOfBank: "",
       checkNo: "",
-      siDrNo: "",
+      siDrId: "",
       orPrNo: "",
-      amount: "",
+      amount: 0,
       collectionId: "",
-      collectionItemId: ""
+      collectionItemId: "",
+      siDrColl: []
     };
   }
 
   componentDidMount() {
-    console.log(
-      "collection item details componendDidMount",
-      this.props.match.params
-    );
+    // console.log(
+    //   "collection item details componendDidMount",
+    //   this.props.match.params
+    // );
     this.setState({
       collectionId: this.props.match.params.collectionId,
       collectionItemId: this.props.match.params.collectionItemId
@@ -46,21 +49,30 @@ class CollectionItemDetails extends BaseComponent {
       axios
         .post("http://localhost:8080/collection/findCollectionReportItemById", {
           collectionReportId: this.props.match.params.collectionId,
-          colletionReportItemId: this.props.match.params.collectionItemId
+          collectionReportItemId: this.props.match.params.collectionItemId
         })
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.setState({
             siDrDate: res.data.siDrDate,
             mdHospDrugstore: res.data.mdHospDrugstore,
             nameOfBank: res.data.nameOfBank,
             checkNo: res.data.checkNo,
-            siDrNo: res.data.siDrNo,
+            siDrId: res.data.siDrId,
             orPrNo: res.data.orPrNo,
             amount: res.data.amount
           });
         });
     }
+
+    axios
+      .post("http://localhost:8080/salesOrder/findUncollectedSiDr")
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          siDrColl: res.data.siDrKeyValueList
+        });
+      });
   }
 
   handleSiDrDateChange(e: any) {
@@ -70,7 +82,7 @@ class CollectionItemDetails extends BaseComponent {
   }
   handleSiDrNoChange(e: any) {
     this.setState({
-      siDrNo: e.target.value
+      siDrId: e.target.value
     });
   }
 
@@ -100,7 +112,7 @@ class CollectionItemDetails extends BaseComponent {
 
   handleAmountChange(e: any) {
     this.setState({
-      amount: e.target.value
+      amount: e.value
     });
   }
 
@@ -108,12 +120,12 @@ class CollectionItemDetails extends BaseComponent {
     axios
       .post("http://localhost:8080/collection/saveCollectionReportItem", {
         collectionReportId: this.state.collectionId,
-        colletionReportItemId: this.state.collectionItemId,
+        collectionReportItemId: this.state.collectionItemId,
         siDrDate: this.state.siDrDate,
         mdHospDrugstore: this.state.mdHospDrugstore,
         nameOfBank: this.state.nameOfBank,
         checkNo: this.state.checkNo,
-        siDrNo: this.state.siDrNo,
+        siDrId: this.state.siDrId,
         orPrNo: this.state.orPrNo,
         amount: this.state.amount
       })
@@ -137,6 +149,17 @@ class CollectionItemDetails extends BaseComponent {
   }
 
   render() {
+    let ds = null;
+    console.log(this.state.siDrColl);
+    let count = 0;
+    if (this.state.siDrColl) {
+      ds = this.state.siDrColl.map(item => (
+        <option key={item["key"]} value={item["key"]}>
+          {item["value"]}
+        </option>
+      ));
+    }
+
     return (
       <div>
         <div className="header">Input Collection Item Details</div>
@@ -145,12 +168,21 @@ class CollectionItemDetails extends BaseComponent {
           <div className="row">
             <div className="col-sm-2">SI/DR No: </div>
             <div className="col-sm-3">
-              <input
+              <select
+                value={this.state.siDrId}
+                className="form-control"
+                onChange={this.handleSiDrNoChange.bind(this)}
+                // onBlur={this.handleProductChange.bind(this)}
+              >
+                <option></option>
+                {ds}
+              </select>
+              {/* <input
                 type="text"
                 className="form-control"
-                value={this.state.siDrNo}
+                value={this.state.siDrId}
                 onChange={this.handleSiDrNoChange.bind(this)}
-              />
+              /> */}
             </div>
             <div className="col-sm-2">SI/DR Date: </div>
             <div className="col-sm-3">
@@ -208,11 +240,10 @@ class CollectionItemDetails extends BaseComponent {
           <div className="row">
             <div className="col-sm-2">Amount: </div>
             <div className="col-sm-3">
-              <input
-                type="text"
-                className="form-control"
+              <NumericTextBoxComponent
+                format="n"
                 value={this.state.amount}
-                onChange={this.handleAmountChange.bind(this)}
+                change={this.handleAmountChange.bind(this)}
               />
             </div>
           </div>
