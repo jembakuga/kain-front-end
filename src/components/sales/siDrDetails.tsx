@@ -322,12 +322,14 @@ class SiDrDetails extends BaseComponent {
   public commandClick(args: CommandClickEventArgs): void {
     if (this.grid) {
       let data = JSON.parse(JSON.stringify(args.rowData));
+      console.log(data);
       axios
         .post("http://localhost:8080/salesOrder/deleteSiDrItemById", {
-          siDrItemId: data.siDrItemId
+          siDrItemId: data.siDrItemId,
+          productId: data.productBean.productId
         })
         .then(res => {
-          console.log(res.data.salesOrderNo);
+          // console.log(res.data.salesOrderNo);
           this.setState({
             siDrId: res.data.siDrId,
             salesOrderNo: res.data.salesOrderNo,
@@ -354,15 +356,10 @@ class SiDrDetails extends BaseComponent {
   public rowDataBound(args: RowDataBoundEventArgs) {
     console.log(args.row);
     if (args.row) {
-      console.log(getValue("isLoss", args.data));
+      // console.log(getValue("isLoss", args.data));
       if (getValue("isLoss", args.data) === "Y") {
         args.row.classList.add("isLossColor");
       }
-      // else if (getValue("Freight", args.data) < 80) {
-      //   args.row.classList.add("below-80");
-      // } else {
-      //   args.row.classList.add("above-80");
-      // }
     }
   }
 
@@ -667,7 +664,7 @@ class SiDrDetails extends BaseComponent {
                       field="productBean.productCode"
                     />
                     <ColumnDirective
-                      headerText="Description"
+                      headerText="Product Description"
                       field="description"
                     />
                     <ColumnDirective headerText="Quantity" field="quantity" />
@@ -695,6 +692,11 @@ class SiDrDetails extends BaseComponent {
                       headerText="Action"
                       width="120"
                       commands={this.commands}
+                    />
+                    <ColumnDirective visible={false} field="siDrItemId" />
+                    <ColumnDirective
+                      visible={false}
+                      field="productBean.productId"
                     />
                   </ColumnsDirective>
                   <Inject services={[Edit, CommandColumn]} />

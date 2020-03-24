@@ -7,28 +7,31 @@ import axios from "axios";
 import { DialogUtility } from "@syncfusion/ej2-popups";
 
 class ProductItemDetails extends BaseComponent {
-  state: {
-    batchNo: "";
-    basePrice: 0;
-    expiryDate: Date;
-    arrivalDate: Date;
-    quantity: 0;
-    productId: "";
-    productItemId: "";
+  state = {
+    batchNo: "",
+    basePrice: 0,
+    expiryDate: new Date(),
+    arrivalDate: new Date(),
+    quantity: 0,
+    productId: "",
+    productItemId: "",
+    isAjaxInProgress: false,
+    isEdit: false
   };
 
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      batchNo: "",
-      basePrice: 0,
-      expiryDate: new Date(),
-      arrivalDate: new Date(),
-      quantity: 0,
-      productId: "",
-      productItemId: ""
-    };
-  }
+  // constructor(props: any) {
+  //   super(props);
+  //   this.state = {
+  //     batchNo: "",
+  //     basePrice: 0,
+  //     expiryDate: new Date(),
+  //     arrivalDate: new Date(),
+  //     quantity: 0,
+  //     productId: "",
+  //     productItemId: "",
+  //     loading: false
+  //   };
+  // }
 
   handleQuantityChange(e: any) {
     console.log(e);
@@ -64,7 +67,8 @@ class ProductItemDetails extends BaseComponent {
     console.log("parameters: ", this.props.match.params);
     this.setState({
       productId: this.props.match.params.productId,
-      productItemId: this.props.match.params.productItemId
+      productItemId: this.props.match.params.productItemId,
+      isEdit: this.props.match.params.productItemId ? true : false
     });
     if (this.props.match.params.productItemId) {
       axios
@@ -84,6 +88,9 @@ class ProductItemDetails extends BaseComponent {
   }
 
   handleAddButton() {
+    this.setState({
+      isAjaxInProgress: true
+    });
     console.log(this.state);
     axios
       .post("http://localhost:8080/product/saveProductItem", {
@@ -97,18 +104,21 @@ class ProductItemDetails extends BaseComponent {
         // siDrItemId: this.props.match.params.siDrItemId
       })
       .then(res => {
-        console.log(res);
+        console.log(this.state);
         // if (this.state.productId) {
-        DialogUtility.alert({
+        DialogUtility.confirm({
           animationSettings: { effect: "Zoom" },
           closeOnEscape: true,
           content: "Product added to sales invoice/delivery receipt",
           showCloseIcon: true,
           title: "Product added"
         });
-        this.props.history.push(
-          "/productDetails/" + this.props.match.params.productId
-        );
+        // this.props.history.push(
+        //   "/productDetails/" + this.props.match.params.productId
+        // );
+        this.setState({
+          isAjaxInProgress: false
+        });
       });
   }
 
@@ -123,6 +133,9 @@ class ProductItemDetails extends BaseComponent {
       <div>
         <div className="header">Input Product Details</div>
         <br />
+        {/* {this.state.isAjaxInProgress ? (
+          <h1>Loading</h1>
+        ) : ( */}
         <div className="container-fluid">
           <div className="row">
             <div className="col-sm-3">Batch No: </div>
@@ -130,6 +143,7 @@ class ProductItemDetails extends BaseComponent {
               <input
                 type="text"
                 className="form-control"
+                // readOnly={this.state.isEdit}
                 value={this.state.batchNo}
                 onChange={this.handlBatchNoChange.bind(this)}
               />
@@ -140,6 +154,7 @@ class ProductItemDetails extends BaseComponent {
             <div className="col-sm-3">Base Price: </div>
             <div className="col-sm-4">
               <NumericTextBoxComponent
+                // readonly={this.state.isEdit}
                 value={this.state.basePrice}
                 change={this.handleBasePriceChange.bind(this)}
               />
@@ -150,6 +165,7 @@ class ProductItemDetails extends BaseComponent {
             <div className="col-sm-3">Quantity: </div>
             <div className="col-sm-4">
               <NumericTextBoxComponent
+                // readonly={this.state.isEdit}
                 format="n"
                 value={this.state.quantity}
                 change={this.handleQuantityChange.bind(this)}
@@ -161,6 +177,7 @@ class ProductItemDetails extends BaseComponent {
             <div className="col-sm-3">Expiry Date: </div>
             <div className="col-sm-4">
               <DatePickerComponent
+                // readonly={this.state.isEdit}
                 id="expiryDate"
                 value={this.state.expiryDate}
                 change={this.handlExpiryDateChange.bind(this)}
@@ -172,6 +189,7 @@ class ProductItemDetails extends BaseComponent {
             <div className="col-sm-3">Arrival Date: </div>
             <div className="col-sm-4">
               <DatePickerComponent
+                // readonly={this.state.isEdit}
                 id="arrivalDate"
                 value={this.state.arrivalDate}
                 change={this.handlArrivalDateChange.bind(this)}
@@ -183,7 +201,9 @@ class ProductItemDetails extends BaseComponent {
           <div className="row">
             <div className="col-sm-5">
               <button
+                // hidden={this.state.isEdit}
                 type="button"
+                disabled={this.state.isAjaxInProgress}
                 className="btn btn-outline-primary btn-sm mr-2"
                 onClick={this.handleAddButton.bind(this)}
               >
@@ -199,6 +219,7 @@ class ProductItemDetails extends BaseComponent {
             </div>
           </div>
         </div>
+        {/* )} */}
       </div>
     );
   }

@@ -99,13 +99,14 @@ class SiDrItemDetails extends BaseComponent {
     });
     // console.log(this.state.productId);
     axios
-      .post("http://localhost:8080/product/findAvailableProductCount", {
+      .post("http://localhost:8080/product/findProdDescAvailableProductCount", {
         productId: e.target.value
       })
       .then(res => {
         console.log(res);
         this.setState({
-          availProdCount: res.data
+          availProdCount: res.data.count,
+          description: res.data.prodDesc
         });
       });
   }
@@ -124,7 +125,6 @@ class SiDrItemDetails extends BaseComponent {
           siDrItemId: this.props.match.params.siDrItemId
         })
         .then(res => {
-          console.log(res.data.productBean.productId);
           this.setState({
             quantity: res.data.quantity,
             unit: res.data.unit,
@@ -135,6 +135,16 @@ class SiDrItemDetails extends BaseComponent {
             unitPrice: res.data.unitPrice,
             amount: res.data.amount
           });
+          axios
+            .post("http://localhost:8080/product/findAvailableProductCount", {
+              productId: res.data.productBean.productId
+            })
+            .then(res => {
+              console.log(res);
+              this.setState({
+                availProdCount: res.data
+              });
+            });
         });
     }
   }
@@ -252,6 +262,7 @@ class SiDrItemDetails extends BaseComponent {
               <input
                 type="text"
                 className="form-control"
+                readOnly
                 value={this.state.description}
                 onChange={this.handleDescriptionChange.bind(this)}
               />

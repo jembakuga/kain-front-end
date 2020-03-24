@@ -18,11 +18,7 @@ class ProductSearch extends BaseComponent {
   state: {
     prodCode: "";
     prodDesc: "";
-    // batchNo: "";
     prodId: "";
-    // retailPrice: null;
-    // expiryDate: null;
-    // arrivalDate: null;
   };
 
   constructor(props: any) {
@@ -30,17 +26,11 @@ class ProductSearch extends BaseComponent {
     this.state = {
       prodCode: "",
       prodDesc: "",
-      // batchNo: "",
       prodId: ""
-      // retailPrice: null,
-      // expiryDate: null,
-      // arrivalDate: null
     };
   }
 
-  componentDidMount() {
-    // console.log("componentDidMount");
-  }
+  componentDidMount() {}
 
   handlProdCodeChange(e: any) {
     this.setState({
@@ -54,31 +44,6 @@ class ProductSearch extends BaseComponent {
     });
   }
 
-  // handlBatchNoChange(e: any) {
-  //   this.setState({
-  //     batchNo: e.target.value
-  //   });
-  // }
-
-  // handlRetailPriceChange(e: any) {
-  //   // console.log(e);
-  //   this.setState({
-  //     retailPrice: e.value
-  //   });
-  // }
-
-  // handlExpiryDateChange(e: any) {
-  //   this.setState({
-  //     expiryDate: e.value
-  //   });
-  // }
-
-  // handlArrivalDateChange(e: any) {
-  //   this.setState({
-  //     arrivalDate: e.value
-  //   });
-  // }
-
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/product/findProducts",
     adaptor: new UrlAdaptor()
@@ -91,11 +56,6 @@ class ProductSearch extends BaseComponent {
       this.query = new Query()
         .addParams("productCode", this.state.prodCode)
         .addParams("productDesc", this.state.prodDesc);
-      // .addParams("batchNo", this.state.batchNo)
-      // .addParams("expiryDate", this.state.expiryDate)
-      // .addParams("arrivalDate", this.state.arrivalDate)
-      // .addParams("retailPrice", this.state.retailPrice);
-      // console.log("asdfsda");
       this.grid.query = this.query;
       this.grid.refresh();
     }
@@ -106,12 +66,10 @@ class ProductSearch extends BaseComponent {
   }
 
   handleAddBtn() {
-    // console.log("handleAddBtn");
     this.props.history.push("/productAdd");
   }
 
   handleRenderProdCodeHyperlink(args: any) {
-    // console.log(args.data);
     if (args.column.field === "productCode") {
       ReactDOM.render(
         <HashRouter>
