@@ -136,13 +136,17 @@ class SiDrItemDetails extends BaseComponent {
             amount: res.data.amount
           });
           axios
-            .post("http://localhost:8080/product/findAvailableProductCount", {
-              productId: res.data.productBean.productId
-            })
+            .post(
+              "http://localhost:8080/product/findProdDescAvailableProductCount",
+              {
+                productId: res.data.productBean.productId
+              }
+            )
             .then(res => {
               console.log(res);
               this.setState({
-                availProdCount: res.data
+                availProdCount: res.data.count,
+                description: res.data.prodDesc
               });
             });
         });

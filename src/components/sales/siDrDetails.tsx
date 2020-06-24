@@ -236,7 +236,6 @@ class SiDrDetails extends BaseComponent {
           "siDrId",
           this.props.match.params.id
         );
-        // console.log("asdfsda");
         this.grid.query = this.query;
       }
     }
@@ -259,29 +258,6 @@ class SiDrDetails extends BaseComponent {
         issueDate: { required: true },
         checkedBy: { required: true },
         deliveredBy: { required: true }
-        // type: { required: true },
-        // type: { required: true },
-        // type: { required: true }
-
-        //   siDrId: "",
-        // salesOrderNo: "",
-        // poNo: "",
-        // checkedBy: 0,
-        // soldTo: "",
-        // address: "",
-        // tin: "",
-        // businessStyle: "",
-        // terms: "",
-        // deliveredBy: 0,
-        // totalAmount: 0,
-        // totalAmountValIncl: 0,
-        // addVat: 0,
-        // dueDate: new Date(),
-        // date: new Date(),
-        // issueDate: new Date(),
-        // checkers: [],
-        // medReps: [],
-        // type: ""
       }
     };
 

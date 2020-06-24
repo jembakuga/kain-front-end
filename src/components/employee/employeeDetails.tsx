@@ -21,26 +21,26 @@ class EmployeeDetails extends BaseComponent {
       employeeName: "",
       role: 0,
       employeeType: 0,
-      joinedDate: new Date()
+      joinedDate: new Date(),
     };
   }
 
   handlEmployeeNameChange(e: any) {
     this.setState({
-      employeeName: e.target.value
+      employeeName: e.target.value,
     });
   }
 
   handleEmployeeTypeChange(e: any) {
     console.log(e.target.value);
     this.setState({
-      employeeType: e.target.value
+      employeeType: e.target.value,
     });
   }
 
   handlJoinedDateChange(e: any) {
     this.setState({
-      joinedDate: e.value
+      joinedDate: e.value,
     });
   }
 
@@ -52,9 +52,9 @@ class EmployeeDetails extends BaseComponent {
         employeeName: this.state.employeeName,
         role: this.state.role,
         employeeType: this.state.employeeType,
-        joinedDate: this.state.joinedDate
+        joinedDate: this.state.joinedDate,
       })
-      .then(res => {
+      .then((res) => {
         console.log(res);
         // if (this.state.productId) {
         DialogUtility.alert({
@@ -62,18 +62,18 @@ class EmployeeDetails extends BaseComponent {
           closeOnEscape: true,
           content: "Employee " + this.state.employeeName + " created",
           showCloseIcon: true,
-          title: "Employee added"
+          title: "Employee added",
         });
         this.props.history.push("/employeeSearch/");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         DialogUtility.alert({
           animationSettings: { effect: "Zoom" },
           closeOnEscape: true,
           content:
             "There was an error creating the user, please contact administrator",
           showCloseIcon: true,
-          title: "Employee Creation Error"
+          title: "Employee Creation Error",
         });
       });
   }
@@ -88,16 +88,16 @@ class EmployeeDetails extends BaseComponent {
     if (this.props.match.params.employeeId) {
       axios
         .post("http://localhost:8080/employee/findEmployeeById", {
-          employeeId: this.props.match.params.employeeId
+          employeeId: this.props.match.params.employeeId,
         })
-        .then(res => {
+        .then((res) => {
           console.log(res.data);
           this.setState({
             employeeId: res.data.employeeId,
             employeeName: res.data.employeeName,
             role: res.data.role,
             employeeType: res.data.employeeType,
-            joinedDate: res.data.joinedDate
+            joinedDate: res.data.joinedDate,
           });
         });
     }
