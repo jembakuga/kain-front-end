@@ -34,97 +34,99 @@ class SiDrItemDetails extends BaseComponent {
       unitPrice: 0,
       amount: 0,
       products: [],
-      availProdCount: 0
+      availProdCount: 0,
     };
   }
   handleQuantityChange(e: any) {
     this.setState({
-      quantity: e.value
+      quantity: e.value,
     });
     if (this.state.quantity && this.state.unitPrice) {
       this.setState({
-        amount: this.state.quantity * this.state.unitPrice
+        amount: this.state.quantity * this.state.unitPrice,
       });
     }
   }
   handleUnitChange(e: any) {
     this.setState({
-      unit: e.target.value
+      unit: e.target.value,
     });
   }
   handleDescriptionChange(e: any) {
     this.setState({
-      description: e.target.value
+      description: e.target.value,
     });
   }
   handleLotBatchNoChange(e: any) {
     this.setState({
-      lotBatchNo: e.target.value
+      lotBatchNo: e.target.value,
     });
   }
   handlExpiryDateChange(e: any) {
     this.setState({
-      expiryDate: e.value
+      expiryDate: e.value,
     });
   }
   handleUnitPriceChange(e: any) {
     this.setState({
-      unitPrice: e.value
+      unitPrice: e.value,
     });
     if (this.state.quantity && this.state.unitPrice) {
       this.setState({
-        amount: this.state.quantity * this.state.unitPrice
+        amount: this.state.quantity * this.state.unitPrice,
       });
     }
   }
   handleAmountChange(e: any) {
     this.setState({
-      amount: e.value
+      amount: e.value,
     });
   }
   handleProductIdChange(e: any) {
     this.setState({
-      productId: e.target.value
+      productId: e.target.value,
     });
   }
   handleAvailProdCountChange(e: any) {
     this.setState({
-      availProdCount: e.target.value
+      availProdCount: e.target.value,
     });
   }
   handleProductChange(e: any) {
     // console.log(e.target.value);
     this.setState({
-      productId: e.target.value
+      productId: e.target.value,
     });
     // console.log(this.state.productId);
     axios
       .post("http://localhost:8080/product/findProdDescAvailableProductCount", {
-        productId: e.target.value
+        productId: e.target.value,
       })
-      .then(res => {
+      .then((res) => {
         console.log(res);
         this.setState({
           availProdCount: res.data.count,
-          description: res.data.prodDesc
+          description: res.data.prodDesc,
         });
       });
   }
   componentDidMount() {
     console.log("componentDidMount", this.props.match.params);
-    axios.post("http://localhost:8080/salesOrder/findAllProducts").then(res => {
-      console.log(res.data);
-      this.setState({
-        products: res.data.prodList
+    axios
+      .post("http://localhost:8080/salesOrder/findAllProducts")
+      .then((res) => {
+        console.log(res.data);
+        this.setState({
+          products: res.data.prodList,
+        });
       });
-    });
     // this.handleProductChange(this);
     if (this.props.match.params.siDrItemId) {
       axios
         .post("http://localhost:8080/salesOrder/findSiDrItemById", {
-          siDrItemId: this.props.match.params.siDrItemId
+          siDrItemId: this.props.match.params.siDrItemId,
         })
-        .then(res => {
+        .then((res) => {
           this.setState({
             quantity: res.data.quantity,
             unit: res.data.unit,
@@ -133,20 +135,20 @@ class SiDrItemDetails extends BaseComponent {
             lotBatchNo: res.data.lotBatchNo,
             expiryDate: res.data.expiryDate,
             unitPrice: res.data.unitPrice,
-            amount: res.data.amount
+            amount: res.data.amount,
           });
           axios
             .post(
               "http://localhost:8080/product/findProdDescAvailableProductCount",
               {
-                productId: res.data.productBean.productId
+                productId: res.data.productBean.productId,
               }
             )
-            .then(res => {
+            .then((res) => {
               console.log(res);
               this.setState({
                 availProdCount: res.data.count,
-                description: res.data.prodDesc
+                description: res.data.prodDesc,
               });
             });
         });
@@ -165,9 +167,9 @@ class SiDrItemDetails extends BaseComponent {
         expiryDate: this.state.expiryDate,
         amount: this.state.amount,
         unitPrice: this.state.unitPrice,
-        siDrItemId: this.props.match.params.siDrItemId
+        siDrItemId: this.props.match.params.siDrItemId,
       })
-      .then(res => {
+      .then((res) => {
         console.log(res.data.msg);
         if (res.data.msg) {
           DialogUtility.alert({
@@ -175,7 +177,7 @@ class SiDrItemDetails extends BaseComponent {
             closeOnEscape: true,
             content: res.data.msg,
             showCloseIcon: true,
-            title: "Error"
+            title: "Error",
           });
         } else {
           // if (this.state.productId) {
@@ -184,7 +186,7 @@ class SiDrItemDetails extends BaseComponent {
             closeOnEscape: true,
             content: "Product added to sales invoice/delivery receipt",
             showCloseIcon: true,
-            title: "Product added"
+            title: "Product added",
           });
           this.props.history.push(
             "/siDrDetails/" + this.props.match.params.srDrId
@@ -199,7 +201,7 @@ class SiDrItemDetails extends BaseComponent {
     let ds = null;
     let count = 0;
     if (this.state.products) {
-      ds = this.state.products.map(item => (
+      ds = this.state.products.map((item) => (
         <option key={item["key"]} value={item["key"]}>
           {item["value"]}
         </option>
@@ -210,29 +212,6 @@ class SiDrItemDetails extends BaseComponent {
         <div className="header">Input Product</div>
         <br />
         <div className="container-fluid">
-          <div className="row">
-            <div className="col-sm-3">Quantity: </div>
-            <div className="col-sm-4">
-              <NumericTextBoxComponent
-                format="n"
-                value={this.state.quantity}
-                change={this.handleQuantityChange.bind(this)}
-              />
-            </div>
-          </div>
-          <br />
-          <div className="row">
-            <div className="col-sm-3">Unit: </div>
-            <div className="col-sm-4">
-              <input
-                type="text"
-                className="form-control"
-                value={this.state.unit}
-                onChange={this.handleUnitChange.bind(this)}
-              />
-            </div>
-          </div>
-          <br />
           <div className="row">
             <div className="col-sm-3">Product: </div>
             <div className="col-sm-4">
@@ -273,6 +252,31 @@ class SiDrItemDetails extends BaseComponent {
             </div>
           </div>
           <br />
+
+          <div className="row">
+            <div className="col-sm-3">Quantity: </div>
+            <div className="col-sm-4">
+              <NumericTextBoxComponent
+                format="n"
+                value={this.state.quantity}
+                change={this.handleQuantityChange.bind(this)}
+              />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-sm-3">Unit: </div>
+            <div className="col-sm-4">
+              <input
+                type="text"
+                className="form-control"
+                value={this.state.unit}
+                onChange={this.handleUnitChange.bind(this)}
+              />
+            </div>
+          </div>
+          <br />
+
           <div className="row">
             <div className="col-sm-3">Lot/Batch No: </div>
             <div className="col-sm-4">
