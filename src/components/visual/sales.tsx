@@ -68,12 +68,6 @@ class Sales extends BaseComponent {
     //this.datalabel = { visible: true, angle: 90, enableRotation: true };
   }
 
-  private dataManager: DataManager = new DataManager({
-    url:
-      "http://localhost:8080/collection/findCollectionReportItemByCollectionReport",
-    adaptor: new UrlAdaptor(),
-  });
-
   handleYearChange(e: any) {
     this.setState({
       year: e.target.value,

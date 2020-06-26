@@ -7,7 +7,7 @@ import {
   ColumnDirective,
   Page,
   Sort,
-  Inject
+  Inject,
 } from "@syncfusion/ej2-react-grids";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import axios from "axios";
@@ -38,33 +38,35 @@ class CollectionDetails extends BaseComponent {
       submittedBy: "",
       postedBy: "",
       checkedBy: "",
-      employeeList: []
+      employeeList: [],
     };
   }
 
   private dataManager: DataManager = new DataManager({
     url:
       "http://localhost:8080/collection/findCollectionReportItemByCollectionReport",
-    adaptor: new UrlAdaptor()
+    adaptor: new UrlAdaptor(),
   });
 
   componentDidMount() {
     console.log("componentDidMount", this.props.match.params.collectionId);
 
-    axios.post("http://localhost:8080/employee/findAllEmployees").then(res => {
-      console.log(res.data);
-      this.setState({
-        employeeList: res.data
+    axios
+      .post("http://localhost:8080/employee/findAllEmployees")
+      .then((res) => {
+        console.log(res.data);
+        this.setState({
+          employeeList: res.data,
+        });
       });
-    });
 
     if (this.props.match.params.collectionId) {
       axios
         .post("http://localhost:8080/collection/findCollectionById", {
-          collectionReportId: this.props.match.params.collectionId
+          collectionReportId: this.props.match.params.collectionId,
         })
-        .then(res => {
-          console.log(res.data);
+        .then((res) => {
+          console.log(res.data.collectionDate);
           this.setState({
             area: res.data.area,
             collectionDate: res.data.collectionDate,
@@ -72,7 +74,7 @@ class CollectionDetails extends BaseComponent {
             postedBy: res.data.postedBy ? res.data.postedBy.employeeId : "",
             submittedBy: res.data.submittedBy
               ? res.data.submittedBy.employeeId
-              : ""
+              : "",
           });
         });
 
@@ -89,31 +91,31 @@ class CollectionDetails extends BaseComponent {
 
   handleAreaChange(e: any) {
     this.setState({
-      area: e.target.value
+      area: e.target.value,
     });
   }
 
   handleCollectionDateChange(e: any) {
     this.setState({
-      collectionDate: e.value
+      collectionDate: e.value,
     });
   }
 
   handleSubmittedByChange(e: any) {
     this.setState({
-      submittedBy: e.target.value
+      submittedBy: e.target.value,
     });
   }
 
   handlePostedByChange(e: any) {
     this.setState({
-      postedBy: e.target.value
+      postedBy: e.target.value,
     });
   }
 
   handleCheckedByChange(e: any) {
     this.setState({
-      checkedBy: e.target.value
+      checkedBy: e.target.value,
     });
   }
 
@@ -129,12 +131,12 @@ class CollectionDetails extends BaseComponent {
         postedById: this.state.postedBy,
         checkedById: this.state.checkedBy,
         collectionDate: this.state.collectionDate,
-        collectionReportId: this.props.match.params.collectionId
+        collectionReportId: this.props.match.params.collectionId,
       })
-      .then(res => {
+      .then((res) => {
         console.log(res);
         this.setState({
-          collectionReportId: this.props.match.params.collectionId
+          collectionReportId: this.props.match.params.collectionId,
         });
         if (this.state.collectionReportId) {
           DialogUtility.alert({
@@ -143,7 +145,7 @@ class CollectionDetails extends BaseComponent {
             content: "Area " + this.state.area + " created",
             // okButton: { text: "OK", click: this.okClick.bind(this) },
             showCloseIcon: true,
-            title: "Area Created"
+            title: "Area Created",
           });
         }
         console.log("collectionReportId " + this.state.collectionReportId);
@@ -185,7 +187,7 @@ class CollectionDetails extends BaseComponent {
     let ds = null;
     let count = 0;
     if (this.state.employeeList) {
-      ds = this.state.employeeList.map(item => (
+      ds = this.state.employeeList.map((item) => (
         <option key={item["employeeId"]} value={item["employeeId"]}>
           {item["employeeName"]}
         </option>
@@ -213,6 +215,7 @@ class CollectionDetails extends BaseComponent {
             <div className="col-sm-4">
               <DatePickerComponent
                 id="collectionDate"
+                value={this.state.collectionDate}
                 change={this.handleCollectionDateChange.bind(this)}
               />
             </div>
@@ -295,7 +298,7 @@ class CollectionDetails extends BaseComponent {
               pageSettings={{ pageCount: 5, pageSize: 10 }}
               style={{ width: "100%" }}
               allowSorting={true}
-              ref={g => (this.grid = g)}
+              ref={(g) => (this.grid = g)}
               queryCellInfo={this.handleRenderHyperlink.bind(this)}
             >
               <ColumnsDirective>

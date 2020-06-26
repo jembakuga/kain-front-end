@@ -15,7 +15,7 @@ import {
   EditSettingsModel,
   CommandColumn,
   CommandClickEventArgs,
-  RowDataBoundEventArgs
+  RowDataBoundEventArgs,
 } from "@syncfusion/ej2-react-grids";
 import { getValue } from "@syncfusion/ej2-base";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
@@ -71,84 +71,84 @@ class SiDrDetails extends BaseComponent {
       issueDate: new Date(),
       checkers: [],
       medReps: [],
-      type: ""
+      type: "",
     };
   }
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/salesOrder/findSiDrItemsBySiDr",
-    adaptor: new UrlAdaptor()
+    adaptor: new UrlAdaptor(),
   });
 
   public editOptions: EditSettingsModel = {
     allowEditing: true,
-    allowDeleting: true
+    allowDeleting: true,
   };
 
   handleSalesOrderNoChange(e: any) {
     this.setState({
-      salesOrderNo: e.target.value
+      salesOrderNo: e.target.value,
     });
   }
   handlePoNoChange(e: any) {
     this.setState({
-      poNo: e.target.value
+      poNo: e.target.value,
     });
   }
   handleCheckedByChange(e: any) {
     this.setState({
-      checkedBy: e.target.value
+      checkedBy: e.target.value,
     });
   }
   handleSoldToChange(e: any) {
     this.setState({
-      soldTo: e.target.value
+      soldTo: e.target.value,
     });
   }
   handlDueDateChange(e: any) {
     this.setState({
-      dueDate: e.value
+      dueDate: e.value,
     });
   }
   handleAddressChange(e: any) {
     this.setState({
-      address: e.target.value
+      address: e.target.value,
     });
   }
   handleTinChange(e: any) {
     this.setState({
-      tin: e.target.value
+      tin: e.target.value,
     });
   }
   handleTermsChange(e: any) {
     this.setState({
-      terms: e.target.value
+      terms: e.target.value,
     });
   }
   handleBusinessStlyeChange(e: any) {
     this.setState({
-      businessStyle: e.target.value
+      businessStyle: e.target.value,
     });
   }
   handleDeliveredByChange(e: any) {
     console.log(e.target.value);
     this.setState({
-      deliveredBy: e.target.value
+      deliveredBy: e.target.value,
     });
   }
   handleDateChange(e: any) {
     this.setState({
-      date: e.value
+      date: e.value,
     });
   }
   handleIssueDateChange(e: any) {
     this.setState({
-      issueDate: e.value
+      issueDate: e.value,
     });
   }
 
   handleTypeChange(e: any) {
     this.setState({
-      type: e.target.value
+      type: e.target.value,
     });
   }
 
@@ -176,12 +176,12 @@ class SiDrDetails extends BaseComponent {
           date: this.state.date,
           checkedBy: this.state.checkedBy,
           deliveredBy: this.state.deliveredBy,
-          type: this.state.type
+          type: this.state.type,
         })
-        .then(res => {
+        .then((res) => {
           console.log(res);
           this.setState({
-            siDrId: res.data.siDrId
+            siDrId: res.data.siDrId,
           });
           if (this.state.siDrId) {
             DialogUtility.alert({
@@ -193,7 +193,7 @@ class SiDrDetails extends BaseComponent {
                 " created",
               // okButton: { text: "OK", click: this.okClick.bind(this) },
               showCloseIcon: true,
-              title: "Sales Invoice/Delivery Receipt Created"
+              title: "Sales Invoice/Delivery Receipt Created",
             });
           }
         });
@@ -205,10 +205,10 @@ class SiDrDetails extends BaseComponent {
     if (this.props.match.params.id) {
       axios
         .post("http://localhost:8080/salesOrder/findSiDr", {
-          siDrId: this.props.match.params.id
+          siDrId: this.props.match.params.id,
         })
-        .then(res => {
-          console.log(res.data.salesOrderNo);
+        .then((res) => {
+          console.log(res.data.issueDate);
           this.setState({
             siDrId: res.data.siDrId,
             salesOrderNo: res.data.salesOrderNo,
@@ -226,7 +226,7 @@ class SiDrDetails extends BaseComponent {
             totalAmount: res.data.totalAmount,
             totalAmountValIncl: res.data.totalSalesVatIncl,
             addVat: res.data.addVat,
-            type: res.data.type
+            type: res.data.type,
           });
         });
 
@@ -241,11 +241,11 @@ class SiDrDetails extends BaseComponent {
     }
     axios
       .post("http://localhost:8080/employee/findEmployeeForDropdown")
-      .then(res => {
+      .then((res) => {
         console.log(res.data);
         this.setState({
           checkers: res.data.checkers,
-          medReps: res.data.medReps
+          medReps: res.data.medReps,
         });
       });
 
@@ -257,8 +257,8 @@ class SiDrDetails extends BaseComponent {
         address: { required: true },
         issueDate: { required: true },
         checkedBy: { required: true },
-        deliveredBy: { required: true }
-      }
+        deliveredBy: { required: true },
+      },
     };
 
     this.formObject = new FormValidator("#form-element", requiredFields);
@@ -290,9 +290,9 @@ class SiDrDetails extends BaseComponent {
     {
       buttonOption: {
         content: "Remove",
-        cssClass: "e-flat"
-      }
-    }
+        cssClass: "e-flat",
+      },
+    },
   ];
 
   public commandClick(args: CommandClickEventArgs): void {
@@ -302,9 +302,9 @@ class SiDrDetails extends BaseComponent {
       axios
         .post("http://localhost:8080/salesOrder/deleteSiDrItemById", {
           siDrItemId: data.siDrItemId,
-          productId: data.productBean.productId
+          productId: data.productBean.productId,
         })
-        .then(res => {
+        .then((res) => {
           // console.log(res.data.salesOrderNo);
           this.setState({
             siDrId: res.data.siDrId,
@@ -318,7 +318,7 @@ class SiDrDetails extends BaseComponent {
             deliveredBy: res.data.deliveredBy,
             issueDate: res.data.issueDate,
             date: res.data.date,
-            dueDate: res.data.dueDate
+            dueDate: res.data.dueDate,
           });
         });
       this.grid.dataSource = this.dataManager;
@@ -343,7 +343,7 @@ class SiDrDetails extends BaseComponent {
     let medReps = null;
     let checkers = null;
     if (this.state.medReps) {
-      medReps = this.state.medReps.map(item => (
+      medReps = this.state.medReps.map((item) => (
         // console.log(item)
         <option key={item["employeeId"]} value={item["employeeId"]}>
           {item["employeeName"]}
@@ -352,7 +352,7 @@ class SiDrDetails extends BaseComponent {
       // console.log("medReps", medReps);
     }
     if (this.state.checkers) {
-      checkers = this.state.checkers.map(item => (
+      checkers = this.state.checkers.map((item) => (
         // console.log(item)
         <option key={item["employeeId"]} value={item["employeeId"]}>
           {item["employeeName"]}
@@ -630,7 +630,7 @@ class SiDrDetails extends BaseComponent {
                   pageSettings={{ pageCount: 5, pageSize: 10 }}
                   style={{ width: "100%" }}
                   allowSorting={true}
-                  ref={g => (this.grid = g)}
+                  ref={(g) => (this.grid = g)}
                   queryCellInfo={this.handleProductCodeHyperlink.bind(this)}
                   rowDataBound={this.rowDataBound}
                 >

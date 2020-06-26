@@ -5,7 +5,7 @@ import {
   ColumnDirective,
   Page,
   Sort,
-  Inject
+  Inject,
 } from "@syncfusion/ej2-react-grids";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 import BaseComponent from "../common/baseComponent";
@@ -20,7 +20,7 @@ class CollectionSearch extends BaseComponent {
 
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/collection/findCollections",
-    adaptor: new UrlAdaptor()
+    adaptor: new UrlAdaptor(),
   });
 
   state: {
@@ -34,7 +34,7 @@ class CollectionSearch extends BaseComponent {
     this.state = {
       area: "",
       collectionDate: null,
-      submittedBy: ""
+      submittedBy: "",
     };
   }
 
@@ -44,19 +44,19 @@ class CollectionSearch extends BaseComponent {
 
   handleAreaChange(e: any) {
     this.setState({
-      area: e.target.value
+      area: e.target.value,
     });
   }
 
   handleCollectionDateChange(e: any) {
     this.setState({
-      collectionDate: e.value
+      collectionDate: e.value,
     });
   }
 
   handleSubmittedByChange(e: any) {
     this.setState({
-      collectionDate: e.target.value
+      collectionDate: e.target.value,
     });
   }
 
@@ -70,7 +70,7 @@ class CollectionSearch extends BaseComponent {
   }
 
   handleRenderAreaHyperlink(args: any) {
-    // console.log(args.data);
+    console.log(args.data);
     if (args.column.field === "area") {
       ReactDOM.render(
         <HashRouter>
@@ -149,7 +149,7 @@ class CollectionSearch extends BaseComponent {
               pageSettings={{ pageCount: 5, pageSize: 10 }}
               style={{ width: "100%" }}
               allowSorting={true}
-              ref={g => (this.grid = g)}
+              ref={(g) => (this.grid = g)}
               queryCellInfo={this.handleRenderAreaHyperlink.bind(this)}
             >
               <ColumnsDirective>
