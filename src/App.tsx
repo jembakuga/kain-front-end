@@ -15,6 +15,7 @@ import SiDrItemDetails from "./components/sales/siDrItemDetails";
 import EmployeeSearch from "./components/employee/employeeSearch";
 import EmployeeDetails from "./components/employee/employeeDetails";
 import CollectionItemDetails from "./components/collection/collectionItemDetails";
+import Sales from "./components/visual/sales";
 
 class App extends Component {
   render() {
@@ -83,6 +84,8 @@ class App extends Component {
               path="/employeeDetails/:employeeId"
               component={EmployeeDetails}
             ></Route>
+
+            <Route path="/sales" component={Sales}></Route>
           </Switch>
         </HashRouter>
       </div>

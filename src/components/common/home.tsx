@@ -2,111 +2,69 @@ import React, { Component } from "react";
 import * as ReactDOM from "react-dom";
 import BaseComponent from "../common/baseComponent";
 import {
-  Category,
-  ChartComponent,
-  ColumnSeries,
-  Inject,
-  Legend,
-  LineSeries,
-  SeriesCollectionDirective,
-  SeriesDirective,
-  Tooltip,
-} from "@syncfusion/ej2-react-charts";
-import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
-import axios from "axios";
-import {
-  AccumulationChartComponent,
-  AccumulationSeriesCollectionDirective,
-  AccumulationSeriesDirective,
-  AccumulationDataLabel,
-} from "@syncfusion/ej2-react-charts";
+  TabComponent,
+  TabItemDirective,
+  TabItemsDirective,
+} from "@syncfusion/ej2-react-navigations";
 
 class Home extends BaseComponent {
-  state: {
-    salesData: [];
-    salesSplitData: [];
-    productGroupingByYear: [
-      {
-        product: "";
-        totalAmount: 1;
-        text: ": ";
-      }
-    ];
-    year: 0;
-    month: "";
-  };
-
+  state: {};
+  private headerText: any;
   constructor(props: any) {
     super(props);
-    this.state = {
-      salesData: [],
-      salesSplitData: [],
-      productGroupingByYear: [
-        {
-          product: "",
-          totalAmount: 1,
-          text: ": ",
-        },
-      ],
-      year: 0,
-      month: "",
-    };
+    this.state = {};
+    this.headerText = [
+      { text: "Twitter" },
+      { text: "Facebook" },
+      { text: "WhatsApp" },
+    ];
     //this.datalabel = { visible: true, angle: 90, enableRotation: true };
   }
 
-  private dataManager: DataManager = new DataManager({
-    url:
-      "http://localhost:8080/collection/findCollectionReportItemByCollectionReport",
-    adaptor: new UrlAdaptor(),
-  });
-
-  handleYearChange(e: any) {
-    this.setState({
-      year: e.target.value,
-    });
+  content0() {
+    return (
+      <div>
+        Twitter is an online social networking service that enables users to
+        send and read short 140-character messages called "tweets". Registered
+        users can read and post tweets, but those who are unregistered can only
+        read them. Users access Twitter through the website interface, SMS or
+        mobile device app Twitter Inc. is based in San Francisco and has more
+        than 25 offices around the world. Twitter was created in March 2006 by
+        Jack Dorsey, Evan Williams, Biz Stone, and Noah Glass and launched in
+        July 2006. The service rapidly gained worldwide popularity, with more
+        than 100 million users posting 340 million tweets a day in 2012.The
+        service also handled 1.6 billion search queries per day.
+      </div>
+    );
   }
-
-  handleMonthChange(e: any) {
-    this.setState({
-      month: e.target.value,
-    });
+  content1() {
+    return (
+      <div>
+        Facebook is an online social networking service headquartered in Menlo
+        Park, California. Its website was launched on February 4, 2004, by Mark
+        Zuckerberg with his Harvard College roommates and fellow students
+        Eduardo Saverin, Andrew McCollum, Dustin Moskovitz and Chris Hughes.The
+        founders had initially limited the website membership to Harvard
+        students, but later expanded it to colleges in the Boston area, the Ivy
+        League, and Stanford University. It gradually added support for students
+        at various other universities and later to high-school students.
+      </div>
+    );
   }
-
-  componentDidMount() {
-    console.log("component mounted");
-  }
-
-  renderChart() {
-    console.log("renderChart");
-    axios
-      .get(
-        "http://localhost:8080/salesOrder/findSalesAnalysis?year=" +
-          this.state.year
-      )
-      .then((res) => {
-        console.log(res.data);
-        this.setState({ salesData: res.data });
-      });
-    axios
-      .get(
-        "http://localhost:8080/salesOrder/findSalesSplitAnalysis?year=" +
-          this.state.year
-      )
-      .then((res) => {
-        console.log(res.data);
-        this.setState({ salesSplitData: res.data });
-      });
-    axios
-      .get(
-        "http://localhost:8080/salesOrder/findProductGroupingByYear?year=" +
-          this.state.year
-      )
-      .then((res) => {
-        console.log(res.data);
-        this.setState({ productGroupingByYear: res.data });
-      });
-
-    console.log(this.state);
+  content2() {
+    return (
+      <div>
+        WhatsApp Messenger is a proprietary cross-platform instant messaging
+        client for smartphones that operates under a subscription business
+        model. It uses the Internet to send text messages, images, video, user
+        location and audio media messages to other users using standard cellular
+        mobile numbers. As of February 2016, WhatsApp had a user base of up to
+        one billion,[10] making it the most globally popular messaging
+        application. WhatsApp Inc., based in Mountain View, California, was
+        acquired by Facebook Inc. on February 19, 2014, for approximately
+        US$19.3 billion.
+      </div>
+    );
   }
 
   render() {
@@ -117,208 +75,22 @@ class Home extends BaseComponent {
 
         <form id="form-element">
           <div className="container-fluid">
-            <div className="row">
-              <div className="col-sm-2">
-                <select
-                  //value={this.state.employeeType}
-                  className="form-control"
-                  onChange={this.handleYearChange.bind(this)}
-                  onBlur={this.handleYearChange.bind(this)}
-                >
-                  <option></option>
-                  <option key="2019" value="2019">
-                    2019
-                  </option>
-                  <option key="2020" value="2020">
-                    2020
-                  </option>
-                  <option key="2021" value="2021">
-                    2021
-                  </option>
-                  <option key="2022" value="2022">
-                    2022
-                  </option>
-                  <option key="2023" value="2023">
-                    2023
-                  </option>
-                  <option key="2024" value="2024">
-                    2024
-                  </option>
-                </select>
-              </div>
-              <div className="col-sm-2">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary btn-sm mr-2"
-                  onClick={this.renderChart.bind(this)}
-                >
-                  Load Data
-                </button>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-sm-6">
-                <ChartComponent
-                  id="salesChart"
-                  primaryXAxis={{ valueType: "Category", title: "Month" }}
-                  title="Sales Analysis"
-                  tooltip={{ enable: true }}
-                >
-                  <Inject
-                    services={[ColumnSeries, Tooltip, LineSeries, Category]}
-                  />
-                  <SeriesCollectionDirective>
-                    <SeriesDirective
-                      dataSource={this.state.salesData}
-                      xName="month"
-                      yName="sales"
-                      name="Sales"
-                      //type="Column" // to define if bar graph or line graph
-                      animation={{ enable: true, duration: 1200, delay: 100 }}
-                    />
-                  </SeriesCollectionDirective>
-                </ChartComponent>
-              </div>
-              <div className="col-sm-6">
-                <ChartComponent
-                  id="salesSplitChart"
-                  primaryXAxis={{ valueType: "Category", title: "Month" }}
-                  title="Sales Split Analysis"
-                  legendSettings={{ visible: true, position: "Top" }}
-                  tooltip={{ enable: true }}
-                >
-                  <Inject
-                    services={[
-                      ColumnSeries,
-                      Tooltip,
-                      LineSeries,
-                      Legend,
-                      Category,
-                    ]}
-                  />
-                  <SeriesCollectionDirective>
-                    <SeriesDirective
-                      dataSource={this.state.salesSplitData}
-                      xName="month"
-                      yName="si"
-                      type="Column" // to define if bar graph or line graph
-                      animation={{ enable: true, duration: 1200, delay: 100 }}
-                    />
-                    <SeriesDirective
-                      dataSource={this.state.salesSplitData}
-                      xName="month"
-                      yName="dr"
-                      type="Column" // to define if bar graph or line graph
-                      animation={{ enable: true, duration: 1200, delay: 100 }}
-                    />
-                  </SeriesCollectionDirective>
-                </ChartComponent>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-sm-6"></div>
-              <div className="col-sm-2">
-                <select
-                  //value={this.state.employeeType}
-                  className="form-control"
-                  onChange={this.handleMonthChange.bind(this)}
-                  onBlur={this.handleMonthChange.bind(this)}
-                >
-                  <option></option>
-                  <option key="January" value="January">
-                    January
-                  </option>
-                  <option key="February" value="February">
-                    February
-                  </option>
-                  <option key="March" value="March">
-                    March
-                  </option>
-                  <option key="April" value="April">
-                    April
-                  </option>
-                  <option key="May" value="May">
-                    May
-                  </option>
-                  <option key="June" value="June">
-                    June
-                  </option>
-                  <option key="July" value="July">
-                    July
-                  </option>
-                  <option key="August" value="August">
-                    February
-                  </option>
-                  <option key="September" value="September">
-                    September
-                  </option>
-                  <option key="October" value="October">
-                    October
-                  </option>
-                  <option key="November" value="November">
-                    May
-                  </option>
-                  <option key="December" value="December">
-                    June
-                  </option>
-                </select>
-              </div>
-              <div className="col-sm-2">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary btn-sm mr-2"
-                  //onClick={this.renderChart.bind(this)}
-                >
-                  Load Data
-                </button>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-sm-6">
-                <AccumulationChartComponent
-                  id="yearlyProdGrouping"
-                  title="Yearly Product Groping"
-                  enableSmartLabels
-                >
-                  <Inject services={[AccumulationDataLabel]} />
-                  <AccumulationSeriesCollectionDirective>
-                    <AccumulationSeriesDirective
-                      dataSource={this.state.productGroupingByYear}
-                      xName="product"
-                      yName="totalAmount"
-                      radius="90%"
-                      innerRadius="40%"
-                      dataLabel={{
-                        visible: true,
-                        name: "text",
-                      }}
-                    />
-                  </AccumulationSeriesCollectionDirective>
-                </AccumulationChartComponent>
-              </div>
-              <div className="col-sm-6">
-                <AccumulationChartComponent
-                  id="monthlyProdGrouping"
-                  title="Monthly Product Groping"
-                  enableSmartLabels
-                >
-                  <Inject services={[AccumulationDataLabel]} />
-                  <AccumulationSeriesCollectionDirective>
-                    <AccumulationSeriesDirective
-                      dataSource={this.state.productGroupingByYear}
-                      xName="product"
-                      yName="totalAmount"
-                      radius="90%"
-                      innerRadius="40%"
-                      dataLabel={{
-                        visible: true,
-                        name: "text",
-                      }}
-                    />
-                  </AccumulationSeriesCollectionDirective>
-                </AccumulationChartComponent>
-              </div>
-            </div>
+            <TabComponent heightAdjustMode="Auto">
+              <TabItemsDirective>
+                <TabItemDirective
+                  header={this.headerText[0]}
+                  content={this.content0}
+                />
+                <TabItemDirective
+                  header={this.headerText[1]}
+                  content={this.content1}
+                />
+                <TabItemDirective
+                  header={this.headerText[2]}
+                  content={this.content2}
+                />
+              </TabItemsDirective>
+            </TabComponent>
           </div>
         </form>
       </div>
