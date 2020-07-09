@@ -4,7 +4,7 @@ import { enableRipple } from "@syncfusion/ej2-base";
 import {
   // ItemDirective,
   // ItemsDirective,
-  MenuComponent
+  MenuComponent,
   // ToolbarComponent
 } from "@syncfusion/ej2-react-navigations";
 // import * as ReactDom from "react-dom";
@@ -25,67 +25,80 @@ class Navigation extends Component {
         items: [
           {
             text: "Search Product",
-            url: "#/productSearch"
+            url: "#/productSearch",
           },
           {
             text: "Create Product",
-            url: "#/productAdd"
-          }
+            url: "#/productAdd",
+          },
         ],
-        text: "Product"
+        text: "Product",
       },
       {
         items: [
           {
             text: "Search Sales Invoice/Delivery Receipt",
-            url: "#/siDrSearch"
+            url: "#/siDrSearch",
           },
           {
             text: "Create Sales Invoice/Delivery Receipt",
-            url: "#/siDrAdd"
-          }
+            url: "#/siDrAdd",
+          },
         ],
-        text: "Sales"
+        text: "Sales",
       },
       {
         items: [
           {
             text: "Search Collection",
-            url: "#/collectionSearch"
+            url: "#/collectionSearch",
           },
           {
             text: "Create Collection",
-            url: "https://www.google.com/search?q=home+theatres"
-          }
+            url: "#/collectionAdd",
+          },
         ],
-        text: "Collection"
+        text: "Collection",
       },
       {
         items: [
           {
             text: "Search Employee",
-            url: "#/employeeSearch"
+            url: "#/employeeSearch",
           },
           {
             text: "Create Employee",
-            url: "#/employeeAdd"
-          }
+            url: "#/employeeAdd",
+          },
         ],
-        text: "Employee"
+        text: "Employee",
+      },
+      {
+        items: [
+          {
+            text: "Monthly Expenses",
+            url: "#/employeeSearch",
+          },
+          //{
+          //text: "Report 2",
+          //url: "#/employeeAdd",
+          //},
+        ],
+        text: "Expenses",
       },
       {
         items: [
           {
             text: "Report 1",
-            url: "#/employeeSearch"
+            url: "#/employeeSearch",
           },
           {
             text: "Report 2",
-            url: "#/employeeAdd"
-          }
+            url: "#/employeeAdd",
+          },
         ],
-        text: "Report"
-      }
+        text: "Report",
+      },
     ];
     this.menuComponent = new MenuComponent({ items: this.menuItems });
   }

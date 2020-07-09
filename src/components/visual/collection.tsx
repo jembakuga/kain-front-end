@@ -49,6 +49,39 @@ class Collection extends BaseComponent {
     });
   }
 
+  renderYearlyVisuals() {
+    console.log("renderYearlyVisuals");
+    axios
+      .get(
+        "http://localhost:8080/collection/findCollectionAnalysis?year=" +
+          this.state.year
+      )
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ salesData: res.data });
+      });
+    /*axios
+      .get(
+        "http://localhost:8080/salesOrder/findSalesSplitAnalysis?year=" +
+          this.state.year
+      )
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ salesSplitData: res.data });
+      });
+    axios
+      .get(
+        "http://localhost:8080/salesOrder/findProductGroupingByYear?year=" +
+          this.state.year
+      )
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ productGroupingByYear: res.data });
+      });*/
+
+    console.log(this.state);
+  }
+
   render() {
     return (
       <div>
@@ -89,14 +122,14 @@ class Collection extends BaseComponent {
                 <button
                   type="button"
                   className="btn btn-outline-primary btn-sm mr-2"
-                  //onClick={this.renderYearlyVisuals.bind(this)}
+                  onClick={this.renderYearlyVisuals.bind(this)}
                 >
                   Load Data
                 </button>
               </div>
             </div>
             <div className="row">
-              <div className="col-sm-6">
+              <div className="col-sm-12">
                 <ChartComponent
                   id="collectionsChart"
                   primaryXAxis={{ valueType: "Category", title: "Month" }}
@@ -112,7 +145,7 @@ class Collection extends BaseComponent {
                       xName="month"
                       yName="sales"
                       name="Sales"
-                      //type="Column" // to define if bar graph or line graph
+                      type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
                     />
                   </SeriesCollectionDirective>

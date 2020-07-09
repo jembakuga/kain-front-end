@@ -18,6 +18,7 @@ import CollectionItemDetails from "./components/collection/collectionItemDetails
 import Sales from "./components/visual/sales";
 import Collection from "./components/visual/collection";
 import Product from "./components/visual/product";
+import MonthlyExpensesAdd from "./components/expenses/monthlyExpensesAdd";
 
 class App extends Component {
   render() {
@@ -39,7 +40,6 @@ class App extends Component {
               path="/siDrItemDetailsEdit/:srDrId/:siDrItemId"
               component={SiDrItemDetails}
             ></Route>
-
             {/* Collection */}
             <Route
               path="/collectionSearch"
@@ -62,7 +62,6 @@ class App extends Component {
               path="/collectionItemDetailsEdit/:collectionId/:collectionItemId"
               component={CollectionItemDetails}
             ></Route>
-
             {/* Product */}
             <Route path="/productSearch" component={ProductSearch}></Route>
             <Route
@@ -78,7 +77,6 @@ class App extends Component {
               path="/productItemDetailsEdit/:productId/:productItemId"
               component={ProductItemDetails}
             ></Route>
-
             {/* Employee */}
             <Route path="/employeeSearch" component={EmployeeSearch}></Route>
             <Route path="/employeeAdd" component={EmployeeDetails}></Route>
@@ -87,6 +85,16 @@ class App extends Component {
               component={EmployeeDetails}
             ></Route>
 
+            {/* Monthly Expenses */}
+            <Route
+              path="/monthlyExpensesAdd"
+              component={MonthlyExpensesAdd}
+            ></Route>
+            <Route path="/employeeAdd" component={EmployeeDetails}></Route>
+            <Route
+              path="/employeeDetails/:employeeId"
+              component={EmployeeDetails}
+            ></Route>
             <Route path="/sales" component={Sales}></Route>
             <Route path="/collection" component={Collection}></Route>
             <Route path="/product" component={Product}></Route>
