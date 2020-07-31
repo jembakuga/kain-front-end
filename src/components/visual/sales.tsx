@@ -226,6 +226,7 @@ class Sales extends BaseComponent {
                       yName="si"
                       type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
+                      name="Sales Invoice"
                     />
                     <SeriesDirective
                       dataSource={this.state.salesSplitData}
@@ -233,6 +234,7 @@ class Sales extends BaseComponent {
                       yName="dr"
                       type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
+                      name="Delivery Receipt"
                     />
                   </SeriesCollectionDirective>
                 </ChartComponent>
