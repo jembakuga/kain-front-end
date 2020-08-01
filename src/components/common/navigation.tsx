@@ -79,6 +79,50 @@ class Navigation extends Component {
             text: "January",
             url: "#/monthlyExpensesAdd/1",
           },
+          {
+            text: "February",
+            url: "#/monthlyExpensesAdd/2",
+          },
+          {
+            text: "March",
+            url: "#/monthlyExpensesAdd/3",
+          },
+          {
+            text: "April",
+            url: "#/monthlyExpensesAdd/4",
+          },
+          {
+            text: "May",
+            url: "#/monthlyExpensesAdd/5",
+          },
+          {
+            text: "June",
+            url: "#/monthlyExpensesAdd/6",
+          },
+          {
+            text: "July",
+            url: "#/monthlyExpensesAdd/7",
+          },
+          {
+            text: "August",
+            url: "#/monthlyExpensesAdd/8",
+          },
+          {
+            text: "September",
+            url: "#/monthlyExpensesAdd/9",
+          },
+          {
+            text: "October",
+            url: "#/monthlyExpensesAdd/10",
+          },
+          {
+            text: "November",
+            url: "#/monthlyExpensesAdd/11",
+          },
+          {
+            text: "Decemvber",
+            url: "#/monthlyExpensesAdd/12",
+          },
           //{
           //text: "Report 2",
           //url: "#/employeeAdd",

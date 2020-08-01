@@ -25,6 +25,7 @@ class MontlyExpensesAdd extends BaseComponent {
     revFund: "",
     expensesTieUp: "",
     total: "",
+    month: "",
   };
 
   handleProfitChange(e: any) {
@@ -101,6 +102,35 @@ class MontlyExpensesAdd extends BaseComponent {
 
   componentDidMount() {
     console.log("componentDidMount", this.props.match.params);
+    this.setState({ month: this.props.match.params.month });
+    console.log(this.state.month);
+    axios
+      .post("http://localhost:8080/expenses/retrieveMonthlyExpenses", {
+        month_: this.props.match.params.month,
+      })
+      .then((res) => {
+        console.log(res.data);
+        this.setState({
+          expensesId: res.data.expensesId,
+          profit: res.data.profit,
+          purchases: res.data.purchases,
+          licenses: res.data.licenses,
+          salary: res.data.salary,
+          officeRental: res.data.officeRental,
+          parking: res.data.parking,
+          pldt: res.data.pldt,
+          meralco: res.data.meralco,
+          waterBill: res.data.waterBill,
+          officeSupp: res.data.officeSupEquip,
+          pettyCash: res.data.pettyCash,
+          statutory: res.data.statutory,
+          revFund: res.data.revFund,
+          expensesTieUp: res.data.expensesTieup,
+          total: res.data.total,
+          month: res.data.month_,
+        });
+      });
+
     {
       /*let requiredFields: FormValidatorModel = {
       rules: {},
@@ -131,6 +161,7 @@ class MontlyExpensesAdd extends BaseComponent {
         revFund: this.state.revFund,
         expensesTieup: this.state.expensesTieUp,
         total: this.state.total,
+        month_: this.props.match.params.month,
       })
       .then((res) => {
         console.log(res);
@@ -168,7 +199,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="profit"
                   type="text"
                   className="form-control"
-                  //value={this.state.profit}
+                  value={this.state.profit}
                   onChange={this.handleProfitChange.bind(this)}
                 />
               </div>
@@ -179,7 +210,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="purchases"
                   type="text"
                   className="form-control"
-                  //value={this.state.purchases}
+                  value={this.state.purchases}
                   onChange={this.handlePurchasesChange.bind(this)}
                 />
               </div>
@@ -193,7 +224,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="licenses"
                   type="text"
                   className="form-control"
-                  //value={this.state.licenses}
+                  value={this.state.licenses}
                   onChange={this.handleLicensesChange.bind(this)}
                 />
               </div>
@@ -204,7 +235,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="salary"
                   type="text"
                   className="form-control"
-                  //value={this.state.salary}
+                  value={this.state.salary}
                   onChange={this.handleSalaryChange.bind(this)}
                 />
               </div>
@@ -218,7 +249,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="officeRental"
                   type="text"
                   className="form-control"
-                  //value={this.state.officeRental}
+                  value={this.state.officeRental}
                   onChange={this.handleOfficeRentalChange.bind(this)}
                 />
               </div>
@@ -229,7 +260,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="parking"
                   type="text"
                   className="form-control"
-                  //value={this.state.parking}
+                  value={this.state.parking}
                   onChange={this.handleParkingChange.bind(this)}
                 />
               </div>
@@ -243,7 +274,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="pldt"
                   type="text"
                   className="form-control"
-                  //value={this.state.pldt}
+                  value={this.state.pldt}
                   onChange={this.handlePldtChange.bind(this)}
                 />
               </div>
@@ -254,7 +285,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="meralco"
                   type="text"
                   className="form-control"
-                  //value={this.state.meralco}
+                  value={this.state.meralco}
                   onChange={this.handleMeralcoChange.bind(this)}
                 />
               </div>
@@ -268,7 +299,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="waterBill"
                   type="text"
                   className="form-control"
-                  //value={this.state.waterBill}
+                  value={this.state.waterBill}
                   onChange={this.handleWaterBillChange.bind(this)}
                 />
               </div>
@@ -279,7 +310,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="officeSupp"
                   type="text"
                   className="form-control"
-                  //value={this.state.officeSupp}
+                  value={this.state.officeSupp}
                   onChange={this.handleOfficeSuppChange.bind(this)}
                 />
               </div>
@@ -293,7 +324,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="pettyCash"
                   type="text"
                   className="form-control"
-                  //value={this.state.pettyCash}
+                  value={this.state.pettyCash}
                   onChange={this.handlePettyCashChange.bind(this)}
                 />
               </div>
@@ -304,7 +335,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="statutory"
                   type="text"
                   className="form-control"
-                  //value={this.state.statutory}
+                  value={this.state.statutory}
                   onChange={this.handleStatutoryChange.bind(this)}
                 />
               </div>
@@ -318,7 +349,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="revFund"
                   type="text"
                   className="form-control"
-                  //value={this.state.revFund}
+                  value={this.state.revFund}
                   onChange={this.handleRevFundChange.bind(this)}
                 />
               </div>
@@ -329,7 +360,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   name="expensesTieUp"
                   type="text"
                   className="form-control"
-                  //value={this.state.expensesTieUp}
+                  value={this.state.expensesTieUp}
                   onChange={this.handleExpensesTieUpChange.bind(this)}
                 />
               </div>
