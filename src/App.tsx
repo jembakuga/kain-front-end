@@ -84,12 +84,6 @@ class App extends Component {
               path="/employeeDetails/:employeeId"
               component={EmployeeDetails}
             ></Route>
-
-            {/* Monthly Expenses */}
-            <Route
-              path="/monthlyExpensesAdd"
-              component={MonthlyExpensesAdd}
-            ></Route>
             <Route path="/employeeAdd" component={EmployeeDetails}></Route>
             <Route
               path="/employeeDetails/:employeeId"
@@ -98,6 +92,12 @@ class App extends Component {
             <Route path="/sales" component={Sales}></Route>
             <Route path="/collection" component={Collection}></Route>
             <Route path="/product" component={Product}></Route>
+
+            {/* Monthly Expenses */}
+            <Route
+              path="/monthlyExpensesAdd/:month"
+              component={MonthlyExpensesAdd}
+            ></Route>
           </Switch>
         </HashRouter>
       </div>

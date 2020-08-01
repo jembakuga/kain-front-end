@@ -38,7 +38,7 @@ class Product extends BaseComponent {
         this.setState({ productInventoryData: res.data });
       });
 
-    axios
+    /*axios
       .get(
         "http://localhost:8080/product/retrieveProductPriceComparison?year=2020"
       )
@@ -46,7 +46,7 @@ class Product extends BaseComponent {
         console.log(res.data);
         this.setState({ productComparisonData: res.data });
       });
-
+*/
     console.log(this.state);
   }
 
@@ -74,7 +74,10 @@ class Product extends BaseComponent {
                   id="inventoryChart"
                   primaryXAxis={{ valueType: "Category", title: "Month" }}
                   title="Product Inventory"
-                  tooltip={{ enable: true }}
+                  tooltip={{
+                    enable: true,
+                    format: "${point.tooltip}",
+                  }}
                   legendSettings={{ visible: true, position: "Top" }}
                   palettes={["#E94649", "#F6B53F"]}
                 >
@@ -95,6 +98,7 @@ class Product extends BaseComponent {
                       name="Available Product in Inventory"
                       type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
+                      tooltipMappingName="availCountFormatted"
                     />
                     <SeriesDirective
                       dataSource={this.state.productInventoryData}
@@ -103,6 +107,7 @@ class Product extends BaseComponent {
                       name="Sold Products"
                       type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
+                      tooltipMappingName="soldProdCountFormatted"
                     />
                   </SeriesCollectionDirective>
                 </ChartComponent>

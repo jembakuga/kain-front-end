@@ -100,6 +100,7 @@ class MontlyExpensesAdd extends BaseComponent {
   }
 
   componentDidMount() {
+    console.log("componentDidMount", this.props.match.params);
     {
       /*let requiredFields: FormValidatorModel = {
       rules: {},

@@ -180,12 +180,12 @@ class Sales extends BaseComponent {
               </div>
             </div>
             <div className="row">
-              <div className="col-sm-6">
+              <div className="col-sm-12">
                 <ChartComponent
                   id="salesChart"
                   primaryXAxis={{ valueType: "Category", title: "Month" }}
                   title="Sales Analysis"
-                  tooltip={{ enable: true }}
+                  tooltip={{ enable: true, format: "${point.tooltip}" }}
                 >
                   <Inject
                     services={[ColumnSeries, Tooltip, LineSeries, Category]}
@@ -198,17 +198,21 @@ class Sales extends BaseComponent {
                       name="Sales"
                       //type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
+                      tooltipMappingName="salesFormatted"
+                      marker={{ visible: true }}
                     />
                   </SeriesCollectionDirective>
                 </ChartComponent>
               </div>
-              <div className="col-sm-6">
+            </div>
+            <div className="row">
+              <div className="col-sm-12">
                 <ChartComponent
                   id="salesSplitChart"
                   primaryXAxis={{ valueType: "Category", title: "Month" }}
                   title="Sales Split Analysis"
                   legendSettings={{ visible: true, position: "Top" }}
-                  tooltip={{ enable: true }}
+                  tooltip={{ enable: true, format: "${point.tooltip}" }}
                 >
                   <Inject
                     services={[
@@ -227,6 +231,7 @@ class Sales extends BaseComponent {
                       type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
                       name="Sales Invoice"
+                      tooltipMappingName="siFormatted"
                     />
                     <SeriesDirective
                       dataSource={this.state.salesSplitData}
@@ -235,12 +240,13 @@ class Sales extends BaseComponent {
                       type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
                       name="Delivery Receipt"
+                      tooltipMappingName="drFormatted"
                     />
                   </SeriesCollectionDirective>
                 </ChartComponent>
               </div>
             </div>
-            <div className="row">
+            {/*<div className="row">
               <div className="col-sm-6"></div>
               <div className="col-sm-2">
                 <select
@@ -343,7 +349,7 @@ class Sales extends BaseComponent {
                   </AccumulationSeriesCollectionDirective>
                 </AccumulationChartComponent>
               </div>
-            </div>
+            </div>*/}
           </div>
         </form>
       </div>

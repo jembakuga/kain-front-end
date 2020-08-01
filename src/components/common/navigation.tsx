@@ -76,8 +76,8 @@ class Navigation extends Component {
       {
         items: [
           {
-            text: "Monthly Expenses",
-            url: "#/employeeSearch",
+            text: "January",
+            url: "#/monthlyExpensesAdd/1",
           },
           //{
           //text: "Report 2",
