@@ -5,6 +5,7 @@ import { HashRouter, Switch, Route } from "react-router-dom";
 import Navigation from "./components/common/navigation";
 import SiDrSearch from "./components/sales/siDrSearch";
 import SiDrDetails from "./components/sales/siDrDetails";
+import SiDrPrint from "./components/sales/siDrPrint";
 import CollectionSearch from "./components/collection/collectionSearch";
 import CollectionDetails from "./components/collection/collectionDetails";
 import ProductSearch from "./components/product/productSearch";
@@ -40,6 +41,8 @@ class App extends Component {
               path="/siDrItemDetailsEdit/:srDrId/:siDrItemId"
               component={SiDrItemDetails}
             ></Route>
+            <Route path="/siDrPrint/:id" component={SiDrPrint}></Route>
+
             {/* Collection */}
             <Route
               path="/collectionSearch"
@@ -94,6 +97,10 @@ class App extends Component {
             <Route path="/product" component={Product}></Route>
 
             {/* Monthly Expenses */}
+            <Route
+              path="/monthlyExpensesAdd"
+              component={MonthlyExpensesAdd}
+            ></Route>
             <Route
               path="/monthlyExpensesAdd/:month"
               component={MonthlyExpensesAdd}

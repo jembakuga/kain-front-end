@@ -10,6 +10,7 @@ import {
   GridComponent,
   ColumnsDirective,
   ColumnDirective,
+  ColumnModel,
   // Page,
   // Sort,
   Inject,
@@ -17,7 +18,7 @@ import {
   Edit,
   EditSettingsModel,
   CommandColumn,
-  CommandClickEventArgs
+  CommandClickEventArgs,
 } from "@syncfusion/ej2-react-grids";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 
@@ -36,35 +37,35 @@ class ProductDetails extends BaseComponent {
       prodCode: "",
       prodDesc: "",
       prodId: "",
-      availProdCount: 0
+      availProdCount: 0,
     };
   }
 
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/product/findProductItemsByProduct",
-    adaptor: new UrlAdaptor()
+    adaptor: new UrlAdaptor(),
   });
 
   public editOptions: EditSettingsModel = {
     allowEditing: true,
-    allowDeleting: true
+    allowDeleting: true,
   };
 
   handlProdCodeChange(e: any) {
     this.setState({
-      prodCode: e.target.value
+      prodCode: e.target.value,
     });
   }
 
   handlProdDescChange(e: any) {
     this.setState({
-      prodDesc: e.target.value
+      prodDesc: e.target.value,
     });
   }
 
   handlAvailProdCountChange(e: any) {
     this.setState({
-      availProdCount: e.target.value
+      availProdCount: e.target.value,
     });
   }
 
@@ -87,14 +88,14 @@ class ProductDetails extends BaseComponent {
           ? this.props.match.params.id
           : this.state.prodId,
         productCode: this.state.prodCode,
-        productDesc: this.state.prodDesc
+        productDesc: this.state.prodDesc,
       })
-      .then(res => {
+      .then((res) => {
         console.log(res);
         this.setState({
           prodCode: res.data.productCode,
           prodDesc: res.data.productDesc,
-          prodId: res.data.productId
+          prodId: res.data.productId,
         });
         if (this.state.prodId) {
           DialogUtility.alert({
@@ -102,12 +103,12 @@ class ProductDetails extends BaseComponent {
             closeOnEscape: true,
             content: "Product " + this.state.prodCode + " created",
             showCloseIcon: true,
-            title: "Product Created"
+            title: "Product Created",
           });
           this.props.history.push("/productSearch");
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
@@ -117,15 +118,15 @@ class ProductDetails extends BaseComponent {
     if (this.props.match.params.id) {
       axios
         .post("http://localhost:8080/product/findProduct", {
-          productId: this.props.match.params.id
+          productId: this.props.match.params.id,
         })
-        .then(res => {
+        .then((res) => {
           console.log(res);
           this.setState({
             prodCode: res.data.productCode,
             prodDesc: res.data.productDesc,
             prodId: res.data.productId,
-            availProdCount: res.data.availProdCount
+            availProdCount: res.data.availProdCount,
           });
         });
 
@@ -141,7 +142,7 @@ class ProductDetails extends BaseComponent {
   }
 
   handleProductCodeHyperlink(args: any) {
-    console.log(args.data);
+    //console.log(args.data);
     if (args.column.field === "batchNo") {
       ReactDOM.render(
         <HashRouter>
@@ -166,9 +167,9 @@ class ProductDetails extends BaseComponent {
     {
       buttonOption: {
         content: "Remove",
-        cssClass: "e-flat"
-      }
-    }
+        cssClass: "e-flat",
+      },
+    },
   ];
 
   public commandClick(args: CommandClickEventArgs): void {
@@ -177,9 +178,9 @@ class ProductDetails extends BaseComponent {
       console.log(data);
       axios
         .post("http://localhost:8080/product/deleteProductItemById", {
-          productItemId: data.productItemId
+          productItemId: data.productItemId,
         })
-        .then(res => {
+        .then((res) => {
           // console.log(res.data.salesOrderNo);
           this.setState({
             siDrId: res.data.siDrId,
@@ -193,7 +194,7 @@ class ProductDetails extends BaseComponent {
             deliveredBy: res.data.deliveredBy,
             issueDate: res.data.issueDate,
             date: res.data.date,
-            dueDate: res.data.dueDate
+            dueDate: res.data.dueDate,
           });
         });
       this.grid.dataSource = this.dataManager;
@@ -287,17 +288,24 @@ class ProductDetails extends BaseComponent {
               pageSettings={{ pageCount: 5, pageSize: 10 }}
               style={{ width: "100%" }}
               allowSorting={true}
-              ref={g => (this.grid = g)}
+              ref={(g) => (this.grid = g)}
               queryCellInfo={this.handleProductCodeHyperlink.bind(this)}
             >
               <ColumnsDirective>
                 <ColumnDirective headerText="Batch No" field="batchNo" />
                 <ColumnDirective headerText="Base Price" field="basePrice" />
                 <ColumnDirective headerText="Quantity" field="quantity" />
-                <ColumnDirective headerText="Expiry Date" field="expiryDate" />
+                <ColumnDirective
+                  headerText="Expiry Date"
+                  field="expiryDate"
+                  format="dd/MM/yyyy"
+                  type="date"
+                />
                 <ColumnDirective
                   headerText="Arrival Date"
                   field="arrivalDate"
+                  format="dd/MM/yyyy"
+                  type="datetime"
                 />
                 <ColumnDirective
                   headerText="Action"

@@ -8,7 +8,7 @@ import {
   ColumnDirective,
   Page,
   Sort,
-  Inject
+  Inject,
 } from "@syncfusion/ej2-react-grids";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 
@@ -17,35 +17,35 @@ class SiDrSearch extends BaseComponent {
   private query: Query;
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/salesOrder/findSiDrs",
-    adaptor: new UrlAdaptor()
+    adaptor: new UrlAdaptor(),
   });
 
   state = {
     salesOrderNo: "",
     poNo: "",
     checkedBy: "",
-    type: ""
+    type: "",
   };
 
   handleSalesOrderNoChange(e: any) {
     this.setState({
-      salesOrderNo: e.target.value
+      salesOrderNo: e.target.value,
     });
   }
   handlePoNoChange(e: any) {
     this.setState({
-      poNo: e.target.value
+      poNo: e.target.value,
     });
   }
   handleCheckedByChange(e: any) {
     this.setState({
-      checkedBy: e.target.value
+      checkedBy: e.target.value,
     });
   }
 
   handleTypeChange(e: any) {
     this.setState({
-      type: e.target.value
+      type: e.target.value,
     });
   }
 
@@ -171,7 +171,7 @@ class SiDrSearch extends BaseComponent {
             pageSettings={{ pageCount: 5, pageSize: 10 }}
             style={{ width: "100%" }}
             allowSorting={true}
-            ref={g => (this.grid = g)}
+            ref={(g) => (this.grid = g)}
             queryCellInfo={this.handleRenderSalesOrderNoHyperlink.bind(this)}
           >
             <ColumnsDirective>

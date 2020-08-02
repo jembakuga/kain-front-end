@@ -26,6 +26,7 @@ class MontlyExpensesAdd extends BaseComponent {
     expensesTieUp: "",
     total: "",
     month: "",
+    year: "",
   };
 
   handleProfitChange(e: any) {
@@ -104,7 +105,7 @@ class MontlyExpensesAdd extends BaseComponent {
     console.log("componentDidMount", this.props.match.params);
     this.setState({ month: this.props.match.params.month });
     console.log(this.state.month);
-    axios
+    /*axios
       .post("http://localhost:8080/expenses/retrieveMonthlyExpenses", {
         month_: this.props.match.params.month,
       })
@@ -129,7 +130,7 @@ class MontlyExpensesAdd extends BaseComponent {
           total: res.data.total,
           month: res.data.month_,
         });
-      });
+      });*/
 
     {
       /*let requiredFields: FormValidatorModel = {
@@ -184,6 +185,88 @@ class MontlyExpensesAdd extends BaseComponent {
 
   handleBackBtn() {}
 
+  handleYearChange(e: any) {
+    this.setState({
+      year: e.target.value,
+    });
+    //this.retrieveData();
+  }
+
+  handleMonthChange(e: any) {
+    this.setState({
+      month: e.target.value,
+    });
+    //this.retrieveData();
+    axios
+      .post("http://localhost:8080/expenses/retrieveMonthlyExpenses", {
+        month_: e.target.value,
+        year_: this.state.year,
+      })
+      .then((res) => {
+        console.log(res.data);
+        this.setState({
+          expensesId: res.data.expensesId,
+          profit: res.data.profit,
+          purchases: res.data.purchases,
+          licenses: res.data.licenses,
+          salary: res.data.salary,
+          officeRental: res.data.officeRental,
+          parking: res.data.parking,
+          pldt: res.data.pldt,
+          meralco: res.data.meralco,
+          waterBill: res.data.waterBill,
+          officeSupp: res.data.officeSupEquip,
+          pettyCash: res.data.pettyCash,
+          statutory: res.data.statutory,
+          revFund: res.data.revFund,
+          expensesTieUp: res.data.expensesTieup,
+          total: res.data.total,
+          month: res.data.month_,
+        });
+      });
+  }
+
+  retrieveData() {
+    console.log("year: " + this.state.year);
+    console.log("month: " + this.state.month);
+    if (
+      ((this.state.year !== "" ||
+        this.state.year !== undefined ||
+        this.state.year !== null) &&
+        this.state.month !== "") ||
+      this.state.month !== undefined ||
+      this.state.month !== null
+    ) {
+      axios
+        .post("http://localhost:8080/expenses/retrieveMonthlyExpenses", {
+          month_: this.state.month,
+          year_: this.state.year,
+        })
+        .then((res) => {
+          console.log(res.data);
+          this.setState({
+            expensesId: res.data.expensesId,
+            profit: res.data.profit,
+            purchases: res.data.purchases,
+            licenses: res.data.licenses,
+            salary: res.data.salary,
+            officeRental: res.data.officeRental,
+            parking: res.data.parking,
+            pldt: res.data.pldt,
+            meralco: res.data.meralco,
+            waterBill: res.data.waterBill,
+            officeSupp: res.data.officeSupEquip,
+            pettyCash: res.data.pettyCash,
+            statutory: res.data.statutory,
+            revFund: res.data.revFund,
+            expensesTieUp: res.data.expensesTieup,
+            total: res.data.total,
+            month: res.data.month_,
+          });
+        });
+    }
+  }
+
   render() {
     return (
       <div>
@@ -191,6 +274,85 @@ class MontlyExpensesAdd extends BaseComponent {
         <br />
         <form id="form-element">
           <div className="container-fluid">
+            <div className="row">
+              <div className="col-sm-2">Year</div>
+              <div className="col-sm-3">
+                <select
+                  //value={this.state.employeeType}
+                  className="form-control"
+                  onChange={this.handleYearChange.bind(this)}
+                  onBlur={this.handleYearChange.bind(this)}
+                >
+                  <option></option>
+                  <option key="2019" value="2019">
+                    2019
+                  </option>
+                  <option key="2020" value="2020">
+                    2020
+                  </option>
+                  <option key="2021" value="2021">
+                    2021
+                  </option>
+                  <option key="2022" value="2022">
+                    2022
+                  </option>
+                  <option key="2023" value="2023">
+                    2023
+                  </option>
+                  <option key="2024" value="2024">
+                    2024
+                  </option>
+                </select>
+              </div>
+              <div className="col-sm-2">Month</div>
+              <div className="col-sm-3">
+                <select
+                  //value={this.state.employeeType}
+                  className="form-control"
+                  onChange={this.handleMonthChange.bind(this)}
+                  onBlur={this.handleMonthChange.bind(this)}
+                >
+                  <option></option>
+                  <option key="January" value="1">
+                    January
+                  </option>
+                  <option key="February" value="2">
+                    February
+                  </option>
+                  <option key="March" value="3">
+                    March
+                  </option>
+                  <option key="April" value="4">
+                    April
+                  </option>
+                  <option key="May" value="5">
+                    May
+                  </option>
+                  <option key="June" value="6">
+                    June
+                  </option>
+                  <option key="July" value="7">
+                    July
+                  </option>
+                  <option key="August" value="8">
+                    February
+                  </option>
+                  <option key="September" value="9">
+                    September
+                  </option>
+                  <option key="October" value="10">
+                    October
+                  </option>
+                  <option key="November" value="11">
+                    May
+                  </option>
+                  <option key="December" value="12">
+                    June
+                  </option>
+                </select>
+              </div>
+            </div>
+            <br />
             <div className="row">
               <div className="col-sm-2">Profit</div>
               <div className="col-sm-3">

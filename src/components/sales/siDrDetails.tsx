@@ -261,7 +261,19 @@ class SiDrDetails extends BaseComponent {
       },
     };
 
+    //window.addEventListener("load", this.handleLoad);
     this.formObject = new FormValidator("#form-element", requiredFields);
+    /*setTimeout(() => {
+      window.print();
+    }, 3000);*/
+  }
+
+  componentDidUpdate() {
+    //this.handleLoad();
+  }
+
+  handleLoad() {
+    window.print();
   }
 
   handleProductCodeHyperlink(args: any) {
@@ -337,6 +349,11 @@ class SiDrDetails extends BaseComponent {
         args.row.classList.add("isLossColor");
       }
     }
+  }
+
+  handlePrintButton() {
+    console.log("PRINTING");
+    window.open("http://localhost:3000/#/siDrPrint/1");
   }
 
   render() {
@@ -613,7 +630,7 @@ class SiDrDetails extends BaseComponent {
                 <button
                   type="button"
                   className="btn btn-outline-primary btn-sm mr-2"
-                  // onClick={this.handleAddProductButton.bind(this)}
+                  onClick={this.handlePrintButton.bind(this)}
                 >
                   Print
                 </button>
@@ -653,6 +670,8 @@ class SiDrDetails extends BaseComponent {
                     <ColumnDirective
                       headerText="Expiry Date"
                       field="expiryDate"
+                      format="yyyy/MM/dd"
+                      type="date"
                     />
                     <ColumnDirective
                       headerText="Unit Price"
