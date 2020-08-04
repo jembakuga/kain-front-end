@@ -27,6 +27,7 @@ class CollectionDetails extends BaseComponent {
     postedBy: "";
     checkedBy: "";
     employeeList: [];
+    collectionReportItemData: [];
   };
 
   constructor(props: any) {
@@ -39,14 +40,15 @@ class CollectionDetails extends BaseComponent {
       postedBy: "",
       checkedBy: "",
       employeeList: [],
+      collectionReportItemData: [],
     };
   }
 
-  private dataManager: DataManager = new DataManager({
+  /*private dataManager: DataManager = new DataManager({
     url:
       "http://localhost:8080/collection/findCollectionReportItemByCollectionReport",
     adaptor: new UrlAdaptor(),
-  });
+  });*/
 
   componentDidMount() {
     console.log("componentDidMount", this.props.match.params.collectionId);
@@ -75,9 +77,10 @@ class CollectionDetails extends BaseComponent {
             submittedBy: res.data.submittedBy
               ? res.data.submittedBy.employeeId
               : "",
+            collectionReportItemData: res.data.collectionReportItemBeans,
           });
         });
-
+      /*
       if (this.grid) {
         this.grid.dataSource = this.dataManager;
         this.query = new Query().addParams(
@@ -85,7 +88,7 @@ class CollectionDetails extends BaseComponent {
           this.props.match.params.collectionId
         );
         this.grid.query = this.query;
-      }
+      }*/
     }
   }
 
@@ -217,6 +220,7 @@ class CollectionDetails extends BaseComponent {
                 id="collectionDate"
                 value={this.state.collectionDate}
                 change={this.handleCollectionDateChange.bind(this)}
+                format="MM/dd/yyyy"
               />
             </div>
           </div>
@@ -291,7 +295,7 @@ class CollectionDetails extends BaseComponent {
           <br />
           <div>
             <GridComponent
-              dataSource={this.dataManager}
+              dataSource={this.state.collectionReportItemData}
               gridLines={"Both"}
               rowHeight={40}
               allowPaging={true}
@@ -304,7 +308,12 @@ class CollectionDetails extends BaseComponent {
               <ColumnsDirective>
                 <ColumnDirective headerText="Check No" field="checkNo" />
                 <ColumnDirective headerText="Name of Bank" field="nameOfBank" />
-                <ColumnDirective headerText="SI/DR Date" field="siDrDate" />
+                <ColumnDirective
+                  headerText="SI/DR Date"
+                  field="siDrDate"
+                  format="MM/dd/yyyy"
+                  type="date"
+                />
                 <ColumnDirective
                   headerText="MDs/Hospital/Drugstore"
                   field="mdHospDrugstore"

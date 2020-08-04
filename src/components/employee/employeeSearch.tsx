@@ -7,7 +7,7 @@ import {
   ColumnDirective,
   Page,
   Sort,
-  Inject
+  Inject,
 } from "@syncfusion/ej2-react-grids";
 import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
 import * as ReactDOM from "react-dom";
@@ -18,7 +18,7 @@ class EmployeeSearch extends BaseComponent {
   private query: Query;
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/employee/findEmployees",
-    adaptor: new UrlAdaptor()
+    adaptor: new UrlAdaptor(),
   });
   state: {
     employeeId: 0;
@@ -35,26 +35,26 @@ class EmployeeSearch extends BaseComponent {
       employeeName: "",
       role: 0,
       employeeType: 0,
-      joinedDate: new Date()
+      joinedDate: new Date(),
     };
   }
 
   handlEmployeeNameChange(e: any) {
     this.setState({
-      employeeName: e.target.value
+      employeeName: e.target.value,
     });
   }
 
   handleEmployeeTypeChange(e: any) {
     console.log(e.target);
     this.setState({
-      employeeType: e.target.value
+      employeeType: e.target.value,
     });
   }
 
   handlJoinedDateChange(e: any) {
     this.setState({
-      joinedDate: e.value
+      joinedDate: e.value,
     });
   }
 
@@ -157,7 +157,7 @@ class EmployeeSearch extends BaseComponent {
             pageSettings={{ pageCount: 5, pageSize: 10 }}
             style={{ width: "100%" }}
             allowSorting={true}
-            ref={g => (this.grid = g)}
+            ref={(g) => (this.grid = g)}
             queryCellInfo={this.handleRenderEmployeeCodeHyperlink.bind(this)}
           >
             <ColumnsDirective>
@@ -169,7 +169,12 @@ class EmployeeSearch extends BaseComponent {
                 headerText="Employee Type"
                 field="employeeTypeString"
               />
-              <ColumnDirective headerText="Joined Date" field="joinedDate" />
+              <ColumnDirective
+                headerText="Joined Date"
+                field="joinedDate"
+                format="MM/dd/yyyy"
+                type="date"
+              />
             </ColumnsDirective>
             <Inject services={[Page, Sort]} />
           </GridComponent>

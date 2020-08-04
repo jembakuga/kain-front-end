@@ -49,6 +49,7 @@ class SiDrDetails extends BaseComponent {
     checkers: [];
     medReps: [];
     type: "";
+    siDrItemData: [];
   };
   constructor(props: any) {
     super(props);
@@ -72,12 +73,9 @@ class SiDrDetails extends BaseComponent {
       checkers: [],
       medReps: [],
       type: "",
+      siDrItemData: [],
     };
   }
-  private dataManager: DataManager = new DataManager({
-    url: "http://localhost:8080/salesOrder/findSiDrItemsBySiDr",
-    adaptor: new UrlAdaptor(),
-  });
 
   public editOptions: EditSettingsModel = {
     allowEditing: true,
@@ -227,17 +225,9 @@ class SiDrDetails extends BaseComponent {
             totalAmountValIncl: res.data.totalSalesVatIncl,
             addVat: res.data.addVat,
             type: res.data.type,
+            siDrItemData: res.data.siDrItemBeans,
           });
         });
-
-      if (this.grid) {
-        this.grid.dataSource = this.dataManager;
-        this.query = new Query().addParams(
-          "siDrId",
-          this.props.match.params.id
-        );
-        this.grid.query = this.query;
-      }
     }
     axios
       .post("http://localhost:8080/employee/findEmployeeForDropdown")
@@ -333,11 +323,6 @@ class SiDrDetails extends BaseComponent {
             dueDate: res.data.dueDate,
           });
         });
-      this.grid.dataSource = this.dataManager;
-      this.query = new Query().addParams("siDrId", this.props.match.params.id);
-      // console.log("asdfsda");
-      this.grid.query = this.query;
-      this.grid.refresh();
     }
   }
 
@@ -403,6 +388,7 @@ class SiDrDetails extends BaseComponent {
                   id="issueDate"
                   value={this.state.issueDate}
                   change={this.handleIssueDateChange.bind(this)}
+                  format="MM/dd/yyyy"
                 />
               </div>
             </div>
@@ -428,6 +414,7 @@ class SiDrDetails extends BaseComponent {
                   id="date"
                   value={this.state.date}
                   change={this.handleDateChange.bind(this)}
+                  format="MM/dd/yyyy"
                 />
               </div>
             </div>
@@ -553,6 +540,7 @@ class SiDrDetails extends BaseComponent {
                   name="date"
                   value={this.state.date}
                   change={this.handlDueDateChange.bind(this)}
+                  format="MM/dd/yyyy"
                 />
               </div>
             </div>
@@ -650,6 +638,7 @@ class SiDrDetails extends BaseComponent {
                   ref={(g) => (this.grid = g)}
                   queryCellInfo={this.handleProductCodeHyperlink.bind(this)}
                   rowDataBound={this.rowDataBound}
+                  dataSource={this.state.siDrItemData}
                 >
                   <ColumnsDirective>
                     <ColumnDirective
@@ -670,7 +659,7 @@ class SiDrDetails extends BaseComponent {
                     <ColumnDirective
                       headerText="Expiry Date"
                       field="expiryDate"
-                      format="yyyy/MM/dd"
+                      format="MM/dd/yyyy"
                       type="date"
                     />
                     <ColumnDirective

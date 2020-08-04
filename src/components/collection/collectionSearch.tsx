@@ -12,6 +12,7 @@ import BaseComponent from "../common/baseComponent";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import * as ReactDOM from "react-dom";
 import { HashRouter, Link } from "react-router-dom";
+import axios from "axios";
 
 class CollectionSearch extends BaseComponent {
   private grid: GridComponent | null;
@@ -27,6 +28,7 @@ class CollectionSearch extends BaseComponent {
     area: "";
     collectionDate: null;
     submittedBy: "";
+    collectionData: [];
   };
 
   constructor(props: any) {
@@ -35,11 +37,20 @@ class CollectionSearch extends BaseComponent {
       area: "",
       collectionDate: null,
       submittedBy: "",
+      collectionData: [],
     };
   }
 
   componentDidMount() {
     console.log("componentDidMount", this.props.match.params);
+    axios
+      .post("http://localhost:8080/collection/findCollections", {})
+      .then((res) => {
+        console.log(res.data.result);
+        this.setState({
+          collectionData: res.data.result,
+        });
+      });
   }
 
   handleAreaChange(e: any) {
@@ -61,7 +72,20 @@ class CollectionSearch extends BaseComponent {
   }
 
   handleSearchBtn() {
-    // this.loadProducts();
+    this.loadCollections();
+  }
+
+  loadCollections() {
+    axios
+      .post("http://localhost:8080/collection/findCollections", {
+        area: this.state.area,
+      })
+      .then((res) => {
+        console.log(res.data.result);
+        this.setState({
+          collectionData: res.data.result,
+        });
+      });
   }
 
   handleAddBtn() {
@@ -70,7 +94,7 @@ class CollectionSearch extends BaseComponent {
   }
 
   handleRenderAreaHyperlink(args: any) {
-    console.log(args.data);
+    //console.log(args.data);
     if (args.column.field === "area") {
       ReactDOM.render(
         <HashRouter>
@@ -106,6 +130,7 @@ class CollectionSearch extends BaseComponent {
               <DatePickerComponent
                 id="collectionDate"
                 change={this.handleCollectionDateChange.bind(this)}
+                format="MM/dd/yyyy"
               />
             </div>
           </div>
@@ -142,7 +167,7 @@ class CollectionSearch extends BaseComponent {
           <br />
           <div>
             <GridComponent
-              dataSource={this.dataManager}
+              dataSource={this.state.collectionData}
               gridLines={"Both"}
               rowHeight={40}
               allowPaging={true}
@@ -157,6 +182,8 @@ class CollectionSearch extends BaseComponent {
                 <ColumnDirective
                   headerText="Collection Date"
                   field="collectionDate"
+                  format="MM/dd/yyyy"
+                  type="date"
                 />
                 <ColumnDirective
                   headerText="Submitted By"

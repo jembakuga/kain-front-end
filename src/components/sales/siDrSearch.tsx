@@ -181,7 +181,12 @@ class SiDrSearch extends BaseComponent {
               />
               <ColumnDirective headerText="Sold To" field="soldTo" />
               <ColumnDirective headerText="Address" field="address" />
-              <ColumnDirective headerText="Date" field="date" />
+              <ColumnDirective
+                headerText="Date"
+                field="date"
+                format="MM/dd/yyyy"
+                type="date"
+              />
               <ColumnDirective headerText="PO No" field="poNo" />
               <ColumnDirective headerText="TIN" field="tin" />
               <ColumnDirective headerText="Terms" field="terms" />

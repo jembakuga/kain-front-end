@@ -147,6 +147,7 @@ class EmployeeDetails extends BaseComponent {
                 id="dueDate"
                 value={this.state.joinedDate}
                 change={this.handlJoinedDateChange.bind(this)}
+                format="MM/dd/yyyy"
               />
             </div>
           </div>

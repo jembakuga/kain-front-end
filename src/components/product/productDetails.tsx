@@ -30,6 +30,7 @@ class ProductDetails extends BaseComponent {
     prodDesc: "";
     prodId: "";
     availProdCount: 0;
+    productItemData: [];
   };
   constructor(props: any) {
     super(props);
@@ -38,6 +39,7 @@ class ProductDetails extends BaseComponent {
       prodDesc: "",
       prodId: "",
       availProdCount: 0,
+      productItemData: [],
     };
   }
 
@@ -127,6 +129,7 @@ class ProductDetails extends BaseComponent {
             prodDesc: res.data.productDesc,
             prodId: res.data.productId,
             availProdCount: res.data.availProdCount,
+            productItemData: res.data.productItemBeanList,
           });
         });
 
@@ -290,6 +293,7 @@ class ProductDetails extends BaseComponent {
               allowSorting={true}
               ref={(g) => (this.grid = g)}
               queryCellInfo={this.handleProductCodeHyperlink.bind(this)}
+              dataSource={this.state.productItemData}
             >
               <ColumnsDirective>
                 <ColumnDirective headerText="Batch No" field="batchNo" />
@@ -298,13 +302,13 @@ class ProductDetails extends BaseComponent {
                 <ColumnDirective
                   headerText="Expiry Date"
                   field="expiryDate"
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   type="date"
                 />
                 <ColumnDirective
                   headerText="Arrival Date"
                   field="arrivalDate"
-                  format="dd/MM/yyyy"
+                  format="MM/dd/yyyy"
                   type="datetime"
                 />
                 <ColumnDirective

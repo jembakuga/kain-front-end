@@ -16,7 +16,7 @@ class ProductItemDetails extends BaseComponent {
     productId: "",
     productItemId: "",
     isAjaxInProgress: false,
-    isEdit: false
+    isEdit: false,
   };
 
   // constructor(props: any) {
@@ -36,30 +36,30 @@ class ProductItemDetails extends BaseComponent {
   handleQuantityChange(e: any) {
     console.log(e);
     this.setState({
-      quantity: e.value
+      quantity: e.value,
     });
   }
   handlBatchNoChange(e: any) {
     this.setState({
-      batchNo: e.target.value
+      batchNo: e.target.value,
     });
   }
   handleBasePriceChange(e: any) {
     console.log(e);
     this.setState({
-      basePrice: e.value
+      basePrice: e.value,
     });
   }
 
   handlExpiryDateChange(e: any) {
     this.setState({
-      expiryDate: e.value
+      expiryDate: e.value,
     });
   }
 
   handlArrivalDateChange(e: any) {
     this.setState({
-      arrivalDate: e.value
+      arrivalDate: e.value,
     });
   }
 
@@ -68,20 +68,20 @@ class ProductItemDetails extends BaseComponent {
     this.setState({
       productId: this.props.match.params.productId,
       productItemId: this.props.match.params.productItemId,
-      isEdit: this.props.match.params.productItemId ? true : false
+      isEdit: this.props.match.params.productItemId ? true : false,
     });
     if (this.props.match.params.productItemId) {
       axios
         .post("http://localhost:8080/product/findProductItem", {
-          productItemId: this.props.match.params.productItemId
+          productItemId: this.props.match.params.productItemId,
         })
-        .then(res => {
+        .then((res) => {
           this.setState({
             batchNo: res.data.batchNo,
             basePrice: res.data.basePrice,
             expiryDate: res.data.expiryDate,
             arrivalDate: res.data.arrivalDate,
-            quantity: res.data.quantity
+            quantity: res.data.quantity,
           });
         });
     }
@@ -89,7 +89,7 @@ class ProductItemDetails extends BaseComponent {
 
   handleAddButton() {
     this.setState({
-      isAjaxInProgress: true
+      isAjaxInProgress: true,
     });
     console.log(this.state);
     axios
@@ -100,10 +100,10 @@ class ProductItemDetails extends BaseComponent {
         expiryDate: this.state.expiryDate,
         arrivalDate: this.state.arrivalDate,
         quantity: this.state.quantity,
-        productItemId: this.state.productItemId
+        productItemId: this.state.productItemId,
         // siDrItemId: this.props.match.params.siDrItemId
       })
-      .then(res => {
+      .then((res) => {
         console.log(this.state);
         // if (this.state.productId) {
         DialogUtility.confirm({
@@ -111,13 +111,13 @@ class ProductItemDetails extends BaseComponent {
           closeOnEscape: true,
           content: "Product added to sales invoice/delivery receipt",
           showCloseIcon: true,
-          title: "Product added"
+          title: "Product added",
         });
         // this.props.history.push(
         //   "/productDetails/" + this.props.match.params.productId
         // );
         this.setState({
-          isAjaxInProgress: false
+          isAjaxInProgress: false,
         });
       });
   }
@@ -181,6 +181,7 @@ class ProductItemDetails extends BaseComponent {
                 id="expiryDate"
                 value={this.state.expiryDate}
                 change={this.handlExpiryDateChange.bind(this)}
+                format="MM/dd/yyyy"
               />
             </div>
           </div>
@@ -193,6 +194,7 @@ class ProductItemDetails extends BaseComponent {
                 id="arrivalDate"
                 value={this.state.arrivalDate}
                 change={this.handlArrivalDateChange.bind(this)}
+                format="MM/dd/yyyy"
               />
             </div>
           </div>

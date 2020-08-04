@@ -37,22 +37,22 @@ class CollectionItemDetails extends BaseComponent {
       collectionId: "",
       collectionItemId: "",
       siDrColl: [],
-      siDrNo: ""
+      siDrNo: "",
     };
   }
 
   componentDidMount() {
     this.setState({
       collectionId: this.props.match.params.collectionId,
-      collectionItemId: this.props.match.params.collectionItemId
+      collectionItemId: this.props.match.params.collectionItemId,
     });
     if (this.props.match.params.collectionItemId) {
       axios
         .post("http://localhost:8080/collection/findCollectionReportItemById", {
           collectionReportId: this.props.match.params.collectionId,
-          collectionReportItemId: this.props.match.params.collectionItemId
+          collectionReportItemId: this.props.match.params.collectionItemId,
         })
-        .then(res => {
+        .then((res) => {
           this.setState({
             siDrDate: res.data.siDrDate,
             mdHospDrugstore: res.data.mdHospDrugstore,
@@ -62,7 +62,7 @@ class CollectionItemDetails extends BaseComponent {
             orPrNo: res.data.orPrNo,
             amount: res.data.amount,
             siDrNo: res.data.siDrNo,
-            siDrColl: [{ key: res.data.siDrId, value: res.data.siDrNo }]
+            siDrColl: [{ key: res.data.siDrId, value: res.data.siDrNo }],
           });
         });
     }
@@ -70,10 +70,10 @@ class CollectionItemDetails extends BaseComponent {
     if (!this.props.match.params.collectionItemId) {
       axios
         .post("http://localhost:8080/salesOrder/findUncollectedSiDr")
-        .then(res => {
+        .then((res) => {
           console.log(res.data);
           this.setState({
-            siDrColl: res.data.siDrKeyValueList
+            siDrColl: res.data.siDrKeyValueList,
           });
         });
     }
@@ -83,11 +83,11 @@ class CollectionItemDetails extends BaseComponent {
       amount: { required: true },
       checkNo: { required: true },
       nameOfBank: { required: true },
-      orPrNo: { required: true }
+      orPrNo: { required: true },
     };
 
     let requiredFields: FormValidatorModel = {
-      rules: rules
+      rules: rules,
     };
 
     this.formObject = new FormValidator("#form-element", requiredFields);
@@ -95,42 +95,42 @@ class CollectionItemDetails extends BaseComponent {
 
   handleSiDrDateChange(e: any) {
     this.setState({
-      collectionDate: e.value
+      collectionDate: e.value,
     });
   }
   handleSiDrNoChange(e: any) {
     this.setState({
-      siDrId: e.target.value
+      siDrId: e.target.value,
     });
   }
 
   handleMdHospDrugstoreChange(e: any) {
     this.setState({
-      mdHospDrugstore: e.target.value
+      mdHospDrugstore: e.target.value,
     });
   }
 
   handleOrPrNoChange(e: any) {
     this.setState({
-      orPrNo: e.target.value
+      orPrNo: e.target.value,
     });
   }
 
   handleNameOfBankChange(e: any) {
     this.setState({
-      nameOfBank: e.target.value
+      nameOfBank: e.target.value,
     });
   }
 
   handleCheckNoChange(e: any) {
     this.setState({
-      checkNo: e.target.value
+      checkNo: e.target.value,
     });
   }
 
   handleAmountChange(e: any) {
     this.setState({
-      amount: e.value
+      amount: e.value,
     });
   }
 
@@ -146,9 +146,9 @@ class CollectionItemDetails extends BaseComponent {
           checkNo: this.state.checkNo,
           siDrId: this.state.siDrId,
           orPrNo: this.state.orPrNo,
-          amount: this.state.amount
+          amount: this.state.amount,
         })
-        .then(res => {
+        .then((res) => {
           console.log(res);
           // if (this.state.productId) {
           DialogUtility.alert({
@@ -156,7 +156,7 @@ class CollectionItemDetails extends BaseComponent {
             closeOnEscape: true,
             content: "Collection item added to collection",
             showCloseIcon: true,
-            title: "Collection item added"
+            title: "Collection item added",
           });
           this.props.history.push(
             "/collectionDetails/" + this.state.collectionId
@@ -173,7 +173,7 @@ class CollectionItemDetails extends BaseComponent {
     console.log(this.state.siDrColl);
     let count = 0;
     if (this.state.siDrColl) {
-      ds = this.state.siDrColl.map(item => (
+      ds = this.state.siDrColl.map((item) => (
         <option key={item["key"]} value={item["key"]}>
           {item["value"]}
         </option>
@@ -209,6 +209,7 @@ class CollectionItemDetails extends BaseComponent {
                   id="dueDate"
                   value={this.state.siDrDate}
                   change={this.handleSiDrDateChange.bind(this)}
+                  format="MM/dd/yyyy"
                 />
               </div>
             </div>
