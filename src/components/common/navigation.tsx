@@ -143,6 +143,15 @@ class Navigation extends Component {
         ],
         text: "Report",
       },
+      {
+        items: [
+          {
+            text: "Search Client",
+            url: "#/clientSearch",
+          }
+        ],
+        text: "Client",
+      },
     ];
     this.menuComponent = new MenuComponent({ items: this.menuItems });
   }

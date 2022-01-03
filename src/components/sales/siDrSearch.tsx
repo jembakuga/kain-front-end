@@ -25,6 +25,7 @@ class SiDrSearch extends BaseComponent {
     poNo: "",
     checkedBy: "",
     type: "",
+    client: "",
   };
 
   handleSalesOrderNoChange(e: any) {
@@ -49,13 +50,22 @@ class SiDrSearch extends BaseComponent {
     });
   }
 
+  handleClientChange(e: any) {
+    this.setState({
+      client: e.target.value,
+    });
+  }
+
   loadSiDrs() {
     // console.log(this.state);
     if (this.grid) {
       this.grid.dataSource = this.dataManager;
       this.query = new Query()
         .addParams("salesOrderNo", this.state.salesOrderNo)
-        .addParams("poNo", this.state.poNo);
+        .addParams("poNo", this.state.poNo)
+        .addParams("soldTo", this.state.client)
+        .addParams("type", this.state.type)
+        .addParams("checkedBy", this.state.checkedBy);
       this.grid.query = this.query;
       this.grid.refresh();
     }
@@ -141,6 +151,17 @@ class SiDrSearch extends BaseComponent {
                   Delivery Receipt
                 </option>
               </select>
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-sm-3">Client: </div>
+            <div className="col-sm-4">
+            <input
+                type="text"
+                className="form-control"
+                onChange={this.handleClientChange.bind(this)}
+              />
             </div>
           </div>
           <br />

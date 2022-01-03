@@ -20,6 +20,8 @@ import Sales from "./components/visual/sales";
 import Collection from "./components/visual/collection";
 import Product from "./components/visual/product";
 import MonthlyExpensesAdd from "./components/expenses/monthlyExpensesAdd";
+import ClientSearch from "./components/client/clientSearch";
+import ClientDetails from "./components/client/clientDetails";
 
 class App extends Component {
   render() {
@@ -29,82 +31,48 @@ class App extends Component {
           <Navigation />
           <Switch>
             <Route path="/" exact component={Home}></Route>
+
             {/* Sales Invoice/Delivery Receipt */}
             <Route path="/siDrSearch" component={SiDrSearch}></Route>
             <Route path="/siDrAdd" component={SiDrDetails}></Route>
             <Route path="/siDrDetails/:id" component={SiDrDetails}></Route>
-            <Route
-              path="/siDrItemDetails/:srDrId"
-              component={SiDrItemDetails}
-            ></Route>
-            <Route
-              path="/siDrItemDetailsEdit/:srDrId/:siDrItemId"
-              component={SiDrItemDetails}
-            ></Route>
+            <Route path="/siDrItemDetails/:srDrId" component={SiDrItemDetails} ></Route>
+            <Route path="/siDrItemDetailsEdit/:srDrId/:siDrItemId" component={SiDrItemDetails} ></Route>
             <Route path="/siDrPrint/:id" component={SiDrPrint}></Route>
 
             {/* Collection */}
-            <Route
-              path="/collectionSearch"
-              component={CollectionSearch}
-            ></Route>
-            <Route
-              path="/collectionSearch/:collectionId"
-              component={CollectionSearch}
-            ></Route>
+            <Route path="/collectionSearch" component={CollectionSearch} ></Route>
+            <Route path="/collectionSearch/:collectionId" component={CollectionSearch} ></Route>
             <Route path="/collectionAdd" component={CollectionDetails}></Route>
-            <Route
-              path="/collectionDetails/:collectionId"
-              component={CollectionDetails}
-            ></Route>
-            <Route
-              path="/collectionItemDetails/:collectionId"
-              component={CollectionItemDetails}
-            ></Route>
-            <Route
-              path="/collectionItemDetailsEdit/:collectionId/:collectionItemId"
-              component={CollectionItemDetails}
-            ></Route>
+            <Route path="/collectionDetails/:collectionId" component={CollectionDetails} ></Route>
+            <Route path="/collectionItemDetails/:collectionId" component={CollectionItemDetails} ></Route>
+            <Route path="/collectionItemDetailsEdit/:collectionId/:collectionItemId" component={CollectionItemDetails} ></Route>
+
             {/* Product */}
             <Route path="/productSearch" component={ProductSearch}></Route>
-            <Route
-              path="/productDetails/:id"
-              component={ProductDetails}
-            ></Route>
-            <Route path="/productAdd" component={ProductDetails}></Route>
-            <Route
-              path="/productItemDetails/:productId"
-              component={ProductItemDetails}
-            ></Route>
-            <Route
-              path="/productItemDetailsEdit/:productId/:productItemId"
-              component={ProductItemDetails}
-            ></Route>
+            <Route path="/productDetails/:id" component={ProductDetails} ></Route>
+            <Route path="/productAdd" component={ProductDetails}></Route> 
+            <Route path="/productItemDetails/:productId" component={ProductItemDetails} ></Route>
+            <Route path="/productItemDetailsEdit/:productId/:productItemId" component={ProductItemDetails} ></Route>
+
             {/* Employee */}
             <Route path="/employeeSearch" component={EmployeeSearch}></Route>
             <Route path="/employeeAdd" component={EmployeeDetails}></Route>
-            <Route
-              path="/employeeDetails/:employeeId"
-              component={EmployeeDetails}
-            ></Route>
+            <Route path="/employeeDetails/:employeeId" component={EmployeeDetails} ></Route>
             <Route path="/employeeAdd" component={EmployeeDetails}></Route>
-            <Route
-              path="/employeeDetails/:employeeId"
-              component={EmployeeDetails}
-            ></Route>
+            <Route path="/employeeDetails/:employeeId" component={EmployeeDetails} ></Route>
             <Route path="/sales" component={Sales}></Route>
             <Route path="/collection" component={Collection}></Route>
             <Route path="/product" component={Product}></Route>
 
-            {/* Monthly Expenses */}
-            <Route
-              path="/monthlyExpensesAdd"
-              component={MonthlyExpensesAdd}
-            ></Route>
-            <Route
-              path="/monthlyExpensesAdd/:month"
-              component={MonthlyExpensesAdd}
-            ></Route>
+            {/* Monthly Expenses start */}
+            <Route path="/monthlyExpensesAdd" component={MonthlyExpensesAdd} ></Route>
+            <Route path="/monthlyExpensesAdd/:month" component={MonthlyExpensesAdd} ></Route>
+
+            {/* Client start */}
+            <Route path="/clientSearch" component={ClientSearch} ></Route>
+            <Route path="/clientDetails/:clientName" component={ClientDetails} ></Route>
+
           </Switch>
         </HashRouter>
       </div>
