@@ -104,6 +104,7 @@ class ClientDetails extends BaseComponent {
               <ColumnDirective headerText="PO No" field="poNo" />
               <ColumnDirective headerText="TIN" field="tin" />
               <ColumnDirective headerText="Terms" field="terms" />
+              <ColumnDirective headerText="Total Amount" field="totalAmount" />
             </ColumnsDirective>
             <Inject services={[Page, Sort]} />
           </GridComponent>
