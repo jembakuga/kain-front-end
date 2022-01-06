@@ -159,13 +159,13 @@ class CollectionItemDetails extends BaseComponent {
             title: "Collection item added",
           });
           this.props.history.push(
-            "/collectionDetails/" + this.state.collectionId
+            "/collectionSearch/"
           );
         });
     }
   }
   handleBackBtn() {
-    this.props.history.push("/collectionDetails/" + this.state.collectionId);
+    this.props.history.push("/collectionSearch/");
   }
 
   render() {

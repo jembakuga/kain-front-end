@@ -20,23 +20,23 @@ class CollectionSearch extends BaseComponent {
   public formatOption: object = { type: "date", format: "dd/MM/yyyy" };
 
   private dataManager: DataManager = new DataManager({
-    url: "http://localhost:8080/collection/findCollections",
+    url: "http://localhost:8080/collection/findCollectionReportItems",
     adaptor: new UrlAdaptor(),
   });
 
   state: {
-    area: "";
-    collectionDate: null;
-    submittedBy: "";
+    siDrNo: "";
+    siDrDate: null;
+    mdHospDs: "";
     collectionData: [];
   };
 
   constructor(props: any) {
     super(props);
     this.state = {
-      area: "",
-      collectionDate: null,
-      submittedBy: "",
+      siDrNo: "",
+      siDrDate: null,
+      mdHospDs: "",
       collectionData: [],
     };
   }
@@ -44,7 +44,7 @@ class CollectionSearch extends BaseComponent {
   componentDidMount() {
     console.log("componentDidMount", this.props.match.params);
     axios
-      .post("http://localhost:8080/collection/findCollections", {})
+      .post("http://localhost:8080/collection/findCollectionReportItems", {})
       .then((res) => {
         console.log(res.data.result);
         this.setState({
@@ -53,21 +53,21 @@ class CollectionSearch extends BaseComponent {
       });
   }
 
-  handleAreaChange(e: any) {
+  handleSiDrNoChange(e: any) {
     this.setState({
-      area: e.target.value,
+      siDrNo: e.target.value,
     });
   }
 
-  handleCollectionDateChange(e: any) {
+  handleSiDrDateChange(e: any) {
     this.setState({
-      collectionDate: e.value,
+      siDrDate: e.value,
     });
   }
 
-  handleSubmittedByChange(e: any) {
+  handleMdHospDsChange(e: any) {
     this.setState({
-      collectionDate: e.target.value,
+      siDrDate: e.target.value,
     });
   }
 
@@ -77,8 +77,10 @@ class CollectionSearch extends BaseComponent {
 
   loadCollections() {
     axios
-      .post("http://localhost:8080/collection/findCollections", {
-        area: this.state.area,
+      .post("http://localhost:8080/collection/findCollectionReportItems", {
+        siDrNo: this.state.siDrNo,
+        siDrDate : this.state.siDrDate,
+        mdHospDrugstore : this.state.mdHospDs
       })
       .then((res) => {
         console.log(res.data.result);
@@ -93,14 +95,14 @@ class CollectionSearch extends BaseComponent {
     this.props.history.push("/collectionAdd");
   }
 
-  handleRenderAreaHyperlink(args: any) {
-    //console.log(args.data);
-    if (args.column.field === "area") {
+  handleRendersiDrNoHyperlink(args: any) {
+    console.log(args.data);
+    if (args.column.field === "siDrNo") {
       ReactDOM.render(
         <HashRouter>
           <Link to={"/collectionDetails/" + args.data.collectionReportId}>
             {" "}
-            {args.data.area}
+            {args.data.siDrNo}
           </Link>
         </HashRouter>,
         args.cell
@@ -114,34 +116,34 @@ class CollectionSearch extends BaseComponent {
         <div className="header">Collection Search</div>
         <div className="container-fluid">
           <div className="row">
-            <div className="col-sm-3">Area: </div>
+            <div className="col-sm-3">SI/DR No: </div>
             <div className="col-sm-4">
               <input
                 type="text"
                 className="form-control"
-                onChange={this.handleAreaChange.bind(this)}
+                onChange={this.handleSiDrNoChange.bind(this)}
               />
             </div>
           </div>
           <br />
           <div className="row">
-            <div className="col-sm-3">Collection Date: </div>
+            <div className="col-sm-3">SI/DR Date: </div>
             <div className="col-sm-4">
               <DatePickerComponent
-                id="collectionDate"
-                change={this.handleCollectionDateChange.bind(this)}
+                id="siDrDate"
+                change={this.handleSiDrDateChange.bind(this)}
                 format="MM/dd/yyyy"
               />
             </div>
           </div>
           <br />
           <div className="row">
-            <div className="col-sm-3">Submitted By: </div>
+            <div className="col-sm-3">Mds/Hospital/Drugstore: </div>
             <div className="col-sm-4">
               <input
                 type="text"
                 className="form-control"
-                onChange={this.handleSubmittedByChange.bind(this)}
+                onChange={this.handleMdHospDsChange.bind(this)}
               />
             </div>
           </div>
@@ -175,28 +177,33 @@ class CollectionSearch extends BaseComponent {
               style={{ width: "100%" }}
               allowSorting={true}
               ref={(g) => (this.grid = g)}
-              queryCellInfo={this.handleRenderAreaHyperlink.bind(this)}
+              //queryCellInfo={this.handleRendersiDrNoHyperlink.bind(this)}
             >
               <ColumnsDirective>
-                <ColumnDirective headerText="Area" field="area" />
+                <ColumnDirective headerText="Si/Dr No" field="siDrNo" />
                 <ColumnDirective
-                  headerText="Collection Date"
-                  field="collectionDate"
+                  headerText="SI/DR Date"
+                  field="siDrDate"
                   format="MM/dd/yyyy"
                   type="date"
                 />
                 <ColumnDirective
-                  headerText="Submitted By"
-                  field="submittedBy.employeeName"
+                  headerText="OR/PR No"
+                  field="orPrNo"
                 />
                 <ColumnDirective
-                  headerText="Posted By"
-                  field="postedBy.employeeName"
+                  headerText="Name of Bank"
+                  field="nameOfBank"
                 />
                 <ColumnDirective
-                  headerText="Checked By"
-                  field="checkedBy.employeeName"
+                  headerText="Check No"
+                  field="checkNo"
                 />
+                <ColumnDirective
+                  headerText="MD/Hospital/Drugstore"
+                  field="mdHospDrugstore"
+                />
+                
               </ColumnsDirective>
               <Inject services={[Page, Sort]} />
             </GridComponent>

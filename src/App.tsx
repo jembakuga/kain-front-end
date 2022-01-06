@@ -43,7 +43,8 @@ class App extends Component {
             {/* Collection */}
             <Route path="/collectionSearch" component={CollectionSearch} ></Route>
             <Route path="/collectionSearch/:collectionId" component={CollectionSearch} ></Route>
-            <Route path="/collectionAdd" component={CollectionDetails}></Route>
+            {/*<Route path="/collectionAdd" component={CollectionItemDetails}></Route> */}
+            <Route path="/collectionAdd" component={CollectionItemDetails}></Route>
             <Route path="/collectionDetails/:collectionId" component={CollectionDetails} ></Route>
             <Route path="/collectionItemDetails/:collectionId" component={CollectionItemDetails} ></Route>
             <Route path="/collectionItemDetailsEdit/:collectionId/:collectionItemId" component={CollectionItemDetails} ></Route>
