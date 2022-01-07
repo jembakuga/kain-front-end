@@ -73,7 +73,7 @@ class Product extends BaseComponent {
                 <ChartComponent
                   id="profitChart"
                   primaryXAxis={{ valueType: "Category", title: "Month" }}
-                  title="Product Inventory"
+                  title="Profit Per Product"
                   tooltip={{
                     enable: true,
                     format: "${point.tooltip}",

@@ -152,6 +152,23 @@ class Navigation extends Component {
         ],
         text: "Client",
       },
+      {
+        items: [
+          {
+            text: "Product",
+            url: "#/product",
+          },
+          {
+            text: "Si/DR",
+            url: "#/sales",
+          },
+          {
+            text: "Collection",
+            url: "#/collection",
+          },
+        ],
+        text: "Visuals",
+      },
     ];
     this.menuComponent = new MenuComponent({ items: this.menuItems });
   }
