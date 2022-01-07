@@ -182,6 +182,10 @@ class CollectionSearch extends BaseComponent {
               <ColumnsDirective>
                 <ColumnDirective headerText="Si/Dr No" field="siDrNo" />
                 <ColumnDirective
+                  headerText="MD/Hospital/Drugstore"
+                  field="mdHospDrugstore"
+                />
+                <ColumnDirective
                   headerText="SI/DR Date"
                   field="siDrDate"
                   format="MM/dd/yyyy"
@@ -200,8 +204,8 @@ class CollectionSearch extends BaseComponent {
                   field="checkNo"
                 />
                 <ColumnDirective
-                  headerText="MD/Hospital/Drugstore"
-                  field="mdHospDrugstore"
+                  headerText="Amount"
+                  field="amount" format='N2'
                 />
                 
               </ColumnsDirective>

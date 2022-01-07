@@ -102,6 +102,16 @@ class CollectionItemDetails extends BaseComponent {
     this.setState({
       siDrId: e.target.value,
     });
+    axios
+      .post("http://localhost:8080/salesOrder/findSiDr", {
+        siDrId: e.target.value,
+      })
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          mdHospDrugstore: res.data.soldTo
+        });
+      });
   }
 
   handleMdHospDrugstoreChange(e: any) {
@@ -225,6 +235,7 @@ class CollectionItemDetails extends BaseComponent {
                   className="form-control"
                   value={this.state.mdHospDrugstore}
                   onChange={this.handleMdHospDrugstoreChange.bind(this)}
+                  readOnly
                 />
               </div>
               <div className="col-sm-2">OR/PR No: </div>

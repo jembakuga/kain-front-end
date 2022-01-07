@@ -32,7 +32,7 @@ class Product extends BaseComponent {
   renderInventoryVisuals() {
     console.log("renderYearlyVisuals");
     axios
-      .get("http://localhost:8080/product/retrieveProductInventory?year=2020")
+      .get("http://localhost:8080/product/retrieveProductInventory?year=2022")
       .then((res) => {
         console.log(res.data);
         this.setState({ productInventoryData: res.data });
@@ -40,7 +40,7 @@ class Product extends BaseComponent {
 
     /*axios
       .get(
-        "http://localhost:8080/product/retrieveProductPriceComparison?year=2020"
+        "http://localhost:8080/product/retrieveProductPriceComparison?year=2022"
       )
       .then((res) => {
         console.log(res.data);
@@ -66,6 +66,42 @@ class Product extends BaseComponent {
                 >
                   Load Data
                 </button>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm-12">
+                <ChartComponent
+                  id="profitChart"
+                  primaryXAxis={{ valueType: "Category", title: "Month" }}
+                  title="Product Inventory"
+                  tooltip={{
+                    enable: true,
+                    format: "${point.tooltip}",
+                  }}
+                  legendSettings={{ visible: true, position: "Top" }}
+                  palettes={["#AEEE49"]}
+                >
+                  <Inject
+                    services={[
+                      ColumnSeries,
+                      Tooltip,
+                      LineSeries,
+                      Legend,
+                      Category,
+                    ]}
+                  />
+                  <SeriesCollectionDirective>
+                    <SeriesDirective
+                      dataSource={this.state.productInventoryData}
+                      xName="productDesc"
+                      yName="profitPerProduct"
+                      name="Available Product in Inventory"
+                      type="Column" // to define if bar graph or line graph
+                      animation={{ enable: true, duration: 1200, delay: 100 }}
+                      tooltipMappingName="profitPerProduct"
+                    />
+                  </SeriesCollectionDirective>
+                </ChartComponent>
               </div>
             </div>
             <div className="row">
