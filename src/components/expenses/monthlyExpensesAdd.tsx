@@ -162,7 +162,7 @@ class MontlyExpensesAdd extends BaseComponent {
         revFund: this.state.revFund,
         expensesTieup: this.state.expensesTieUp,
         total: this.state.total,
-        month_: this.props.match.params.month,
+        month_: this.state.month,
       })
       .then((res) => {
         console.log(res);
@@ -189,10 +189,11 @@ class MontlyExpensesAdd extends BaseComponent {
     this.setState({
       year: e.target.value,
     });
-    //this.retrieveData();
+    this.retrieveData();
   }
 
   handleMonthChange(e: any) {
+    console.log(e.target.value);
     this.setState({
       month: e.target.value,
     });
@@ -220,8 +221,7 @@ class MontlyExpensesAdd extends BaseComponent {
           statutory: res.data.statutory,
           revFund: res.data.revFund,
           expensesTieUp: res.data.expensesTieup,
-          total: res.data.total,
-          month: res.data.month_,
+          total: res.data.total
         });
       });
   }
@@ -281,7 +281,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   //value={this.state.employeeType}
                   className="form-control"
                   onChange={this.handleYearChange.bind(this)}
-                  onBlur={this.handleYearChange.bind(this)}
+                  
                 >
                   <option></option>
                   <option key="2019" value="2019">
@@ -310,34 +310,34 @@ class MontlyExpensesAdd extends BaseComponent {
                   //value={this.state.employeeType}
                   className="form-control"
                   onChange={this.handleMonthChange.bind(this)}
-                  onBlur={this.handleMonthChange.bind(this)}
+                  
                 >
                   <option></option>
-                  <option key="January" value="1">
+                  <option key="January" value="01">
                     January
                   </option>
-                  <option key="February" value="2">
+                  <option key="February" value="02">
                     February
                   </option>
-                  <option key="March" value="3">
+                  <option key="March" value="03">
                     March
                   </option>
-                  <option key="April" value="4">
+                  <option key="April" value="04">
                     April
                   </option>
-                  <option key="May" value="5">
+                  <option key="May" value="05">
                     May
                   </option>
-                  <option key="June" value="6">
+                  <option key="June" value="06">
                     June
                   </option>
-                  <option key="July" value="7">
+                  <option key="July" value="07">
                     July
                   </option>
-                  <option key="August" value="8">
+                  <option key="August" value="08">
                     February
                   </option>
-                  <option key="September" value="9">
+                  <option key="September" value="09">
                     September
                   </option>
                   <option key="October" value="10">
@@ -363,6 +363,7 @@ class MontlyExpensesAdd extends BaseComponent {
                   className="form-control"
                   value={this.state.profit}
                   onChange={this.handleProfitChange.bind(this)}
+                  readOnly
                 />
               </div>
               <div className="col-sm-2">Purchases</div>

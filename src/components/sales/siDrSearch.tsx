@@ -212,6 +212,7 @@ class SiDrSearch extends BaseComponent {
               <ColumnDirective headerText="PO No" field="poNo" />
               <ColumnDirective headerText="TIN" field="tin" />
               <ColumnDirective headerText="Terms" field="terms" />
+              <ColumnDirective headerText="Collected" field="collectedInd" />
             </ColumnsDirective>
             <Inject services={[Page, Sort]} />
           </GridComponent>

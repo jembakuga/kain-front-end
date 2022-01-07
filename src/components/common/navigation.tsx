@@ -76,10 +76,10 @@ class Navigation extends Component {
       {
         items: [
           {
-            text: "January",
+            text: "Create Expense",
             url: "#/monthlyExpensesAdd/1",
           },
-          {
+          /*{
             text: "February",
             url: "#/monthlyExpensesAdd/2",
           },
@@ -121,8 +121,8 @@ class Navigation extends Component {
           },
           {
             text: "Decemvber",
-            url: "#/monthlyExpensesAdd/12",
-          },
+            url: "#/monthlyExpensesAdd/12", 
+          },*/
           //{
           //text: "Report 2",
           //url: "#/employeeAdd",

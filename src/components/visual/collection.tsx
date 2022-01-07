@@ -144,7 +144,7 @@ class Collection extends BaseComponent {
                       dataSource={this.state.salesData}
                       xName="month"
                       yName="sales"
-                      name="Sales"
+                      name="Collection"
                       type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
                     />

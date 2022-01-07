@@ -98,7 +98,7 @@ class Product extends BaseComponent {
                       name="Available Product in Inventory"
                       type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
-                      tooltipMappingName="profitPerProduct"
+                      tooltipMappingName="profitPerProductFormatted"
                     />
                   </SeriesCollectionDirective>
                 </ChartComponent>
