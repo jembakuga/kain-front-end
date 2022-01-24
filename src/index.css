@@ -91,11 +91,7 @@ body {
   position: static;
 }
 
-@media only screen and (max-width: 1300px) {
-  .toolbar-menu-control {
-    width: auto;
-  }
-}
+
 * {
   margin: 0;
   padding: 0;
@@ -113,4 +109,16 @@ body {
 
 .isLossColor {
   background-color: orangered;
+}
+
+.no-print{
+  display: block;
+}
+
+
+
+@media only screen and (max-width: 1300px) {
+  .toolbar-menu-control {
+    width: auto;
+  }
 }

@@ -22,6 +22,7 @@ import Product from "./components/visual/product";
 import MonthlyExpensesAdd from "./components/expenses/monthlyExpensesAdd";
 import ClientSearch from "./components/client/clientSearch";
 import ClientDetails from "./components/client/clientDetails";
+import MonthlyExpensesSearch from "./components/expenses/monthlyExpensesSearch";
 
 class App extends Component {
   render() {
@@ -68,12 +69,15 @@ class App extends Component {
 
             {/* Monthly Expenses start */}
             <Route path="/monthlyExpensesAdd" component={MonthlyExpensesAdd} ></Route>
-            <Route path="/monthlyExpensesAdd/:month" component={MonthlyExpensesAdd} ></Route>
+            <Route path="/monthlyExpensesSearch" component={MonthlyExpensesSearch} ></Route>
 
             {/* Client start */}
             <Route path="/clientSearch" component={ClientSearch} ></Route>
             <Route path="/clientDetails/:clientName" component={ClientDetails} ></Route>
 
+
+            {/* Test start */}
+            <Route path="/clientSearch" component={ClientSearch} ></Route>
           </Switch>
         </HashRouter>
       </div>

@@ -23,6 +23,8 @@ import * as ReactDOM from "react-dom";
 import { HashRouter, Link } from "react-router-dom";
 import { DialogUtility } from "@syncfusion/ej2-popups";
 import { FormValidator, FormValidatorModel } from "@syncfusion/ej2-inputs";
+import SiDrPrint from './siDrPrint';
+import NumberFormat from 'react-number-format';
 
 class SiDrDetails extends BaseComponent {
   private grid: GridComponent | null;
@@ -31,7 +33,7 @@ class SiDrDetails extends BaseComponent {
 
   state: {
     siDrId: "";
-    salesOrderNo: "";
+    salesOrderNo: ""; 
     poNo: "";
     checkedBy: 0;
     dueDate: Date;
@@ -338,6 +340,7 @@ class SiDrDetails extends BaseComponent {
 
   handlePrintButton() {
     console.log("PRINTING");
+    //this.props.history.push("/siDrPrint/" + this.state.siDrId);
     window.open("http://localhost:3000/#/siDrPrint/1");
   }
 
@@ -620,7 +623,7 @@ class SiDrDetails extends BaseComponent {
                   className="btn btn-outline-primary btn-sm mr-2"
                   onClick={this.handlePrintButton.bind(this)}
                 >
-                  Print
+                  Print Preview
                 </button>
               </div>
               <br />

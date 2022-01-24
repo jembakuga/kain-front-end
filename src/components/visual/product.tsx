@@ -95,7 +95,7 @@ class Product extends BaseComponent {
                       dataSource={this.state.productInventoryData}
                       xName="productDesc"
                       yName="profitPerProduct"
-                      name="Available Product in Inventory"
+                      name="Profit"
                       type="Column" // to define if bar graph or line graph
                       animation={{ enable: true, duration: 1200, delay: 100 }}
                       tooltipMappingName="profitPerProductFormatted"

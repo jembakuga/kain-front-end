@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-pdf/renderer": "^2.1.0",
     "@syncfusion/ej2-react-calendars": "^17.4.51",
     "@syncfusion/ej2-react-charts": "^18.4.48",
     "@syncfusion/ej2-react-dropdowns": "^17.4.51",
@@ -14,16 +15,19 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
-    "@types/node": "^12.20.40",
+    "@types/node": "^12.20.42",
     "@types/react": "^16.14.21",
     "@types/react-dom": "^16.9.14",
-    "@types/react-router-dom": "^5.3.2",
-    "axios": "^0.19.2",
+    "@types/react-router-dom": "^5.3.3",
+    "axios": "^0.25.0",
     "bootstrap": "^4.6.1",
     "moment": "^2.29.1",
     "react": "^16.14.0",
     "react-bootstrap": "^1.6.4",
+    "react-currency-format": "^1.0.0",
     "react-dom": "^16.14.0",
+    "react-number-format": "^4.9.1",
+    "react-pdfkit": "^0.1.0",
     "react-router-dom": "^5.3.0",
     "react-scripts": "3.3.0",
     "typescript": "^3.9.10"
@@ -50,6 +54,7 @@
     ]
   },
   "devDependencies": {
-    "@types/history": "^4.7.9"
+    "@types/history": "^4.7.11",
+    "@types/pdfkit": "^0.12.3"
   }
 }

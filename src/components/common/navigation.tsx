@@ -79,6 +79,10 @@ class Navigation extends Component {
             text: "Create Expense",
             url: "#/monthlyExpensesAdd/1",
           },
+          {
+            text: "Generate Expense Report",
+            url: "#/monthlyExpensesSearch",
+          },
           /*{
             text: "February",
             url: "#/monthlyExpensesAdd/2",

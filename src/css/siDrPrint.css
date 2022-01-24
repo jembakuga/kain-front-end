@@ -1,0 +1,81 @@
+@media print
+{  
+    .btn, .e-menu-item, .e-headertext {
+      display: none !important
+    }
+    .e-grid [class^='e-'], .e-control {
+        border: none;
+    }
+    /*input[type='text']:not(.userListBox){
+        background: transparent !important;
+        border : none !important;
+        outline : none !important;
+        padding : 0px 0px 0px 0px !important;
+    }*/
+
+    .gridCss {
+        padding-left: 100px;
+    }
+
+    .sidr-print {
+        padding-top: 300px;
+    }
+
+    .e-grid .e-rowcell{
+        font-size: 20px;
+    }
+
+    .e-foot-last{
+        position: fixed;
+        bottom: 50px;
+        width: 100%;
+    }
+
+    .e-tot-sales-vat-incl{
+        position: fixed;
+        bottom: 400px;
+        width: 100%;
+    }
+
+    .e-less-vat{
+        position: fixed;
+        bottom: 350px;
+        width: 100%;
+    }
+
+    .e-amount-net-of-vat{
+        position: fixed;
+        bottom: 300px;
+        width: 100%;
+    } 
+
+    .e-less-pwd{
+        position: fixed;
+        bottom: 250px;
+        width: 100%;
+    }
+
+    .e-amount-due{
+        position: fixed;
+        bottom: 200px;
+        width: 100%;
+    }
+
+    .e-add-vat{
+        position: fixed;
+        bottom: 150px;
+        width: 100%;
+    }      
+
+    .e-tot-amount{
+        position: fixed;
+        bottom: 100px;
+        width: 100%;
+    }   
+
+}
+
+.classWithPad { 
+    margin:10px; 
+    padding-left:60px; 
+}

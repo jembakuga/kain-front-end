@@ -201,7 +201,7 @@ class Sales extends BaseComponent {
                       tooltipMappingName="salesFormatted"
                       marker={{ visible: true }}
                     />
-                  </SeriesCollectionDirective>
+                  </SeriesCollectionDirective>  
                 </ChartComponent>
               </div>
             </div>

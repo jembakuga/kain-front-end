@@ -24,6 +24,8 @@ import { HashRouter, Link } from "react-router-dom";
 import { DialogUtility } from "@syncfusion/ej2-popups";
 import { FormValidator, FormValidatorModel } from "@syncfusion/ej2-inputs";
 import moment from "moment";
+import '../../css/siDrPrint.css';
+import NumberFormat from 'react-number-format';
 
 class SiDrPrint extends BaseComponent {
   private grid: GridComponent | null;
@@ -82,6 +84,15 @@ class SiDrPrint extends BaseComponent {
       siDrItemBeans: [],
     };
   }
+
+  handleBackBtn() {
+    this.props.history.push("/siDrDetails/" + this.state.siDrId);
+  }
+
+  handlePrintBtn() {
+    window.print();
+  }
+  
   private dataManager: DataManager = new DataManager({
     url: "http://localhost:8080/salesOrder/findSiDrItemsBySiDr",
     adaptor: new UrlAdaptor(),
@@ -92,76 +103,8 @@ class SiDrPrint extends BaseComponent {
     allowDeleting: true,
   };
 
-  handleSalesOrderNoChange(e: any) {
-    this.setState({
-      salesOrderNo: e.target.value,
-    });
-  }
-  handlePoNoChange(e: any) {
-    this.setState({
-      poNo: e.target.value,
-    });
-  }
-  handleCheckedByChange(e: any) {
-    this.setState({
-      checkedBy: e.target.value,
-    });
-  }
-  handleSoldToChange(e: any) {
-    this.setState({
-      soldTo: e.target.value,
-    });
-  }
-  handlDueDateChange(e: any) {
-    this.setState({
-      dueDate: e.value,
-    });
-  }
-  handleAddressChange(e: any) {
-    this.setState({
-      address: e.target.value,
-    });
-  }
-  handleTinChange(e: any) {
-    this.setState({
-      tin: e.target.value,
-    });
-  }
-  handleTermsChange(e: any) {
-    this.setState({
-      terms: e.target.value,
-    });
-  }
-  handleBusinessStlyeChange(e: any) {
-    this.setState({
-      businessStyle: e.target.value,
-    });
-  }
-  handleDeliveredByChange(e: any) {
-    console.log(e.target.value);
-    this.setState({
-      deliveredBy: e.target.value,
-    });
-  }
-  handleDateChange(e: any) {
-    this.setState({
-      date: e.value,
-    });
-  }
-  handleIssueDateChange(e: any) {
-    this.setState({
-      issueDate: e.value,
-    });
-  }
-
-  handleTypeChange(e: any) {
-    this.setState({
-      type: e.target.value,
-    });
-  }
-
   componentDidMount() {
-    console.log("componentDidMount", this.props.match.params);
+    console.log("componentDidMount", this.props.match.params.id);
     if (this.props.match.params.id) {
       axios
         .post("http://localhost:8080/salesOrder/findSiDr", {
@@ -191,6 +134,7 @@ class SiDrPrint extends BaseComponent {
             ready: true,
           });
           //window.addEventListener("load", this.handleLoad);
+          
         });
 
       if (this.grid) {
@@ -201,16 +145,31 @@ class SiDrPrint extends BaseComponent {
           this.props.match.params.id
         );
         this.grid.query = this.query;
-        //window.print();
+        
       }
     }
     axios
       .post("http://localhost:8080/employee/findEmployeeForDropdown")
       .then((res) => {
         console.log(res.data);
+        console.log(this.state.checkedBy, this.state.deliveredBy);
+        var checkerName = "";
+        var medRep = "";
+        for(var i=0; i < res.data.checkers.length; i++){
+          if(this.state.checkedBy === res.data.checkers[i].employeeId){
+            checkerName = res.data.checkers[i].employeeName;            
+          }
+        }
+        for(var i=0; i < res.data.medReps.length; i++){
+          if(this.state.deliveredBy === res.data.medReps[i].employeeId){
+            medRep = res.data.medReps[i].employeeName;            
+          }
+        }
+
+        console.log(checkerName, medRep);
         this.setState({
-          checkers: res.data.checkers,
-          medReps: res.data.medReps,
+          checkedBy: checkerName,
+          deliveredBy : medRep
         });
       });
 
@@ -227,6 +186,9 @@ class SiDrPrint extends BaseComponent {
     };
 
     this.formObject = new FormValidator("#form-element", requiredFields);
+    this.setState({
+      siDrId: this.props.match.params.id,
+    });
   }
 
   //componentDidMount() {
@@ -270,15 +232,15 @@ class SiDrPrint extends BaseComponent {
         //window.close();
       }, 1000);
       return (
-        <div>
-          <br />
+        <div className="sidr-print">
+          <br /> 
           <form id="form-element">
             <div className="container-fluid">
               <div className="row">
                 <div className="col-sm-2"> </div>
                 <div className="col-sm-3">{this.state.soldTo}</div>
                 <div className="col-sm-2"> </div>
-                <div className="col-sm-3">{this.state.date}</div>
+                <div className="col-sm-3">{moment(this.state.date.toString()).format("YYYY/MM/DD")}</div>
               </div>
             </div>
             <br />
@@ -312,7 +274,7 @@ class SiDrPrint extends BaseComponent {
               </div>
               <br />
               <div className="row">
-                <div>
+                <div className="gridCss">
                   <GridComponent
                     dataSource={this.state.siDrItemBeans}
                     gridLines={"Both"}
@@ -335,10 +297,6 @@ class SiDrPrint extends BaseComponent {
                         field="description"
                       />
                       <ColumnDirective
-                        headerText="Unit Price"
-                        field="unitPrice"
-                      />
-                      <ColumnDirective
                         headerText="Lot/Batch No"
                         field="lotBatchNo"
                       />
@@ -348,7 +306,10 @@ class SiDrPrint extends BaseComponent {
                         format="yyyy/MM/dd"
                         type="date"
                       />
-
+                      <ColumnDirective
+                        headerText="Unit Price"
+                        field="unitPrice"
+                      />                    
                       <ColumnDirective headerText="Amount" field="amount" />
                       <ColumnDirective
                         headerText="Is Loss"
@@ -369,6 +330,62 @@ class SiDrPrint extends BaseComponent {
               <br />
             </div>
             <div className="row">
+              <div className="col-sm-10"></div>
+              <div className="col-sm-2">
+                  <div className="classWithPad e-tot-sales-vat-incl">
+                    {this.state.totalAmountValIncl}
+                  </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm-10"></div>
+              <div className="col-sm-2">
+                <div className="classWithPad e-less-vat">
+                  less vat
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm-10"></div>
+              <div className="col-sm-2">
+                <div className="classWithPad e-amount-net-of-vat">
+                net of vat
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm-10"></div>
+              <div className="col-sm-2">
+                <div className="classWithPad e-less-pwd">
+                less pwd
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm-10"></div>
+              <div className="col-sm-2">
+                <div className="classWithPad e-amount-due">
+                  amount due
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm-10"></div>
+              <div className="col-sm-2">
+                <div className="classWithPad e-add-vat">
+                add vat
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm-10"></div>
+              <div className="col-sm-2">
+                  <div className="classWithPad e-tot-amount">
+                    {this.state.totalAmount}
+                  </div>
+              </div>
+            </div>
+            <div className="row e-foot-last">
               <div className="col-sm-2">{this.state.checkedBy}</div>
               <div className="col-sm-2">{this.state.deliveredBy}</div>
               <div className="col-sm-2">
@@ -376,6 +393,24 @@ class SiDrPrint extends BaseComponent {
               </div>
               <div className="col-sm-6"></div>
             </div>
+            <div className="row">
+              <div className="col-sm-12">f</div>
+            </div>
+            <br />
+            <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm mr-2"
+                  onClick={this.handleBackBtn.bind(this)}
+                >
+                  Back
+              </button>  
+              <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm mr-2"
+                  onClick={this.handlePrintBtn.bind(this)}
+                >
+                  Print
+              </button>
           </form>
         </div>
       );
