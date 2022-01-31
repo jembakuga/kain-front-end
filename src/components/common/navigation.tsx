@@ -134,19 +134,19 @@ class Navigation extends Component {
         ],
         text: "Expenses",
       },
-      {
+      /*{
         items: [
           {
-            text: "Report 1",
+            text: "Search Employee",
             url: "#/employeeSearch",
           },
           {
-            text: "Report 2",
+            text: "Add Employee",
             url: "#/employeeAdd",
           },
         ],
-        text: "Report",
-      },
+        text: "Employee",
+      },*/
       {
         items: [
           {
@@ -176,22 +176,6 @@ class Navigation extends Component {
     ];
     this.menuComponent = new MenuComponent({ items: this.menuItems });
   }
-
-  onCreated() {
-    // this.tbObj.refreshOverflow();
-  }
-
-  // menuTemplate() {
-  //   return (
-  //     // <MenuComponent items={this.menuItems} />
-  //     <MenuComponent
-  //       id="menu"
-  //       // items={this.menuItems}
-  //       items={this.menuItems}
-  //       // animationSettings={this.animation}
-  //     />
-  //   );
-  // }
 
   render() {
     return (

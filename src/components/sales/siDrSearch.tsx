@@ -202,7 +202,7 @@ class SiDrSearch extends BaseComponent {
               />
               <ColumnDirective headerText="Sold To" field="soldTo" />
               <ColumnDirective headerText="Address" field="address" />
-              <ColumnDirective headerText="Total Amount" field="totalAmount" />
+              <ColumnDirective headerText="Total Amount" field="totalAmount" format='N2' />
               <ColumnDirective
                 headerText="Date"
                 field="date"

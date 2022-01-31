@@ -5,28 +5,25 @@ import {
   GridComponent,
   ColumnsDirective,
   ColumnDirective,
-  Page,
   Inject,
   Aggregate, AggregateColumnsDirective, AggregateDirective, AggregatesDirective,
   AggregateColumnDirective
 } from "@syncfusion/ej2-react-grids";
-import { DataManager, UrlAdaptor, Query } from "@syncfusion/ej2-data";
+import { Query } from "@syncfusion/ej2-data";
 import axios from "axios";
+import '../../css/monthlyExpensesPrint.css'
 
-class MontlyExpensesSearch extends BaseComponent {
+
+class MontlyExpensesPrint extends BaseComponent {
 
   private grid: GridComponent | null;
   private query: Query;
   public formatOption: object = { type: "date", format: "dd/MM/yyyy" };
 
   public purchasesSum(props: any) : any {
-    return(<div>{props.Sum}</div>)
+    return(<div className="aggre">{props.Sum}</div>)
       }
 
-  private dataManager: DataManager = new DataManager({
-    url: "http://localhost:8080/collection/findCollectionReportItems",
-    adaptor: new UrlAdaptor(),
-  });
 
   state: {
     year: "";
@@ -41,6 +38,10 @@ class MontlyExpensesSearch extends BaseComponent {
     };
   }
 
+  handleBackBtn() {
+    this.props.history.push("/monthlyExpensesSearch/" + this.state.year);
+  }
+
   handleYearChange(e: any) {
     this.setState({
       year: e.target.value,
@@ -50,82 +51,33 @@ class MontlyExpensesSearch extends BaseComponent {
   handlePrintButton() {
     console.log("PRINTING");
     //this.props.history.push("/siDrPrint/" + this.state.siDrId);
-    window.open("http://localhost:3000/#/monthlyExpensesPrint/" + this.state.year);
+    window.print();
   }
 
-  renderExpenses(){
-    console.log("renderExpenses");
+  componentDidMount() {
+    console.log("componentDidMount", this.props.match.params.year);
     axios
       .post(
         "http://localhost:8080/expenses/retrieveYearlyExpenses",{
-          year_ : this.state.year
+          year_ : this.props.match.params.year
         }
           
       )
       .then((res) => {
         console.log(res.data);
-        this.setState({ expensesData: res.data });
+        this.setState({ expensesData: res.data.result });
       });
+      
   }
 
 
   render() {
     return (
-    <div>
+    <div> 
         <div className="header">Generate Expense Report</div>
         <br />
         <form id="form-element">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-sm-3">SI/DR No: </div>
-              <div className="col-sm-4">
-                <select
-                  //value={this.state.employeeType}
-                  className="form-control"
-                  onChange={this.handleYearChange.bind(this)}
-                  onBlur={this.handleYearChange.bind(this)}
-                >
-                  <option></option>
-                  <option key="2019" value="2019">
-                    2019
-                  </option>
-                  <option key="2020" value="2020">
-                    2020
-                  </option>
-                  <option key="2021" value="2021">
-                    2021
-                  </option>
-                  <option key="2022" value="2022">
-                    2022
-                  </option>
-                  <option key="2023" value="2023">
-                    2023
-                  </option>
-                  <option key="2024" value="2024">
-                    2024
-                  </option>
-                </select>
-              </div>
-            </div>
-            <br />
-            <div className="row">
-              <div className="col-sm-2">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary btn-sm mr-2"
-                  onClick={this.renderExpenses.bind(this)}
-                >
-                  Load Data
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-primary btn-sm mr-2"
-                  onClick={this.handlePrintButton.bind(this)}
-                >
-                  Print Preview
-                </button>
-              </div> 
-            </div>
+          <div className="container-fluid"> 
             <br />
             <div className="row">
               <div>
@@ -201,29 +153,48 @@ class MontlyExpensesSearch extends BaseComponent {
                   field="expensesTieup" format='N2'
                 />                
               </ColumnsDirective>
-              { /*<AggregatesDirective>
+              <AggregatesDirective>
                 <AggregateDirective>
                   <AggregateColumnsDirective>
-                  <AggregateColumnDirective field='profit' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='purchases' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='licenses' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='salary' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='officeRental' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='parking' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='pldt' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='meralco' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='waterBill' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='officeSupEquip' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='pettyCash' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='statutory' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='revFund' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
-                    <AggregateColumnDirective field='expensesTieup' type='Sum' format='N2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='profit' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='purchases' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='licenses' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='salary' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='officeRental' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='parking' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='pldt' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='meralco' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='waterBill' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='officeSupEquip' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='pettyCash' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='statutory' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='revFund' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
+                    <AggregateColumnDirective field='expensesTieup' type='Sum' format='C2' footerTemplate={this.purchasesSum} />
                   </AggregateColumnsDirective>
                 </AggregateDirective>                
-              </AggregatesDirective>*/}
-              <Inject services={[Page, Aggregate]}/>
+              </AggregatesDirective>
+              <Inject services={[Aggregate]}/>
             </GridComponent>
               </div>
+            </div>
+            <br />
+            <div className="row">
+              <div className="col-sm-2">  
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm mr-2"
+                  onClick={this.handleBackBtn.bind(this)}
+                >
+                  Back
+                </button>              
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm mr-2"
+                  onClick={this.handlePrintButton.bind(this)}
+                >
+                  Print
+                </button>
+              </div> 
             </div>
           </div>
         </form>
@@ -231,4 +202,4 @@ class MontlyExpensesSearch extends BaseComponent {
   }
 }
 
-export default MontlyExpensesSearch;
+export default MontlyExpensesPrint;

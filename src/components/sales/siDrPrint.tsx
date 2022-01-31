@@ -137,16 +137,7 @@ class SiDrPrint extends BaseComponent {
           
         });
 
-      if (this.grid) {
-        console.log("akjdfhadskfj");
-        this.grid.dataSource = this.dataManager;
-        this.query = new Query().addParams(
-          "siDrId",
-          this.props.match.params.id
-        );
-        this.grid.query = this.query;
-        
-      }
+
     }
     axios
       .post("http://localhost:8080/employee/findEmployeeForDropdown")
