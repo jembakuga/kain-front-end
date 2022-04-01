@@ -29,6 +29,7 @@ class ProductDetails extends BaseComponent {
     prodCode: "";
     prodDesc: "";
     prodId: "";
+    prodCat:"";
     availProdCount: 0;
     productItemData: [];
   };
@@ -38,6 +39,7 @@ class ProductDetails extends BaseComponent {
       prodCode: "",
       prodDesc: "",
       prodId: "",
+      prodCat: "",
       availProdCount: 0,
       productItemData: [],
     };
@@ -56,6 +58,12 @@ class ProductDetails extends BaseComponent {
   handlProdCodeChange(e: any) {
     this.setState({
       prodCode: e.target.value,
+    });
+  }
+
+  handlProdCatChange(e: any) {
+    this.setState({
+      prodCat: e.target.value,
     });
   }
 
@@ -91,6 +99,7 @@ class ProductDetails extends BaseComponent {
           : this.state.prodId,
         productCode: this.state.prodCode,
         productDesc: this.state.prodDesc,
+        productCat: this.state.prodCat
       })
       .then((res) => {
         console.log(res);
@@ -129,6 +138,7 @@ class ProductDetails extends BaseComponent {
             prodDesc: res.data.productDesc,
             prodId: res.data.productId,
             availProdCount: res.data.availProdCount,
+            prodCat: res.data.productCat,
             productItemData: res.data.productItemBeanList,
           });
         });
@@ -238,6 +248,28 @@ class ProductDetails extends BaseComponent {
                 value={this.state.prodDesc}
                 onChange={this.handlProdDescChange.bind(this)}
               />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-sm-3">Product Category: </div>
+            <div className="col-sm-4">
+            <select
+                  id="checkedBy"
+                  name="checkedBy"
+                  value={this.state.prodCat}
+                  className="form-control"
+                  onChange={this.handlProdCatChange.bind(this)}
+                  onBlur={this.handlProdCatChange.bind(this)}
+                >
+                  <option></option>
+                  <option key="1" value="Open">
+                    Open
+                  </option>
+                  <option key="2" value="Exclusive">
+                    Exclusive
+                  </option>
+                </select>
             </div>
           </div>
           <br />

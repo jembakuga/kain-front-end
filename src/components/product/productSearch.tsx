@@ -191,6 +191,10 @@ class ProductSearch extends BaseComponent {
                   field="productDesc"
                 />
                 <ColumnDirective
+                  headerText="Product Category"
+                  field="productCat"
+                />
+                <ColumnDirective
                   headerText="Available Stocks"
                   field="availProdCount"
                 />
