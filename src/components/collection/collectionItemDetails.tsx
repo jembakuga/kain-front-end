@@ -108,8 +108,10 @@ class CollectionItemDetails extends BaseComponent {
       })
       .then((res) => {
         console.log(res);
+        console.log(res.data.amountToCollect);
         this.setState({
-          mdHospDrugstore: res.data.soldTo
+          mdHospDrugstore: res.data.soldTo,
+          amount: res.data.amountToCollect
         });
       });
   }
