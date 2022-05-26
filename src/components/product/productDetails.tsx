@@ -103,20 +103,30 @@ class ProductDetails extends BaseComponent {
       })
       .then((res) => {
         console.log(res);
-        this.setState({
-          prodCode: res.data.productCode,
-          prodDesc: res.data.productDesc,
-          prodId: res.data.productId,
-        });
-        if (this.state.prodId) {
+        if(res.data.success){
+          this.setState({
+            prodCode: res.data.data.productCode,
+            prodDesc: res.data.data.productDesc,
+            prodId: res.data.data.productId,
+          });
+          if (this.state.prodId) {
+            DialogUtility.alert({
+              animationSettings: { effect: "Zoom" },
+              closeOnEscape: true,
+              content: "Product " + this.state.prodCode + " created",
+              showCloseIcon: true,
+              title: "Product Created",
+            });
+            this.props.history.push("/productSearch");
+          }
+        }else{
           DialogUtility.alert({
             animationSettings: { effect: "Zoom" },
             closeOnEscape: true,
-            content: "Product " + this.state.prodCode + " created",
+            content: res.data.message,
             showCloseIcon: true,
             title: "Product Created",
           });
-          this.props.history.push("/productSearch");
         }
       })
       .catch(function (error) {
